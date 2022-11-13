@@ -1,0 +1,164 @@
+#include <QTextCodec>
+
+#include "vt21detect.h"
+
+// Количество калибровочных точек
+const int SUM_POINT = 21;
+//Кодировщик шрифта - код для записи строк в датчик
+#define CODE_LOCALLY "Windows-1251"
+
+
+VT21Detect::VT21Detect(QSerialPortInfo portInfo, QObject *parent)
+  : VTDetect(portInfo, parent)
+  , _countPeriod(0)
+  , _calibrField(0)
+{
+
+}
+
+
+int VT21Detect::CountPeriod()
+{
+  return _countPeriod;
+}
+
+
+int VT21Detect::CalibrField()
+{
+  return _calibrField;
+}
+
+
+std::vector<std::vector<int>> VT21Detect::PMTable()
+{
+  return _pmt;
+}
+
+
+// Результат измерения датчика с учетом калибровки
+void VT21Detect::calcCalibrateResult(int measData)
+{
+  emit NewDataMeas(measData);
+  if (_cdt.size() < SUM_POINT-1)
+    return;
+  double result = 0;
+  int index = 0;
+  for (; index < SUM_POINT-1; ++index)
+  {
+    if (_cdt.at(index).lmess < _cdt.at(index).rmess)
+    {
+      if (index == 0)
+        if (measData <= _cdt.at(index).rmess) break;
+      if (measData >=  _cdt.at(index).lmess)
+        if (measData <=  _cdt.at(index).rmess) break;
+    }
+    else
+    {
+      if (index == 0)
+        if (measData >=  _cdt.at(index).rmess) break;
+      if (measData <=  _cdt.at(index).lmess)
+        if (measData >=  _cdt.at(index).rmess) break;
+    }
+  }
+  if (index == SUM_POINT-1)
+    --index;
+  result =  _cdt.at(index).alfa * static_cast<double>(measData) +  _cdt.at(index).beta;
+  _measure = static_cast<float>(result/1000);
+  emit NewMeasure(_measure);
+}
+
+
+int VT21Detect::SumPoint()
+{
+  return SUM_POINT;
+}
+
+
+void VT21Detect::defHMeasureInterval()
+{
+  int result = -65535;
+  for (auto pm : _pmt)
+    if (result < pm.at(0))
+      result = pm.at(0);
+  _hMeasInterval = result;
+}
+
+
+void VT21Detect::defLMeasureInterval()
+{
+  int result = 65535;
+  for (auto pm : _pmt)
+    if (result > pm.at(0))
+      result = pm.at(0);
+  _lMeasInterval = result;
+}
+
+
+QString VT21Detect::getLocallyString(QByteArray baData)
+{
+  QByteArray data = baData.replace('\0',' '); // Для корректной работы со строкой
+  QTextCodec* codec = QTextCodec::codecForName(CODE_LOCALLY);
+  QString stroka = codec->toUnicode(data);
+  return stroka.trimmed();
+}
+
+
+bool VT21Detect::fillCalibrateDataTable(QByteArray baData, int lenPoint, int lenMeasPoint)
+{
+  bool error = false;
+
+  _cdt.clear();
+  _pmt.clear();
+  int point2 = 0;
+  int mess2 = 0;
+
+  for (int j = 0; j < SUM_POINT - 1; ++j)
+  {
+    // Калибровочные точки
+    int point1 = 0;
+    point2 = 0;
+    for (int k=0; k<lenPoint; k++)
+    {
+      point1 = point1 << 8;
+      point1 += static_cast<unsigned char>(baData.at(j*(lenPoint+lenMeasPoint) + k));
+      point2 = point2 << 8;
+      point2 += static_cast<unsigned char>(baData.at((j+1)*(lenPoint+lenMeasPoint) + k));
+    }
+    if (point1 > 0x7FFF)
+      point1 = point1 - 0x010000;
+    if (point2 > 0x7FFF)
+      point2 = point2 - 0x010000;
+
+    // Калибровочное значение
+    int mess1 = 0;
+    mess2 = 0;
+    for (int k = 0; k < lenMeasPoint; ++k)
+    {
+      mess1 = mess1 << 8;
+      mess1 += static_cast<unsigned char>(baData.at(j*(lenPoint+lenMeasPoint) + lenPoint + k));
+      mess2 = mess2 << 8;
+      mess2 += static_cast<unsigned char>(baData.at((j+1)*(lenPoint+lenMeasPoint) + lenPoint + k));
+    }
+    if (mess1 == mess2)
+      return true; // error
+    CalibrateData cd;
+    cd.lmess = mess1;
+    cd.rmess = mess2;
+    // расчет функции
+    cd.alfa = (static_cast<double>(1000*(point2 - point1))) / (static_cast<double>(mess2 - mess1));
+    cd.beta = ((static_cast<double>(point1)) - ((cd.alfa * (static_cast<double>(mess1))) / 1000)) * 1000;
+    _cdt.push_back(cd);
+
+    std::vector<int> punkt;
+    punkt.push_back(point1);
+    punkt.push_back(mess1);
+    _pmt.push_back(punkt);
+  }
+  std::vector<int> punkt;
+  punkt.push_back(point2);
+  punkt.push_back(mess2);
+  _pmt.push_back(punkt);
+
+  return error;
+}
+

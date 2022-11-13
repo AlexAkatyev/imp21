@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>indicator.qml</file>
+        <file>InputIndicator.qml</file>
+        <file>ImpGauge.qml</file>
+        <file>make-down.png</file>
+        <file>make-up.png</file>
+        <file>Marker.qml</file>
+        <file>document-save.png</file>
+        <file>gnome-dev-disc-dvdr-plus.png</file>
+        <file>Gnome-Edit-Clear-64.png</file>
+        <file>PauseNormal.png</file>
+        <file>Play-1-Pressed-icon.png</file>
+        <file>Printer_Picture.png</file>
+        <file>StatChart.qml</file>
+        <file>1kHz_44100Hz_16bit_05sec.wav</file>
+        <file>ext_csv_filetype_icon_176252.png</file>
+        <file>ext_xlsx_icon_176245.png</file>
+    </qresource>
+</RCC>

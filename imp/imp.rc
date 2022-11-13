@@ -1,0 +1,38 @@
+IDI_ICON1               ICON    DISCARDABLE     "impclient.ico"
+
+#include "versionNo.h"
+1 VERSIONINFO
+  FILEVERSION FILE_VERSION_MAIN
+  PRODUCTVERSION FILE_VERSION_MAIN
+  FILEFLAGSMASK 0x3fL
+ #ifdef _DEBUG
+  FILEFLAGS 0x1L
+ #else
+  FILEFLAGS 0x0L
+ #endif
+  FILEOS 0x4L
+  FILETYPE 0x2L
+  FILESUBTYPE 0x0L
+ BEGIN
+     BLOCK "StringFileInfo"
+     BEGIN
+         BLOCK "040904e4"
+         BEGIN
+             VALUE "Comments", FILE_COMMENT_STR
+             VALUE "CompanyName", FILE_COMPANY_STR
+             VALUE "FileDescription", "micromovings meter\0"
+             VALUE "FileVersion", FILE_VERSION_STR
+             VALUE "LegalCopyright",     "VIPP-Tehnika"
+             VALUE "LegalTrademarks",    "IMP"
+             VALUE "OriginalFilename", "imp.exe\0"
+             VALUE "ProductName", FILE_PRODUCT_STR
+             VALUE "ProductVersion", FILE_VERSION_STR
+             VALUE "SpecialBuild", "Индикация показаний датчиков, калибровка датчиков\0"
+             VALUE "Builder", "А.П. Акатьев"
+         END
+     END
+     BLOCK "VarFileInfo"
+     BEGIN
+         VALUE "Translation", 0x419, 1252
+     END
+ END

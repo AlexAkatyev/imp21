@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="logo.jpg">doc/logo.jpg</file>
+        <file alias="ico-out-mini.png">doc/ico-out-mini.png</file>
+        <file alias="index.htm">doc/index.htm</file>
+        <file alias="about.htm">doc/about.htm</file>
+        <file alias="start.htm">doc/start.htm</file>
+        <file alias="main.htm">doc/main.htm</file>
+        <file alias="settings.htm">doc/settings.htm</file>
+        <file alias="indicators.htm">doc/indicators.htm</file>
+        <file alias="charts.htm">doc/charts.htm</file>
+        <file alias="contacts.htm">doc/contacts.htm</file>
+        <file alias="help.htm">doc/help.htm</file>
+    </qresource>
+</RCC>

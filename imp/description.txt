@@ -1,0 +1,57 @@
+Структура проекта IMP
+
+0.0
+main - стартовая функция проекта
+main.cpp
+    1.0
+    imp - главное окно
+    call 0.1
+    imp.cpp
+    imp.h
+    imp.ui
+        2.0
+        about/about - информация о программе
+        about.cpp
+        about.f
+        2.1
+        HelpBrowser/HelpBrowser - руководство пользователя
+        HelpBrowser.cpp
+        HelpBrowser.h
+        resource.qrc
+        2.2
+        portlocator - открывает доступ к датчикам нескольким процессам
+        call 1.0, 2.3, 2.4
+        portlocator.cpp
+        portlocator.h
+        2.3
+        settings - окно установки датчика
+        call 0.1, 0.2, 1.0, 2.2
+        settings.cpp
+        settings.h
+        settings.qml
+        qmlsettings.h
+        settings.qrc
+        2.4
+        indicator - окно индикатора
+        call 0.1, 0.2, 1.0, 2.2, 3.0
+        indicator.cpp
+        indicator.h
+        indicator.qml
+        qmlindicator.h
+        ImpGauge.qml - свойства шкалы и индикатора
+        InputIndicator.qml - входные сигналы для шкалы
+            3.0
+            statchart - окно графика
+            statchart.cpp
+            statchart.h
+            qmlstatchart.h
+            statchart.qml
+            statchart.qrc
+0.1
+command_detect - набор пользовательских функций для работы с датчиками
+command_detect.cpp
+command_detect.h
+0.2
+checkInputNumberIF/checkInputNumberIF - функция преобразования строки в число типа int или float, иначе выдает ошибку ввода
+checkInputNumberIF.cpp
+checkInputNumberIF.h
