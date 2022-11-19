@@ -480,21 +480,26 @@ void Indicator::setComboListDetect(void)
   _cbListDetect2->setProperty("model", slCLD2);
 
   // По ключу выставляем активный датчик
-  if (_detect1 != nullptr)
-  { // Датчик остался в списке
-    int index = currentIndex1ByName(_detect1->UserName());
-    _cbListDetect1->setProperty("currentIndex", index);
+  int index1 = 0; // Датчик по умолчанию исчез из списка
+  if (_detect1)
+  {
+    if (_detect1->Ready()) // Датчик остался в списке и жив
+      index1 = currentIndex1ByName(_detect1->UserName());
+    else // Датчик в процессе удаления
+      _detect1 = nullptr;
   }
-  else // Датчик исчез из списка
-    _cbListDetect1->setProperty("currentIndex", 0);
+  _cbListDetect1->setProperty("currentIndex", index1);
 
+  int index2 = 0; // Датчик по умолчанию исчез из списка
   if (_detect2 != nullptr)
-  { // Датчик остался в списке
-    int index = currentIndex2ByName(_detect2->UserName());
-    _cbListDetect2->setProperty("currentIndex", index);
+  {
+    if (_detect2->Ready()) // Датчик остался в списке и жив
+      index2 = currentIndex2ByName(_detect2->UserName());
+    else // Датчик в процессе удаления
+      _detect2 = nullptr;
   }
-  else // Датчик исчез из списка
-    _cbListDetect2->setProperty("currentIndex", 0);
+  _cbListDetect2->setProperty("currentIndex", index2);
+
   setWorkIndicators();
 }
 
