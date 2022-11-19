@@ -164,7 +164,11 @@ void VTDetect::SetNewName(QString newName)
 
 bool VTDetect::Ready()
 {
-  return _flagReady && _port && _port->isOpen();
+  int error = _port ? _port->error() : QSerialPort::UnknownError;
+  return _flagReady
+      && _port
+      && _port->isOpen()
+      && (error == QSerialPort::NoError || error == QSerialPort::TimeoutError);
 }
 
 

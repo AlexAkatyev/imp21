@@ -30,7 +30,7 @@ const int AT_SN10 = AT_SN100 + 1;
 const int AT_SN1 = AT_SN10 + 1;
 const int LEN_DATA = 16;
 
-const int WDT_INTERVAL = 10000;
+const int WDT_INTERVAL = 1000;
 
 
 inline int getNumberFromData(char dat, int scale = 1)
@@ -136,6 +136,8 @@ void EmVTDetect::getInfoFromData(QByteArray input)
 
 void EmVTDetect::routeInput()
 {
+  if (!_port)
+    return;
   _input += _port->readAll();
   int i = _input.indexOf(DAT00);
   if ( i == -1)
