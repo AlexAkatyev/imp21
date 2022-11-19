@@ -38,7 +38,7 @@ Item
     property bool stateMeasure: false // true - идет замер
     property string textcsv: "";
     property bool setZero: false // нуль не установлен
-    property real measValue: inputIndicator.mess + inputIndicator.zeroShift
+    property real measValue: inputIndicator.mTranformFormulaReal + inputIndicator.zeroShift
     onMeasValueChanged:
     {
         if (stateMeasure)
