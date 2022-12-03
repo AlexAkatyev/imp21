@@ -2,7 +2,7 @@
 #define VERSIONNO_H
 
 #define DEF_VERSION_MAJOR   21
-#define DEF_VERSION_MINOR   3
+#define DEF_VERSION_MINOR   4
 #define DEF_VERSION_PATCH   2
 
 
@@ -16,6 +16,6 @@
 
 #define FILE_PRODUCT_STR "Измеритель микроперемещений\0"
 
-#define ANOTHER_PRODUCT_STR "UV 21.3.2.0\0"
+#define ANOTHER_PRODUCT_STR "UV 21.4.2.0\0"
 
 #endif // VERSIONNO_H

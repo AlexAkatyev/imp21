@@ -4,8 +4,9 @@
 
 #include "emvtdetect.h"
 #include "emvtsettings.h"
+#include "Logger/logger.h"
 
-const int WAIT_FOR_READY_READ = 50;
+const int WAIT_FOR_READY_READ = 250;
 const int WAIT_START = 250;
 const int MAX_WAIT_INIT = WAIT_START + WAIT_FOR_READY_READ + 10;
 
@@ -64,7 +65,9 @@ EmVTDetect::EmVTDetect(QSerialPortInfo portInfo, QObject* parent)
 
 void EmVTDetect::Init()
 {
-  if (_port->open(QIODevice::ReadWrite))
+  if (_port->isOpen())
+    Logger::GetInstance()->WriteLnLog("Порт " + _port->portName() + " уже используется");
+  else if (_port->open(QIODevice::ReadWrite))
   {
     _wdt->start();
     // Установка параметров порта

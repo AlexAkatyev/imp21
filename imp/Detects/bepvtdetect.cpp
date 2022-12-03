@@ -5,6 +5,8 @@
 #include "bepvtdetect.h"
 #include "bepvtsettings.h"
 
+#include "Logger/logger.h"
+
 // Количество калибровочных точек
 const int SUM_POINT = VT21Detect::SumPoint();
 
@@ -124,8 +126,18 @@ BepVTDetect::BepVTDetect(QSerialPortInfo portInfo, QObject *parent)
 
 void BepVTDetect::Init()
 {
+  Logger* logger = Logger::GetInstance();
+
+  if (_port->isOpen())
+  {
+    logger->WriteLnLog("Порт " + _port->portName() + " уже используется");
+    return;
+  }
+
+  logger->WriteLnLog("Открытие порта " + _port->portName());
   if (_port->open(QIODevice::ReadWrite))
   {
+    logger->WriteLnLog("Инициализация");
     // Установка параметров порта
     _port->setBaudRate(baudRate(), direction());
     _port->setParity(parity());
@@ -133,6 +145,8 @@ void BepVTDetect::Init()
     _port->setStopBits(stopBits());
     _port->setReadBufferSize(bufferSize());
     _port->setFlowControl(flowControl());
+
+    _port->setDataTerminalReady(true);
 
     {
       QElapsedTimer timeDTR;
@@ -143,6 +157,7 @@ void BepVTDetect::Init()
 
     _port->write(COMMAND_WAIT_DETECT);
     _port->flush();
+    logger->WriteLnLog("Отправил WAIT");
     {
       QElapsedTimer timew;
       timew.start();
@@ -152,12 +167,12 @@ void BepVTDetect::Init()
 
     QByteArray receiveData;
     // Отправка команды
+    _port->waitForReadyRead(WAIT_FOR_READY_READ); // ожидаем готовность порта принимать
     _port->write(COMMAND_INIT_DETECT);
-    _port->flush();
+    //_port->flush();
+    _port->waitForBytesWritten(WAIT_OF_ANSWER_WAIT);
+    logger->WriteLnLog("Отправил INIT");
 
-    //_port->readAll(); // Очистка мусора
-
-    _port->waitForReadyRead(WAIT_FOR_READY_READ);
     // Выдержка для получения данных с порта для анализа
     {
       QElapsedTimer timei;
@@ -166,8 +181,11 @@ void BepVTDetect::Init()
         qApp->processEvents();// Ждем ответа, но обрабатываем возможные события
     }
     // Читаем данные с порта
-    //QString portName = _port->portName();
+    logger->WriteLnLog("Подождал");
     receiveData = _port->readAll();
+    logger->WriteLnLog("Прочитал буфер");
+    logger->WriteBytes(receiveData);
+    logger->WriteLnLog("Ошибка порта : " + QString::number(_port->error()));
 
     int i = receiveData.indexOf(ANSWER_INIT_DETECT1);
     if ( i != -1
@@ -194,6 +212,8 @@ void BepVTDetect::Init()
         _measTimer->start(); // датчик начинает работать на прием измерений
     }
   }
+  else
+    logger->WriteLnLog("Порт не доступен");
 }
 
 
@@ -206,6 +226,7 @@ void BepVTDetect::Stop()
     _measTimer->stop();
     _flagReady = false;
     emit Stopped();
+    Logger::GetInstance()->WriteLnLog("Закрыл порт " + _port->portName());
   }
 }
 

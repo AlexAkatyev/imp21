@@ -8,6 +8,7 @@
 #include "Detects/serialportlocator.h"
 #include "Detects/modbusvtdetect.h"
 #include "Detects/emvtdetect.h"
+#include "Logger/logger.h"
 
 const int BEP_WAIT_INIT = 1000;
 const int EM_WAIT_INIT = 1000;
@@ -37,21 +38,25 @@ int DetectFactory::FindingTime()
 
 std::vector<VTDetect*> DetectFactory::VTDetects()
 {
+  Logger* logger = Logger::GetInstance();
   std::vector<VTDetect*> result;
 
   QList<QSerialPortInfo> ListPort;
   ListPort = QSerialPortInfo::availablePorts();
+  logger->WriteLnLog("Поиск датчиков");
   if (ListPort.size() > 0) // Что-то делаем, если вообще есть устройства
   {
     // Получаем от системы список COM-портов, на которых сидят устройства
     for (QSerialPortInfo& info : ListPort)
     {
+      logger->WriteLnLog("Порт " + info.portName());
       // BepVTDetect
       VTDetect* bepVTD = new BepVTDetect(info, parent());
       bepVTD->Init();
       if (bepVTD->Id())
       {
         result.push_back(bepVTD);
+        logger->WriteLnLog("Это датчик USB");
         continue;
       }
       else
@@ -64,6 +69,7 @@ std::vector<VTDetect*> DetectFactory::VTDetects()
       if (em->Id())
       {
         result.push_back(em);
+        logger->WriteLnLog("Это измерительная головка ЭМ-08");
         continue;
       }
       else
@@ -95,6 +101,7 @@ std::vector<VTDetect*> DetectFactory::VTDetects()
           if (detect->Id())
           {
             result.push_back(detect);
+            logger->WriteLnLog("Это датчик RS-485");
             notFind = false;
             continue;
           }

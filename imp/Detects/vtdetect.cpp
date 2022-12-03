@@ -1,4 +1,5 @@
 #include "vtdetect.h"
+#include "Logger/logger.h"
 
 VTDetect::VTDetect(QSerialPortInfo portInfo, QObject *parent)
   : QObject(parent)
@@ -164,11 +165,20 @@ void VTDetect::SetNewName(QString newName)
 
 bool VTDetect::Ready()
 {
-  int error = _port ? _port->error() : QSerialPort::UnknownError;
+  auto portNoError = [](QSerialPort::SerialPortError err) -> bool
+  {
+    return (err == QSerialPort::NoError || err == QSerialPort::TimeoutError);
+  };
+
+  QSerialPort::SerialPortError error = _port ? _port->error() : QSerialPort::UnknownError;
+  if (!portNoError(error) && _port)
+    Logger::GetInstance()->WriteLnLog("Порт " + _port->portName() + " : Ошибка " + QString::number(error));
+  else if (_port == nullptr)
+    Logger::GetInstance()->WriteLnLog("Датчик " + QString::number(Id()) + " не готов. Порт не определен.");
   return _flagReady
       && _port
       && _port->isOpen()
-      && (error == QSerialPort::NoError || error == QSerialPort::TimeoutError);
+      && portNoError(error);
 }
 
 

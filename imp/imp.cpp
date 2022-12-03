@@ -22,6 +22,7 @@
 //#include "command_detect.h"
 #include "versionNo.h"
 #include "Detects/detectfactory.h"
+#include "Logger/logger.h"
 
 // Пауза после запуска программы перед поиском датчиков
 const int PAUSE_BEFORE_FIND_DETECT = 500;
@@ -46,6 +47,8 @@ Imp::Imp(QWidget* parent)
     : QWidget(parent)
     , pQuickUi(new QQuickWidget)
 {
+    Logger::GetInstance(this); // Запуск журнала
+
     fileSettingsGeneral = new QFile("imp.xml"); // Указание файла с параметрами установок
 
     // Загрузка параметров из файла установок
