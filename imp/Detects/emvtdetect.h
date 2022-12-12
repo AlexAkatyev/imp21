@@ -3,8 +3,6 @@
 
 #include "vtdetect.h"
 
-class QTimer;
-
 class EmVTDetect : public VTDetect
 {
   Q_OBJECT
@@ -20,7 +18,6 @@ private:
   void getInfoFromData(QByteArray input);
   void routeInput();
 
-  QTimer* _wdt;
   QByteArray _input;
 };
 

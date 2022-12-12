@@ -12,6 +12,8 @@
 #include <QSerialPort>
 #include <QDate>
 
+class QTimer;
+
 class VTDetect : public QObject
 {
   Q_OBJECT
@@ -57,6 +59,7 @@ protected:
   QString _userName;
   bool _flagReady;
   char _address;
+  QTimer* _wdt;
 
   virtual QSerialPort::BaudRate baudRate();
   virtual QSerialPort::Direction direction();

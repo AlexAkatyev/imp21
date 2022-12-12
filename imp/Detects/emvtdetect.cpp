@@ -31,8 +31,6 @@ const int AT_SN10 = AT_SN100 + 1;
 const int AT_SN1 = AT_SN10 + 1;
 const int LEN_DATA = 16;
 
-const int WDT_INTERVAL = 1000;
-
 
 inline int getNumberFromData(char dat, int scale = 1)
 {
@@ -49,17 +47,6 @@ EmVTDetect::EmVTDetect(QSerialPortInfo portInfo, QObject* parent)
   _zeroInterval = 25;
   _preSetInterval = 110;
   _typeDetect = "Электронный модуль типа ЕМ-08";
-
-  _wdt = new QTimer(this);
-  _wdt->setInterval(WDT_INTERVAL);
-  connect(_wdt,
-          &QTimer::timeout,
-          this,
-          [&]()
-  {
-    _flagReady = false;
-  });
-  _wdt->start();
 }
 
 

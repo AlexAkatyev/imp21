@@ -11,9 +11,9 @@
 const int SUM_POINT = VT21Detect::SumPoint();
 
 const int WAIT_OF_DTR = 100;
-const int WAIT_OF_ANSWER_WAIT = 200;
+const int WAIT_OF_ANSWER_WAIT = 300;
 const int WAIT_OF_ANSWER_INIT = 1000;//500
-const int WAIT_FOR_READY_READ = 100;
+const int WAIT_FOR_READY_READ = 300;
 const int WAIT_OF_ANSWER_SAVE = 700;
 //const int WAIT_BEFORE_CLOSE_PORT = 500;
 const int UPDATE_MEAS = 100;
@@ -117,7 +117,6 @@ int QByteArrayAtLenToInt(const QByteArray& mas, int index, int length)
 BepVTDetect::BepVTDetect(QSerialPortInfo portInfo, QObject *parent)
   : VT21Detect(portInfo, parent)
   , _measTimer(new QTimer())
-  , _isEmptyRecData(2 * 1000 / UPDATE_MEAS)
 {
   _measTimer->setInterval(UPDATE_MEAS);
   connect(_measTimer, &QTimer::timeout, this, &BepVTDetect::getMeas);
@@ -148,6 +147,8 @@ void BepVTDetect::Init()
 
     _port->setDataTerminalReady(true);
 
+    _port->waitForReadyRead(WAIT_FOR_READY_READ); // ожидаем готовность порта принимать
+
     {
       QElapsedTimer timeDTR;
       timeDTR.start();
@@ -167,7 +168,7 @@ void BepVTDetect::Init()
 
     QByteArray receiveData;
     // Отправка команды
-    _port->waitForReadyRead(WAIT_FOR_READY_READ); // ожидаем готовность порта принимать
+    //_port->waitForReadyRead(WAIT_FOR_READY_READ); // ожидаем готовность порта принимать
     _port->write(COMMAND_INIT_DETECT);
     //_port->flush();
     _port->waitForBytesWritten(WAIT_OF_ANSWER_WAIT);
@@ -193,6 +194,9 @@ void BepVTDetect::Init()
         && static_cast<unsigned char>(receiveData.at(i+2)) == ANSWER_INIT_DETECT3
         && static_cast<unsigned char>(receiveData.at(i+3)) == ANSWER_INIT_DETECT4)
     {
+      _wdt->start();
+      _flagReady = true;
+
       receiveData = receiveData.right(receiveData.size() - i); // trimm receiving
       bool error = defSerialNumber(receiveData)
           | defTypeDetect(receiveData)
@@ -239,15 +243,7 @@ void BepVTDetect::getMeas()
   header += HEADER_MEAS3;
   header += HEADER_MEAS4;
   QByteArray receiveData = _port->readAll();
-  if (receiveData.isEmpty())
-  {
-    _isEmptyRecData--;
-    if (_isEmptyRecData == 0)
-    {
-      _flagReady = false;
-      _isEmptyRecData++;
-    }
-  }
+
   int i = receiveData.lastIndexOf(header);
   if ( i != -1
        && ((i + LEN_MEAS) <= receiveData.size()))
@@ -266,6 +262,7 @@ void BepVTDetect::getMeas()
     if (dataMeas > 0x7FFFFFFF) // Значение отрицательное
         dataMeas = dataMeas - 0x0100000000;
     _flagReady = true;
+    _wdt->start();
     calcCalibrateResult(static_cast<int>(dataMeas));
   }
 }

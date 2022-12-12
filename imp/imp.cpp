@@ -344,7 +344,7 @@ void Imp::FindCOMDetect(void)
     if (d->Ready())
       _detects.push_back(d);
     else
-      d->deleteLater();
+      d->Remove();
 
   // искать новые датчики
   DetectFactory* dfactory = new DetectFactory(this);

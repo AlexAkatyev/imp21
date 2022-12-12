@@ -409,7 +409,9 @@ void Indicator::setFormula(void)
     QMessageBox::warning(this, "Общий делитель", "Недопустимое значение, близкое к 0");
   }
 
+
   // Датчик 1
+  qApp->processEvents();
   QString strCurrent1 = _cbListDetect1->property("currentText").toString();
   if (_detect1)
     disconnect(_detect1, &VTDetect::FixMeasure, this, &Indicator::runButtonRelease);
@@ -424,6 +426,7 @@ void Indicator::setFormula(void)
                          "Значение предустанова для датчика 1 должно быть не более " + QString::number(_detect1->PreSetInterval()));
   }
   // Датчик 2
+  qApp->processEvents();
   QString strCurrent2 = _cbListDetect2->property("currentText").toString();
   if (_detect2)
     disconnect(_detect2, &VTDetect::FixMeasure, this, &Indicator::runButtonRelease);

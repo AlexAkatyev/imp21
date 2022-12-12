@@ -10,7 +10,7 @@
 #include "Detects/emvtdetect.h"
 #include "Logger/logger.h"
 
-const int BEP_WAIT_INIT = 1000;
+const int BEP_WAIT_INIT = 1600;
 const int EM_WAIT_INIT = 1000;
 const int MODBUS_WAIT_INIT = 2000;
 std::vector<int> V{BEP_WAIT_INIT, EM_WAIT_INIT, MODBUS_WAIT_INIT + 1000};

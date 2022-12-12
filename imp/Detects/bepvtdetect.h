@@ -33,7 +33,6 @@ private:
   bool defCalibrateDataTable(const QByteArray& baStream);
 
   QTimer* _measTimer;
-  int _isEmptyRecData;
 };
 
 #endif // BEPVTDETECT_H
