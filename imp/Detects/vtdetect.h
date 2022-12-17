@@ -14,6 +14,8 @@
 
 class QTimer;
 
+enum SizeBufMode {FREE_MODE, INIT_MODE, MEAS_MODE};
+
 class VTDetect : public QObject
 {
   Q_OBJECT
@@ -66,7 +68,7 @@ protected:
   virtual QSerialPort::Parity parity();
   virtual QSerialPort::DataBits dataBits();
   virtual QSerialPort::StopBits stopBits();
-  virtual int bufferSize();
+  virtual int bufferSize(SizeBufMode mode = SizeBufMode::FREE_MODE);
   virtual QSerialPort::FlowControl flowControl();
 
 };

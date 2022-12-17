@@ -85,9 +85,9 @@ const int LEN_NAME_DETECT =         16;
 const int AT_CALIBR_FIELD =         AT_NAME_DETECT+LEN_NAME_DETECT;
 const int LEN_CALIBR_FIELD =        4;
 // Footer
-//const int AT_END_OF_INIT =          AT_CALIBR_FIELD+LEN_CALIBR_FIELD;
-//const int LEN_END_OF_INIT =         2;
-//const int LEN_ANSWER_INIT =         AT_END_OF_INIT+LEN_END_OF_INIT;                                // Размер INIT
+const int AT_END_OF_INIT =          AT_CALIBR_FIELD+LEN_CALIBR_FIELD;
+const int LEN_END_OF_INIT =         2;
+const int LEN_ANSWER_INIT =         AT_END_OF_INIT+LEN_END_OF_INIT;                                // Размер INIT
 
 
 // Описание сообщения MEASUREMENT
@@ -142,7 +142,7 @@ void BepVTDetect::Init()
     _port->setParity(parity());
     _port->setDataBits(dataBits());
     _port->setStopBits(stopBits());
-    _port->setReadBufferSize(bufferSize());
+    _port->setReadBufferSize(bufferSize(SizeBufMode::INIT_MODE));
     _port->setFlowControl(flowControl());
 
     _port->setDataTerminalReady(true);
@@ -213,7 +213,10 @@ void BepVTDetect::Init()
       if (error)
         _serialNumber = 0;
       else
-        _measTimer->start(); // датчик начинает работать на прием измерений
+      { // датчик начинает работать на прием измерений
+        _port->setReadBufferSize(bufferSize(SizeBufMode::MEAS_MODE));
+        _measTimer->start();
+      }
     }
   }
   else
@@ -527,5 +530,15 @@ void BepVTDetect::SetNewName(QString newName)
   _port->flush();
 
   emit UserNameChanged();
+}
+
+
+int BepVTDetect::bufferSize(SizeBufMode mode)
+{
+  if (mode == SizeBufMode::MEAS_MODE)
+    return 2 * LEN_MEAS;
+  else if (mode == SizeBufMode::INIT_MODE)
+    return 2 * LEN_MEAS + LEN_ANSWER_INIT;
+  return VTDetect::bufferSize(mode);
 }
 

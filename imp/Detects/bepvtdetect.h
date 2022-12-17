@@ -31,6 +31,7 @@ private:
   bool defUserName(const QByteArray& mas);
   bool defCalibrField(const QByteArray& mas);
   bool defCalibrateDataTable(const QByteArray& baStream);
+  int bufferSize(SizeBufMode mode = SizeBufMode::FREE_MODE) override;
 
   QTimer* _measTimer;
 };

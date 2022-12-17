@@ -172,3 +172,10 @@ void EmVTDetect::ShowSettings()
   EmVTSettings* settingsWindow = new EmVTSettings(this);
   settingsWindow->show();
 }
+
+
+int EmVTDetect::bufferSize(SizeBufMode mode)
+{
+  Q_UNUSED(mode)
+  return 3 * LEN_DATA;
+}

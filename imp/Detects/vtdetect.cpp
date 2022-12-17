@@ -95,9 +95,10 @@ QSerialPort::StopBits VTDetect::stopBits()
   return QSerialPort::OneStop;
 }
 
-int VTDetect::bufferSize()
+int VTDetect::bufferSize(SizeBufMode mode)
 {
-  return 1024;
+  Q_UNUSED(mode);
+  return 0; // не ограничен, гарантия отсутствия потери данных
 }
 
 QSerialPort::FlowControl VTDetect::flowControl()
@@ -189,8 +190,8 @@ bool VTDetect::Ready()
     Logger::GetInstance()->WriteLnLog("Ready Порт " + _port->portName() + " : Ошибка " + QString::number(error));
   else if (_port == nullptr)
     Logger::GetInstance()->WriteLnLog("Ready Датчик " + QString::number(Id()) + " не готов. Порт не определен.");
-  if (_flagReady)
-    Logger::GetInstance()->WriteLnLog("Ready Датчик " + QString::number(Id()) + " - не принял данные.");
+  if (!_flagReady)
+    Logger::GetInstance()->WriteLnLog("Ready Датчик " + QString::number(Id()) + " - не принимает данные.");
   if (!_port)
     Logger::GetInstance()->WriteLnLog("Ready Датчик " + QString::number(Id()) + " - нет порта.");
   else if (!_port->isOpen())

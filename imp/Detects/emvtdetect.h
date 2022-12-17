@@ -17,6 +17,7 @@ public:
 private:
   void getInfoFromData(QByteArray input);
   void routeInput();
+  int bufferSize(SizeBufMode mode = SizeBufMode::FREE_MODE) override;
 
   QByteArray _input;
 };
