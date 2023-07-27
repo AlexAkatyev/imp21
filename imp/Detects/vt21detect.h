@@ -36,6 +36,7 @@ signals:
   int _calibrField;
   std::vector<std::vector<int>> _pmt; // промежуточная калибровочная таблица для окна настроек
   std::vector<CalibrateData> _cdt; // CalibrateDataTable Аппроксимационные функции между калибровочными точками
+  int _currency;
 
 };
 

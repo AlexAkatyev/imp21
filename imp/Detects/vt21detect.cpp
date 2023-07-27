@@ -12,6 +12,7 @@ VT21Detect::VT21Detect(QSerialPortInfo portInfo, QObject *parent)
   : VTDetect(portInfo, parent)
   , _countPeriod(0)
   , _calibrField(0)
+  , _currency(0)
 {
 
 }
@@ -124,10 +125,21 @@ bool VT21Detect::fillCalibrateDataTable(QByteArray baData, int lenPoint, int len
       point2 = point2 << 8;
       point2 += static_cast<unsigned char>(baData.at((j+1)*(lenPoint+lenMeasPoint) + k));
     }
-    if (point1 > 0x7FFF)
-      point1 = point1 - 0x010000;
-    if (point2 > 0x7FFF)
-      point2 = point2 - 0x010000;
+    if (lenPoint == 2)
+    {
+      if (point1 > 0x7FFF)
+        point1 = point1 - 0x010000;
+      if (point2 > 0x7FFF)
+        point2 = point2 - 0x010000;
+    }
+    else
+    {
+      if (point1 > 0x7FFFFFFF)
+        point1 *= -1;
+      if (point2 > 0x7FFFFFFF)
+        point2 *= -1;
+    }
+
 
     // Калибровочное значение
     int mess1 = 0;
@@ -145,8 +157,15 @@ bool VT21Detect::fillCalibrateDataTable(QByteArray baData, int lenPoint, int len
     cd.lmess = mess1;
     cd.rmess = mess2;
     // расчет функции
-    cd.alfa = (static_cast<double>(1000*(point2 - point1))) / (static_cast<double>(mess2 - mess1));
-    cd.beta = ((static_cast<double>(point1)) - ((cd.alfa * (static_cast<double>(mess1))) / 1000)) * 1000;
+    double dPoint1 = static_cast<double>(point1);
+    double dPoint2 = static_cast<double>(point2);
+    if (_currency == 2)
+    {
+      dPoint1 /= 100;
+      dPoint2 /= 100;
+    }
+    cd.alfa = (1000*(dPoint2 - dPoint1)) / (static_cast<double>(mess2 - mess1));
+    cd.beta = (dPoint1 - ((cd.alfa * (static_cast<double>(mess1))) / 1000)) * 1000;
     _cdt.push_back(cd);
 
     std::vector<int> punkt;

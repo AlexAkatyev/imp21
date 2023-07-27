@@ -72,10 +72,13 @@ const int LEN_MESS1 =               4;
 // CalibrationTable -10 .... 10
 const int AT_CALIBR =               AT_MESS1+LEN_MESS1;
 const int LEN_POINT =               2;
+const int LEN_POIN2 =               4;
 const int LEN_MEASSURE_POINT =      4;
 const int LEN_CALIBR =              (LEN_POINT+LEN_MEASSURE_POINT)*SUM_POINT;
+const int LEN_CALIB2 =              (LEN_POIN2+LEN_MEASSURE_POINT)*SUM_POINT;
 // Name
 const int AT_NAME_DETECT =          AT_CALIBR+LEN_CALIBR;
+const int AT_NAME_DETEC2 =          AT_CALIBR+LEN_CALIB2;
 const int LEN_NAME_DETECT =         16;
 // битовое поле точек калибровки (младший бит – точка калибровки +10 и т.д.)
 /*
@@ -83,11 +86,14 @@ const int LEN_NAME_DETECT =         16;
 1 – калибровка проводилась
 */
 const int AT_CALIBR_FIELD =         AT_NAME_DETECT+LEN_NAME_DETECT;
+const int AT_CALIBR_FIEL2 =         AT_NAME_DETEC2+LEN_NAME_DETECT;
 const int LEN_CALIBR_FIELD =        4;
 // Footer
 const int AT_END_OF_INIT =          AT_CALIBR_FIELD+LEN_CALIBR_FIELD;
+const int AT_END_OF_INI2 =          AT_CALIBR_FIEL2+LEN_CALIBR_FIELD;
 const int LEN_END_OF_INIT =         2;
 const int LEN_ANSWER_INIT =         AT_END_OF_INIT+LEN_END_OF_INIT;                                // Размер INIT
+const int LEN_ANSWER_INI2 =         AT_END_OF_INI2+LEN_END_OF_INIT;                                // Размер INIT
 
 
 // Описание сообщения MEASUREMENT
@@ -296,12 +302,11 @@ bool BepVTDetect::defTypeDetect(const QByteArray& mas)
 {
   bool error = false;
   QString typeDetect;
-  int kod;
-  int kod1;
   if (mas.size() > AT_TYPE_DETECT + LEN_TYPE_DETECT)
   {
-    kod = static_cast<unsigned char>(mas.at(AT_TYPE_DETECT));
-    kod1 = static_cast<unsigned char>(mas.at(AT_TYPE_DETECT + 1));
+    int kod = static_cast<unsigned char>(mas.at(AT_TYPE_DETECT));
+    int kod1 = static_cast<unsigned char>(mas.at(AT_TYPE_DETECT + 1));
+    int kod2 = static_cast<unsigned char>(mas.at(AT_TYPE_DETECT + 2));
     switch (kod)
     {
     case 1:
@@ -319,6 +324,11 @@ bool BepVTDetect::defTypeDetect(const QByteArray& mas)
         break;
       case 1:
         typeDetect.append(" с ADG419 и RS-232");
+        if (kod2 == 44)
+        {
+          typeDetect.append(" точный");
+          _currency = 2;
+        }
         break;
       default:
         break;
@@ -421,9 +431,10 @@ bool BepVTDetect::defUnitMeasure(const QByteArray& mas)
 bool BepVTDetect::defUserName(const QByteArray& mas)
 {
   bool error = true;
-  if (mas.size() > AT_NAME_DETECT + LEN_NAME_DETECT)
+  int atNameDetect = _currency == 2 ? AT_NAME_DETEC2 : AT_NAME_DETECT;
+  if (mas.size() > atNameDetect + LEN_NAME_DETECT)
   {
-      _userName = getLocallyString(mas.mid(AT_NAME_DETECT, LEN_NAME_DETECT));
+      _userName = getLocallyString(mas.mid(atNameDetect, LEN_NAME_DETECT));
       error = false;
   }
   return error;
@@ -433,9 +444,10 @@ bool BepVTDetect::defUserName(const QByteArray& mas)
 bool BepVTDetect::defCalibrField(const QByteArray& mas)
 {
   bool error = true;
-  if (mas.size() > AT_CALIBR_FIELD + LEN_CALIBR_FIELD)
+  int atCalibrField = _currency == 2 ? AT_CALIBR_FIEL2 : AT_CALIBR_FIELD;
+  if (mas.size() > atCalibrField + LEN_CALIBR_FIELD)
   {
-    _calibrField = QByteArrayAtLenToInt(mas, AT_CALIBR_FIELD, LEN_CALIBR_FIELD);
+    _calibrField = QByteArrayAtLenToInt(mas, atCalibrField, LEN_CALIBR_FIELD);
     error = false;
   }
   return error;
@@ -446,10 +458,14 @@ bool BepVTDetect::defCalibrField(const QByteArray& mas)
 bool BepVTDetect::defCalibrateDataTable(const QByteArray& baStream)
 {
   bool error = false;
-  if (baStream.size() < AT_CALIBR + LEN_CALIBR)
+  int lenPoint = _currency == 2 ? LEN_POIN2 : LEN_POINT;
+  int lenCalibr = _currency == 2 ? LEN_CALIB2 : LEN_CALIBR;
+  if (baStream.size() < AT_CALIBR + lenCalibr)
     error = true;
   else
-    error = fillCalibrateDataTable(baStream.mid(AT_CALIBR, LEN_CALIBR), LEN_POINT, LEN_MEASSURE_POINT);
+    error = fillCalibrateDataTable(baStream.mid(AT_CALIBR, lenCalibr),
+                                   lenPoint,
+                                   LEN_MEASSURE_POINT);
 
   if (!error)
   {
@@ -538,7 +554,7 @@ int BepVTDetect::bufferSize(SizeBufMode mode)
   if (mode == SizeBufMode::MEAS_MODE)
     return 2 * LEN_MEAS;
   else if (mode == SizeBufMode::INIT_MODE)
-    return 2 * LEN_MEAS + LEN_ANSWER_INIT;
+    return 2 * LEN_MEAS + qMax(LEN_ANSWER_INIT, LEN_ANSWER_INI2);
   return VTDetect::bufferSize(mode);
 }
 
