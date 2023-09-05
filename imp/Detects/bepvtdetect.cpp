@@ -486,6 +486,8 @@ void BepVTDetect::ShowSettings()
 
 void BepVTDetect::SetNewName(QString newName)
 {
+  return;
+
   if (newName.isEmpty())
     return;
 

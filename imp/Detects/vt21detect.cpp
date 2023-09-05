@@ -32,7 +32,20 @@ int VT21Detect::CalibrField()
 
 std::vector<std::vector<int>> VT21Detect::PMTable()
 {
-  return _pmt;
+  if (_currency == 2)
+  {
+    std::vector<std::vector<int>> ppmt;
+    for (auto& pm : _pmt)
+    {
+      std::vector<int> a;
+      a.push_back(pm[0]/100);
+      a.push_back(pm[1]);
+      ppmt.push_back(a);
+    }
+    return ppmt;
+  }
+  else
+    return _pmt;
 }
 
 

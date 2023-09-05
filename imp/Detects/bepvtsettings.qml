@@ -121,6 +121,7 @@ Item
                 text:  "Записать имя датчика"
                 font.pixelSize: 11
                 onClicked: saveUserName()
+                enabled: false
             }
             Text {
                 text: "Единица измерения"
@@ -138,10 +139,12 @@ Item
             }
             Text {
                 text: "Диапазон измерения"
+                visible: false
             }
             Text { // Вводится диапазон показаний
                 id: tfRange
                 objectName: "tfRange"
+                visible: false
             }
             Text {
                 text: "Диапазон обнуления"
