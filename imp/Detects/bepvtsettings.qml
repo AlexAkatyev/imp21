@@ -113,6 +113,7 @@ Item
                 id: tfName
                 objectName: "tfName"
                 font.pixelSize: 11
+                enabled: false
             }
             Text {
                 text: "        "
@@ -121,6 +122,7 @@ Item
                 text:  "Записать имя датчика"
                 font.pixelSize: 11
                 onClicked: saveUserName()
+                enabled: false
             }
             Text {
                 text: "Единица измерения"
