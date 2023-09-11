@@ -491,6 +491,10 @@ void BepVTDetect::SetNewName(QString newName)
   if (newName.isEmpty())
     return;
 
+  if (_currency == 2 // не делать для точного датчика в принципе
+      || _currency == 0) // и для не точного заодно для однообразия
+    return;
+
   QByteArray mail = COMMAND_SAVE_DETECT;
   auto pushInt2 = [&](int data)
   {

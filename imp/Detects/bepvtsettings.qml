@@ -113,6 +113,7 @@ Item
                 id: tfName
                 objectName: "tfName"
                 font.pixelSize: 11
+                enabled: false
             }
             Text {
                 text: "        "
