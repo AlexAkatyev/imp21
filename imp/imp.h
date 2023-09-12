@@ -2,13 +2,12 @@
 #define IMP_H
 
 #include <QWidget>
-#include <QDomNode>
 #include <QSet>
 
 class Indicator;
-class QFile;
 class QQuickWidget;
 class VTDetect;
+class ImpSettings;
 
 class Imp : public QWidget
 {
@@ -63,13 +62,11 @@ private:
     QTimer *TimerBeforeFound;
 
     // Объект и файл для хранения установок главного окна
-    QDomDocument ddSettingsGeneral;
-    QFile* fileSettingsGeneral;
-    bool LoadSettingsGeneral(QFile*); // Загрузка параметров из файла установок
-    void traverseNodeGeneral(QDomNode*, int acceptFlag = -1); // Использование установок в главном окне
-    void SaveSettingsGeneral(QFile*); // Сохранение параметров установок в файл
+    bool LoadSettingsGeneral(); // Загрузка параметров из файла установок
+    void SaveSettingsGeneral(); // Сохранение параметров установок в файл
     QSet<int> _useIndicators; // Множество используемых индикаторов
     bool _flagRunIndicators; // Флаг необходимости запускать индикаторы после запуска программы
+    ImpSettings* _settings;
 
     void createIndicator(int index, VTDetect* baseDetect = nullptr);
 

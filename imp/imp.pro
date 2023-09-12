@@ -44,6 +44,7 @@ SOURCES += main.cpp\
         imp.cpp \
     about/about.cpp \
     HelpBrowser/HelpBrowser.cpp \
+    impsettings.cpp \
     indicator.cpp \
     checkInputNumberIF/checkInputNumberIF.cpp
 
@@ -62,6 +63,7 @@ HEADERS  += imp.h \
     UtilLib/utillib.h \
     about/about.h \
     HelpBrowser/HelpBrowser.h \
+    impsettings.h \
     indicator.h \
     checkInputNumberIF/checkInputNumberIF.h \
     versionNo.h

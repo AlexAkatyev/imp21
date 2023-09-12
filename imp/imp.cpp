@@ -8,9 +8,7 @@
 #include <QQuickItem>
 
 #include <QTimer>
-#include <QFile>
 #include <QMessageBox>
-#include <QtXml>
 #include <QTime>
 #include <QHash>
 #include <QQuickWidget>
@@ -23,6 +21,7 @@
 #include "versionNo.h"
 #include "Detects/detectfactory.h"
 #include "Logger/logger.h"
+#include "impsettings.h"
 
 // Пауза после запуска программы перед поиском датчиков
 const int PAUSE_BEFORE_FIND_DETECT = 500;
@@ -46,28 +45,14 @@ const int SIZE_WINDOW_HEIGTH = 480;
 Imp::Imp(QWidget* parent)
     : QWidget(parent)
     , pQuickUi(new QQuickWidget)
+    , _settings(new ImpSettings("imp.ini", this))
 {
     Logger::GetInstance(this); // Запуск журнала
-
-    fileSettingsGeneral = new QFile("imp.xml"); // Указание файла с параметрами установок
 
     // Загрузка параметров из файла установок
     _useIndicators.clear(); // подготовка к загрузке множества индикаторов
     _flagRunIndicators = true;
-    if (LoadSettingsGeneral(fileSettingsGeneral))
-    { /* Файл без ошибки загружен */
-        QDomElement domElement = ddSettingsGeneral.documentElement();
-        traverseNodeGeneral(&domElement);
-    }
-    else /* Файла нет или загружен с ошибкой */
-    {
-        // Размещение окна в центр экрана
-        QPoint center = QDesktopWidget().availableGeometry().center(); //получаем координаты центра экрана
-        center.setX(center.x() - (SIZE_WINDOW_WIDTH/2));
-        center.setY(center.y() - (SIZE_WINDOW_HEIGTH/2));
-        resize(SIZE_WINDOW_WIDTH, SIZE_WINDOW_HEIGTH);
-        move(center);
-    }
+    LoadSettingsGeneral();
 
     // Присвоение имени окну
     this->setWindowTitle("ИМП 21");
@@ -127,7 +112,7 @@ void Imp::resizeEvent(QResizeEvent* event)
 void Imp::closeEvent(QCloseEvent* e)
 {
     //Сохранение параметров окна
-    SaveSettingsGeneral(fileSettingsGeneral);
+    SaveSettingsGeneral();
     emit sigCloseSettingsWindows();
     emit sigCloseIndicatorWindows();
     emit sigCloseGeneralWindow(); // Сигнализируем, что главное окно закрывается
@@ -136,126 +121,34 @@ void Imp::closeEvent(QCloseEvent* e)
     e->accept();
 }
 
+
 // Загрузка параметров из файла установок
-bool Imp::LoadSettingsGeneral(QFile* file)
+bool Imp::LoadSettingsGeneral()
 {
-    QString errorString;
-    int errorLine = 0;
-    int errorColumn = 0;
-    ddSettingsGeneral = QDomDocument("ini");
-    if (!file->open(QIODevice::ReadOnly))
-        return false;
-    bool iniError = !ddSettingsGeneral.setContent(file, true, &errorString, &errorLine, &errorColumn);
-    file->close();
-    if (iniError)
-        return false; // ошибка в файле инициализации
-
-    QDomElement root = ddSettingsGeneral.documentElement();
-
-    if (root.tagName() != "imp-ini")
-        return false;
-
-    return true;
-}
-
-
-// Использование установок в главном окне
-void Imp::traverseNodeGeneral(QDomNode* node, int acceptFlag)
-{
-   QDomNode domNode = node->firstChild();
-
-   while(!domNode.isNull())
-   {
-       if(domNode.isElement())
-       {
-           QDomElement domElement = domNode.toElement();
-           if(!domElement.isNull()) {
-               if(domElement.tagName() == "window" &&
-                  (acceptFlag & 0x1))
-               {
-                   QDomElement sizeElement =  domElement.firstChildElement("size");
-                   QDomElement sizeWidthElement =  sizeElement.firstChildElement("width");
-                   QDomElement sizeHeightElement =  sizeElement.firstChildElement("height");
-                   QDomElement topLeftPointElement =  domElement.firstChildElement("topLeftPoint");
-                   QDomElement topLeftPointXElement =  topLeftPointElement.firstChildElement("x");
-                   QDomElement topLeftPointYElement =  topLeftPointElement.firstChildElement("y");
-                   // Устанавливаем размер и положение окна программы
-                   QRect windowGeometry = QRect(topLeftPointXElement.text().toInt(),
-                                                topLeftPointYElement.text().toInt(),
-                                                sizeWidthElement.text().toInt(),
-                                                sizeHeightElement.text().toInt());
-                   this->setGeometry(windowGeometry);
-               }
-
-               if(domElement.tagName() == "i" &&
-                  (acceptFlag & 0x4))
-               {
-                   _useIndicators.insert(domElement.text().toInt());
-               }
-           }
-       }
-       traverseNodeGeneral(&domNode, acceptFlag);
-       domNode = domNode.nextSibling();
-   }
+  QRect windowGeometry = QRect(_settings->Value(ImpKeys::WIN_X).toInt(),
+                               _settings->Value(ImpKeys::WIN_Y).toInt(),
+                               _settings->Value(ImpKeys::WIN_WIDTH).toInt(),
+                               _settings->Value(ImpKeys::WIN_HEIGHT).toInt());
+  this->setGeometry(windowGeometry);
+  QStringList lInd = _settings->Value(ImpKeys::INDICATORS).toStringList();
+  for (QString num : lInd)
+    _useIndicators.insert(num.toInt());
 }
 
 
 // Сохранение параметров установок в файл
-void Imp::SaveSettingsGeneral(QFile* file)
+void Imp::SaveSettingsGeneral()
 {
-    QDomDocument doc;
-    QDomElement root = doc.createElement("imp-ini");
-    doc.appendChild(root);
-
-    // Сохранение позиции окна
-    QDomElement window = doc.createElement("window");
-    QDomElement topLeftPoint = doc.createElement("topLeftPoint");
-    QDomElement topLeftPointX = doc.createElement("x");
-    QDomElement topLeftPointY = doc.createElement("y");
-    QDomText topLeftPointXText = doc.createTextNode(QString().setNum(geometry().x()));
-    QDomText topLeftPointYText = doc.createTextNode(QString().setNum(geometry().y()));
-    QDomElement size = doc.createElement("size");
-    QDomElement width = doc.createElement("width");
-    QDomText widthText = doc.createTextNode(QString().setNum(geometry().width()));
-    QDomElement height = doc.createElement("height");
-    QDomText heightText = doc.createTextNode(QString().setNum(geometry().height()));
-
-    root.appendChild(window);
-    window.appendChild(topLeftPoint);
-    topLeftPoint.appendChild(topLeftPointX);
-    topLeftPointX.appendChild(topLeftPointXText);
-    topLeftPoint.appendChild(topLeftPointY);
-    topLeftPointY.appendChild(topLeftPointYText);
-    window.appendChild(size);
-    size.appendChild(width);
-    width.appendChild(widthText);
-    size.appendChild(height);
-    height.appendChild(heightText);
-
-
-    // Сохраненеие языка пользователя
-    QDomElement mylanguage = doc.createElement("language");
-
-    // Сохранение списка открытых индикаторов
-    QDomElement deIndicators = doc.createElement("indicators");
-    root.appendChild(deIndicators);
-    for (int num = 0; num < MAX_INDICATOR; num++)
-    {
-        if (_useIndicators.contains(num) == true)
-        {
-            QDomElement deIndicator = doc.createElement("i");
-            deIndicators.appendChild(deIndicator);
-            QDomText dtIndicator = doc.createTextNode(QString::number(num));
-            deIndicator.appendChild(dtIndicator);
-        }
-    }
-
-    if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
-        return;
-    QTextStream out(file);
-    doc.save(out, 4);
-    file->close();
-
+  QRect winGeometry = geometry();
+  _settings->SetValue(ImpKeys::WIN_X, winGeometry.x());
+  _settings->SetValue(ImpKeys::WIN_Y, winGeometry.y());
+  _settings->SetValue(ImpKeys::WIN_WIDTH, winGeometry.width());
+  _settings->SetValue(ImpKeys::WIN_HEIGHT, winGeometry.height());
+  QStringList indficators;
+  for (int num = 0; num < MAX_INDICATOR; num++)
+    if (_useIndicators.contains(num) == true)
+      indficators << QString::number(num);
+  _settings->SetValue(ImpKeys::INDICATORS, indficators);
 }
 
 
