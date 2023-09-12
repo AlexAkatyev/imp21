@@ -4,7 +4,15 @@
 
 class QSettings;
 
-enum ImpKeys {WIN_X, WIN_Y, WIN_WIDTH, WIN_HEIGHT, INDICATORS};
+enum ImpKeys {WIN_X
+              , WIN_Y
+              , WIN_WIDTH
+              , WIN_HEIGHT
+              , INDICATORS
+              , EN_RS_485
+              , EN_MODBUS_TCP
+              , LIST_MB_ADDR
+             };
 
 class ImpSettings : public QObject
 {

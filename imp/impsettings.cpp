@@ -49,6 +49,15 @@ QString ImpSettings::keyFromCode(ImpKeys c)
   case INDICATORS:
     return "indicators";
     break;
+  case EN_RS_485:
+    return "en_rs_485";
+    break;
+  case EN_MODBUS_TCP:
+    return "en_modbus_tcp";
+    break;
+  case LIST_MB_ADDR:
+    return "list_mb_addr";
+    break;
   default:
     return "";
   }
@@ -83,6 +92,19 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
   case INDICATORS:
     return QStringList();
     break;
+  case EN_RS_485:
+    return false;
+    break;
+  case EN_MODBUS_TCP:
+    return true;
+    break;
+  case LIST_MB_ADDR:
+  {
+    QStringList sl;
+    sl << "localhost";
+    return sl;
+    break;
+  }
   default:
     return QVariant();
   }
