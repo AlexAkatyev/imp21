@@ -320,14 +320,14 @@ void Imp::createIndicator(int index, VTDetect* baseDetect)
 
 void Imp::showHelp()
 {
-  HelpBrowser* helpWindow = new HelpBrowser(this, ":/", "index.htm");
+  static HelpBrowser* helpWindow = new HelpBrowser(this, ":/", "index.htm");
   helpWindow->show();
 }
 
 
 void Imp::showAbout()
 {
-  AboutDialog* aboutWindow = new AboutDialog(this, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
+  static AboutDialog* aboutWindow = new AboutDialog(this, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
   aboutWindow->show();
 }
 
