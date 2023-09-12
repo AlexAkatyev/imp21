@@ -33,7 +33,7 @@ EmVTSettings::EmVTSettings(EmVTDetect* parent)
   move(center);
 
   // Присвоение имени окну
-  this->setWindowTitle(tr("Датчик ") + _detect->UserName());
+  this->setWindowTitle("Датчик " + _detect->UserName());
   QUrl source("qrc:emvtsettings.qml");
   _quickUi->setSource(source);
 

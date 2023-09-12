@@ -37,7 +37,7 @@
 HelpBrowser::HelpBrowser(QObject* pparent, const QString& strPath, const QString& strFileName)
 {
     QPushButton*  pcmdBack    = new QPushButton("<<");
-    QPushButton*  pcmdHome    = new QPushButton(tr("Главная"));
+    QPushButton*  pcmdHome    = new QPushButton("Главная");
     QPushButton*  pcmdForward = new QPushButton(">>");
     QTextBrowser* ptxtBrowser = new QTextBrowser;
 
@@ -49,7 +49,7 @@ HelpBrowser::HelpBrowser(QObject* pparent, const QString& strPath, const QString
     center.setY(center.y() - (SIZE_HELP_WINDOW_Y * iHeight / 2));
     this->resize(SIZE_HELP_WINDOW_X * iWidth, SIZE_HELP_WINDOW_Y * iHeight);
     this->move(center);
-    this->setWindowTitle(tr("Руководство по работе с программой Измерение микроперемещений"));
+    this->setWindowTitle("Руководство по работе с программой Измерение микроперемещений");
 
 
     connect(pcmdBack, SIGNAL(clicked()),
