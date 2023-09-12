@@ -471,7 +471,7 @@ Item
                         newShift = hrel;
                     if (newShift < 0)
                         newShift = 0;
-                    if (shiftSec != newShift)
+                    if (shiftSec !== newShift)
                     {
                         shiftSec = newShift;
                         idcanvas.requestPaint();
