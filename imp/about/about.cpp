@@ -22,10 +22,11 @@
 #include "../impsettings.h"
 #include "../impdef.h"
 
-AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH, ImpSettings* settings)
+AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH)
   : QDialog(parent)
-  , _settings(settings)
 {
+  ImpSettings * settings = ImpSettings::Instance(parent);
+
   QLabel* about = new QLabel("Измеритель микроперемещений.");
   QLabel* copyright = new QLabel(QString("2023 ООО ИМЦ Микро"));
   QLabel* developed = new QLabel(QString("Разработано:\n    ООО Новые инжененрные решения\n     ies-ltd.com"));
@@ -47,16 +48,16 @@ AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH,
 
 
   QCheckBox* cbDetRS485 = new QCheckBox("Искать датчики по интерфейсу RS-485");
-  cbDetRS485->setCheckState(_settings->Value(ImpKeys::EN_RS_485).toBool() ? Qt::Checked : Qt::Unchecked);
+  cbDetRS485->setCheckState(settings->Value(ImpKeys::EN_RS_485).toBool() ? Qt::Checked : Qt::Unchecked);
   connect(cbDetRS485, &QCheckBox::stateChanged, this, [=]()
   {
-    _settings->SetValue(ImpKeys::EN_RS_485, cbDetRS485->checkState() == Qt::Checked);
+    ImpSettings::Instance()->SetValue(ImpKeys::EN_RS_485, cbDetRS485->checkState() == Qt::Checked);
   });
   QCheckBox* cbDetRadioChannel = new QCheckBox("Искать датчики через сервер Modbus TCP");
-  cbDetRadioChannel->setCheckState(_settings->Value(ImpKeys::EN_MODBUS_TCP).toBool() ? Qt::Checked : Qt::Unchecked);
+  cbDetRadioChannel->setCheckState(ImpSettings::Instance()->Value(ImpKeys::EN_MODBUS_TCP).toBool() ? Qt::Checked : Qt::Unchecked);
   connect(cbDetRadioChannel, &QCheckBox::stateChanged, this, [=]()
   {
-    _settings->SetValue(ImpKeys::EN_MODBUS_TCP, cbDetRadioChannel->checkState() == Qt::Checked);
+    ImpSettings::Instance()->SetValue(ImpKeys::EN_MODBUS_TCP, cbDetRadioChannel->checkState() == Qt::Checked);
   });
 
   QPushButton* btnAdd = new QPushButton("Добавить адрес");
@@ -66,7 +67,7 @@ AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH,
   buttonLayout->addWidget(btnRemove);
 
   QListWidget* lwAddr = new QListWidget;
-  lwAddr->addItems(_settings->Value(ImpKeys::LIST_MB_ADDR).toStringList());
+  lwAddr->addItems(settings->Value(ImpKeys::LIST_MB_ADDR).toStringList());
   connect(lwAddr, &QListWidget::itemDoubleClicked, this, [=](QListWidgetItem *item)
   {
     item->setFlags(Qt::ItemIsEditable  | Qt::ItemIsEnabled);
@@ -112,6 +113,6 @@ void AboutDialog::saveAdresses(QListWidget* lw)
   QStringList sl;
   for (int i = 0; i < lw->count(); ++i)
     sl << lw->item(i)->data(Qt::DisplayRole).toString();
-  _settings->SetValue(ImpKeys::LIST_MB_ADDR, sl);
+  ImpSettings::Instance()->SetValue(ImpKeys::LIST_MB_ADDR, sl);
 }
 

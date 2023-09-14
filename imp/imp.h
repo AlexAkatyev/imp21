@@ -7,7 +7,6 @@
 class Indicator;
 class QQuickWidget;
 class VTDetect;
-class ImpSettings;
 
 class Imp : public QWidget
 {
@@ -66,7 +65,6 @@ private:
     void SaveSettingsGeneral(); // Сохранение параметров установок в файл
     QSet<int> _useIndicators; // Множество используемых индикаторов
     bool _flagRunIndicators; // Флаг необходимости запускать индикаторы после запуска программы
-    ImpSettings* _settings;
 
     void createIndicator(int index, VTDetect* baseDetect = nullptr);
 

@@ -17,11 +17,12 @@ enum ImpKeys {WIN_X
 class ImpSettings : public QObject
 {
 public:
-  ImpSettings(QString setFileName, QObject* parent);
+  static ImpSettings* Instance(QObject* parent = nullptr);
   void SetValue(ImpKeys key, QVariant data);
   QVariant Value(ImpKeys key);
 
 private:
+  ImpSettings(QString setFileName, QObject* parent);
   QSettings* _settings;
 
   QString keyFromCode(ImpKeys c);

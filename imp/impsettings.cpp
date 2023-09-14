@@ -11,11 +11,17 @@ const int SIZE_WINDOW_WIDTH = 320;
 const int SIZE_WINDOW_HEIGTH = 480;
 
 
+ImpSettings* ImpSettings::Instance(QObject* parent)
+{
+  static ImpSettings* s = new ImpSettings("imp.ini", parent);
+  return s;
+}
+
+
 ImpSettings::ImpSettings(QString setFileName, QObject* parent)
   : QObject(parent)
   , _settings(new QSettings(setFileName, QSettings::IniFormat, this))
 {
-
 }
 
 

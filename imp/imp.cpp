@@ -45,7 +45,6 @@ const int SIZE_WINDOW_HEIGTH = 480;
 Imp::Imp(QWidget* parent)
     : QWidget(parent)
     , pQuickUi(new QQuickWidget)
-    , _settings(new ImpSettings("imp.ini", this))
 {
     Logger::GetInstance(this); // Запуск журнала
 
@@ -125,12 +124,13 @@ void Imp::closeEvent(QCloseEvent* e)
 // Загрузка параметров из файла установок
 bool Imp::LoadSettingsGeneral()
 {
-  QRect windowGeometry = QRect(_settings->Value(ImpKeys::WIN_X).toInt(),
-                               _settings->Value(ImpKeys::WIN_Y).toInt(),
-                               _settings->Value(ImpKeys::WIN_WIDTH).toInt(),
-                               _settings->Value(ImpKeys::WIN_HEIGHT).toInt());
+  ImpSettings* settings = ImpSettings::Instance(this);
+  QRect windowGeometry = QRect(settings->Value(ImpKeys::WIN_X).toInt(),
+                               settings->Value(ImpKeys::WIN_Y).toInt(),
+                               settings->Value(ImpKeys::WIN_WIDTH).toInt(),
+                               settings->Value(ImpKeys::WIN_HEIGHT).toInt());
   this->setGeometry(windowGeometry);
-  QStringList lInd = _settings->Value(ImpKeys::INDICATORS).toStringList();
+  QStringList lInd = settings->Value(ImpKeys::INDICATORS).toStringList();
   for (QString num : lInd)
     _useIndicators.insert(num.toInt());
 }
@@ -139,16 +139,17 @@ bool Imp::LoadSettingsGeneral()
 // Сохранение параметров установок в файл
 void Imp::SaveSettingsGeneral()
 {
+  ImpSettings* settings = ImpSettings::Instance(this);
   QRect winGeometry = geometry();
-  _settings->SetValue(ImpKeys::WIN_X, winGeometry.x());
-  _settings->SetValue(ImpKeys::WIN_Y, winGeometry.y());
-  _settings->SetValue(ImpKeys::WIN_WIDTH, winGeometry.width());
-  _settings->SetValue(ImpKeys::WIN_HEIGHT, winGeometry.height());
+  settings->SetValue(ImpKeys::WIN_X, winGeometry.x());
+  settings->SetValue(ImpKeys::WIN_Y, winGeometry.y());
+  settings->SetValue(ImpKeys::WIN_WIDTH, winGeometry.width());
+  settings->SetValue(ImpKeys::WIN_HEIGHT, winGeometry.height());
   QStringList indficators;
   for (int num = 0; num < MAX_INDICATOR; num++)
     if (_useIndicators.contains(num) == true)
       indficators << QString::number(num);
-  _settings->SetValue(ImpKeys::INDICATORS, indficators);
+  settings->SetValue(ImpKeys::INDICATORS, indficators);
 }
 
 
@@ -327,7 +328,7 @@ void Imp::showHelp()
 
 void Imp::showAbout()
 {
-  static AboutDialog* aboutWindow = new AboutDialog(this, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, _settings);
+  static AboutDialog* aboutWindow = new AboutDialog(this, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
   aboutWindow->show();
 }
 
