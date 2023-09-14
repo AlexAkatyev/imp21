@@ -4,6 +4,7 @@
 #include <QScreen>
 
 #include "impsettings.h"
+#include "impdef.h"
 
 // Исходные размеры окна
 const int SIZE_WINDOW_WIDTH = 320;
@@ -101,7 +102,7 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
   case LIST_MB_ADDR:
   {
     QStringList sl;
-    sl << "localhost";
+    sl << DEF_MB_SERVER;
     return sl;
     break;
   }

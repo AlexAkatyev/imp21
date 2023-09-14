@@ -13,11 +13,14 @@
 #include <QTabWidget>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QCheckBox>
 #include <QListWidget>
+#include <QPushButton>
 
 #include "about.h"
 #include "../impsettings.h"
+#include "../impdef.h"
 
 AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH, ImpSettings* settings)
   : QDialog(parent)
@@ -55,12 +58,38 @@ AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH,
   {
     _settings->SetValue(ImpKeys::EN_MODBUS_TCP, cbDetRadioChannel->checkState() == Qt::Checked);
   });
+
+  QPushButton* btnAdd = new QPushButton("Добавить адрес");
+  QPushButton* btnRemove = new QPushButton("Удалить адрес");
+  QHBoxLayout* buttonLayout = new QHBoxLayout;
+  buttonLayout->addWidget(btnAdd);
+  buttonLayout->addWidget(btnRemove);
+
   QListWidget* lwAddr = new QListWidget;
   lwAddr->addItems(_settings->Value(ImpKeys::LIST_MB_ADDR).toStringList());
+  connect(lwAddr, &QListWidget::itemDoubleClicked, this, [=](QListWidgetItem *item)
+  {
+    item->setFlags(Qt::ItemIsEditable  | Qt::ItemIsEnabled);
+  });
+  connect(lwAddr, &QListWidget::itemChanged, this, [=]()
+  {
+    saveAdresses(lwAddr);
+  });
+  connect(btnAdd, &QAbstractButton::pressed, this, [=]()
+  {
+    lwAddr->addItem(DEF_MB_SERVER);
+  });
+  connect(btnRemove, &QAbstractButton::pressed, this, [=]()
+  {
+    lwAddr->takeItem(lwAddr->currentRow());
+    saveAdresses(lwAddr);
+  });
+
   QVBoxLayout* settingsLayout = new QVBoxLayout;
   settingsLayout->setSizeConstraint(QLayout::SetFixedSize);
   settingsLayout->addWidget(cbDetRS485);
   settingsLayout->addWidget(cbDetRadioChannel);
+  settingsLayout->addLayout(buttonLayout);
   settingsLayout->addWidget(lwAddr);
   QWidget* settingsWidget = new QWidget;
   settingsWidget->setLayout(settingsLayout);
@@ -76,3 +105,13 @@ AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH,
 
   setWindowTitle("О программе");
 }
+
+
+void AboutDialog::saveAdresses(QListWidget* lw)
+{
+  QStringList sl;
+  for (int i = 0; i < lw->count(); ++i)
+    sl << lw->item(i)->data(Qt::DisplayRole).toString();
+  _settings->SetValue(ImpKeys::LIST_MB_ADDR, sl);
+}
+

@@ -63,6 +63,7 @@ HEADERS  += imp.h \
     UtilLib/utillib.h \
     about/about.h \
     HelpBrowser/HelpBrowser.h \
+    impdef.h \
     impsettings.h \
     indicator.h \
     checkInputNumberIF/checkInputNumberIF.h \

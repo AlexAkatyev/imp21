@@ -5,6 +5,7 @@
 
 class QLabel;
 class ImpSettings;
+class QListWidget;
 
 class AboutDialog : public QDialog
 {
@@ -15,6 +16,8 @@ public:
 
 private:
     ImpSettings* _settings;
+
+    void saveAdresses(QListWidget* lw);
 };
 
 
