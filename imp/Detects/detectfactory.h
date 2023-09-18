@@ -3,19 +3,30 @@
 
 #include <QObject>
 
-#include "Detects/vtdetect.h"
+#include "Detects/impabstractdetect.h"
 
-class VTDetect;
+class SerialPortLocator;
+class MBTcpLocator;
 
 class DetectFactory : public QObject
 {
   Q_OBJECT
 public:
-  explicit DetectFactory(QObject *parent);
+  static DetectFactory* Instance(QObject *parent = nullptr);
+  ~DetectFactory();
   int AvailablePorts();
   int FindingTime();
-  std::vector<VTDetect*> VTDetects();
+  std::vector<ImpAbstractDetect*> VTDetects();
 
+private:
+  std::vector<SerialPortLocator*> _mbSpLocators;
+  std::vector<MBTcpLocator*> _mbTcpLocators;
+
+  explicit DetectFactory(QObject *parent);
+  std::vector<ImpAbstractDetect*> ComVTDetects();
+  std::vector<ImpAbstractDetect*> TcpVTDetects();
+  void waitElapsed(int ms);
+  void readRequest(MBTcpLocator* s, int startAddress, quint16 numberOfEntries);
 };
 
 #endif // DETECTFACTORY_H

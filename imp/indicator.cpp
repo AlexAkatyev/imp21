@@ -74,7 +74,7 @@ const int MINIMAL_WIDTH = 300;
 const int WATCH_DOG_INTERVAL = 200;
 
 
-Indicator::Indicator(QWidget* parent, int identificator, VTDetect* baseDetect)
+Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* baseDetect)
   : QWidget(nullptr, Qt::Window)
   , _parent(static_cast<Imp*>(parent))
   , _idIndicator(identificator)

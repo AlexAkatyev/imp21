@@ -14,6 +14,7 @@ public:
   bool Ready();
   void Write(QByteArray message);
   void Remove();
+  QString PortName();
 
 signals:
   void Received(QByteArray message);

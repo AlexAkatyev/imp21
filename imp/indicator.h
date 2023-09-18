@@ -7,7 +7,7 @@
 class Imp;
 class QFile;
 class QQuickWidget;
-class VTDetect;
+class ImpAbstractDetect;
 class QDomNode;
 class QAxObject;
 
@@ -20,7 +20,7 @@ class Indicator : public QWidget
 public:
     Indicator(QWidget* parent,         // родитель
               int identificator,       // Номер индикатора
-              VTDetect* baseDetect = nullptr);    // Ссылка на датчик
+              ImpAbstractDetect* baseDetect = nullptr);    // Ссылка на датчик
 
 signals:
     void sigCloseIndicator(int); // Закрытие окна индикатора, передается номер индикатора - для родительского окна
@@ -98,8 +98,8 @@ private:
     // Входные параметры для формулы
     float _scale1, _increment1;
     float _scale2, _increment2;
-    VTDetect* _detect1;
-    VTDetect* _detect2;
+    ImpAbstractDetect* _detect1;
+    ImpAbstractDetect* _detect2;
     float _divider;
     // Диапазон измерения датчиков
     int iRange1; // датчик 1

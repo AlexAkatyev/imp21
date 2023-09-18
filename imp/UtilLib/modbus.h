@@ -27,3 +27,7 @@ QByteArray ModbusCommandRead(int startReg, int regs, char modbusAddress);
 std::vector<QByteArray> ModbusCommandsWrite(int startReg, QByteArray data, char modbusAddress);
 
 MessageIndex GetSizeFirstReadMessage(QByteArray& input);
+
+
+// MODBUS TCP
+QByteArray baFromInt16(qint16 i);

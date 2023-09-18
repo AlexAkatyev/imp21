@@ -178,7 +178,7 @@ void Imp::findDetect()
 
     reWriteDetectsToTable();
     for (auto detect : _detects)
-      connect(detect, &VTDetect::UserNameChanged, this, [&]()
+      connect(detect, &ImpAbstractDetect::UserNameChanged, this, [&]()
       {
         reWriteDetectsToTable();
         emit sigFindDetect();
@@ -208,7 +208,7 @@ void Imp::reWriteDetectsToTable()
 {
   pitWin->setProperty("iCommand", 1); // clear list of detects
 
-  for (VTDetect* detect : _detects)
+  for (ImpAbstractDetect* detect : _detects)
   {
     // Передача описания найденного датчика в графический интерфейс
     pitWin->setProperty("strSerialNumber", QString::number(detect->Id()));
@@ -230,18 +230,18 @@ void Imp::reWriteDetectsToTable()
 void Imp::FindCOMDetect(void)
 {
   // удалить из списка исчезнувшие датчики
-  std::vector<VTDetect*> det;
-  for (VTDetect* d: _detects)
+  std::vector<ImpAbstractDetect*> det;
+  for (ImpAbstractDetect* d: _detects)
     det.push_back(d);
   _detects.clear();
-  for (VTDetect* d: det)
+  for (ImpAbstractDetect* d: det)
     if (d->Ready())
       _detects.push_back(d);
     else
       d->Remove();
 
   // искать новые датчики
-  DetectFactory* dfactory = new DetectFactory(this);
+  DetectFactory* dfactory = DetectFactory::Instance(this);
   if (dfactory->AvailablePorts())
   {
     // Индикация времени поиска USB датчиков
@@ -254,22 +254,33 @@ void Imp::FindCOMDetect(void)
     ppbFind->setProperty("value", _uiCounter);
     indicateTimer->start();
 
-    for (VTDetect* d : dfactory->VTDetects())
-      _detects.push_back(d);
+    for (ImpAbstractDetect* newDetect : dfactory->VTDetects())
+    {
+      bool haveId = false;
+      for (auto currently : _detects)
+        if (currently->Id() == newDetect->Id())
+        {
+          haveId = true;
+          break;
+      }
+      if (haveId)
+        newDetect->Remove();
+      else
+        _detects.push_back(newDetect);
+    }
 
     indicateTimer->stop();
     indicateTimer->deleteLater();
     ptextComment->setProperty("text", "");
     ppbFind->setProperty("value", 1);
   }
-  dfactory->deleteLater();
 }
 
 
 // Создание класса для работы с установками датчика
 void Imp::createNewSettings(QString idDetect)//,
 {
-  VTDetect* detect = DetectAtId(idDetect.toInt());
+  ImpAbstractDetect* detect = DetectAtId(idDetect.toInt());
   if (detect)
     detect->ShowSettings();
 }
@@ -279,7 +290,7 @@ void Imp::createNewSettings(QString idDetect)//,
 void Imp::createNewIndicator(QString strNDS)
 {
   int id = strNDS.toInt();
-  VTDetect* baseDetect = nullptr;
+  ImpAbstractDetect* baseDetect = nullptr;
   if (id)
     for (auto detect : _detects)
       if (id == detect->Id())
@@ -308,7 +319,7 @@ void Imp::deleteIndicator(int idInd)
 }
 
 
-void Imp::createIndicator(int index, VTDetect* baseDetect)
+void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect)
 {
     Indicator* ind;
     ind = new Indicator(this,
@@ -342,9 +353,9 @@ QStringList Imp::DetectNames()
 }
 
 
-VTDetect* Imp::DetectAtId(int id)
+ImpAbstractDetect* Imp::DetectAtId(int id)
 {
-  VTDetect* result = nullptr;
+  ImpAbstractDetect* result = nullptr;
   for (auto detect : _detects)
     if (id == detect->Id())
     {
@@ -355,9 +366,9 @@ VTDetect* Imp::DetectAtId(int id)
 }
 
 
-VTDetect* Imp::DetectAtName(QString idName)
+ImpAbstractDetect* Imp::DetectAtName(QString idName)
 {
-  VTDetect* result = nullptr;
+  ImpAbstractDetect* result = nullptr;
   for (auto detect : _detects)
     if (idName == detect->UserName())
     {

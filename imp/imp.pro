@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml serialport qml quick quickwidgets quickcontrols2 printsupport axcontainer
+QT       += core gui xml serialport qml quick quickwidgets quickcontrols2 printsupport axcontainer serialbus
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -34,6 +34,9 @@ SOURCES += main.cpp\
   Detects/detectfactory.cpp \
   Detects/emvtdetect.cpp \
   Detects/emvtsettings.cpp \
+    Detects/impabstractdetect.cpp \
+    Detects/mbtcplocator.cpp \
+    Detects/measserverdetect.cpp \
   Detects/modbusvtdetect.cpp \
   Detects/serialportlocator.cpp \
   Detects/vt21detect.cpp \
@@ -54,6 +57,10 @@ HEADERS  += imp.h \
     Detects/detectfactory.h \
     Detects/emvtdetect.h \
     Detects/emvtsettings.h \
+    Detects/impabstractdetect.h \
+    Detects/mbtcplocator.h \
+    Detects/measserverdetect.h \
+    Detects/measservermap.h \
     Detects/modbusvtdetect.h \
     Detects/serialportlocator.h \
     Detects/vt21detect.h \

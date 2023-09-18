@@ -134,3 +134,17 @@ MessageIndex GetSizeFirstReadMessage(QByteArray& input)
   }
   return result;
 }
+
+
+QByteArray baFromInt16(qint16 i)
+{
+  QByteArray result;
+  qint16 s = i >> 8;
+  char c = s;
+  result.push_back(c);
+  c = i;
+  result.push_back(c);
+  return  result;
+}
+
+

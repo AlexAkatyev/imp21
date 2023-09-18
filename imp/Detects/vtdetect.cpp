@@ -6,19 +6,8 @@
 const int WDT_INTERVAL = 1000;
 
 VTDetect::VTDetect(QSerialPortInfo portInfo, QObject *parent)
-  : QObject(parent)
-  , _measure(0)
+  : ImpAbstractDetect(parent)
   , _port(new QSerialPort(portInfo, this))
-  , _serialNumber(0)
-  , _typeDetect("Не определен")
-  , _dateManuf(QDate::currentDate())
-  , _hMeasInterval(0)
-  , _lMeasInterval(0)
-  , _zeroInterval(0)
-  , _preSetInterval(0)
-  , _unitMeasure("mkm")
-  , _userName("")
-  , _flagReady(false)
   , _address(0)
 {
   _wdt = new QTimer(this);
@@ -34,35 +23,11 @@ VTDetect::VTDetect(QSerialPortInfo portInfo, QObject *parent)
 }
 
 
-void VTDetect::Init()
-{
-
-}
-
-
-void VTDetect::Stop()
-{
-  emit Stopped();
-}
-
-
 void VTDetect::Remove()
 {
   Stop();
   _port->close();
   deleteLater();
-}
-
-
-float VTDetect::CurrentMeasure()
-{
-  return _measure;
-}
-
-
-int VTDetect::Id()
-{
-  return _serialNumber;
 }
 
 
@@ -95,11 +60,13 @@ QSerialPort::StopBits VTDetect::stopBits()
   return QSerialPort::OneStop;
 }
 
+
 int VTDetect::bufferSize(SizeBufMode mode)
 {
   Q_UNUSED(mode);
   return 0; // не ограничен, гарантия отсутствия потери данных
 }
+
 
 QSerialPort::FlowControl VTDetect::flowControl()
 {
@@ -113,68 +80,9 @@ int VTDetect::WaitInit()
 }
 
 
-QString VTDetect::TypeDetect()
-{
-  return _typeDetect;
-}
-
-
-QDate VTDetect::DateManuf()
-{
-  return _dateManuf;
-}
-
-QString VTDetect::UserName()
-{
-  return _userName;
-}
-
-
 QString VTDetect::PortName()
 {
   return _port->portName();
-}
-
-
-QString VTDetect::MeasUnit()
-{
-  return _unitMeasure;
-}
-
-
-int VTDetect::HMeasureInterval()
-{
-  return _hMeasInterval;
-}
-
-
-int VTDetect::LMeasureInterval()
-{
-  return _lMeasInterval;
-}
-
-
-int VTDetect::ZeroInterval()
-{
-  return _zeroInterval;
-}
-
-
-int VTDetect::PreSetInterval()
-{
-  return _preSetInterval;
-}
-
-
-void VTDetect::ShowSettings()
-{
-
-}
-
-
-void VTDetect::SetNewName(QString newName)
-{
-  Q_UNUSED(newName)
 }
 
 

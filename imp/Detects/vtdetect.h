@@ -7,59 +7,28 @@
  * */
 
 
-#include <QObject>
 #include <QSerialPortInfo>
 #include <QSerialPort>
-#include <QDate>
+
+#include "Detects/impabstractdetect.h"
 
 class QTimer;
 
 enum SizeBufMode {FREE_MODE, INIT_MODE, MEAS_MODE};
 
-class VTDetect : public QObject
+class VTDetect : public ImpAbstractDetect
 {
   Q_OBJECT
 public:
   explicit VTDetect(QSerialPortInfo portInfo, QObject *parent);
-  virtual void Init();
-  virtual void Stop();
-  void Remove();
-  float CurrentMeasure();
-  int Id();
-  virtual int WaitInit();
-  QString TypeDetect();
-  QDate DateManuf();
-  QString UserName();
-  QString PortName();
-  QString MeasUnit();
-  int HMeasureInterval();
-  int LMeasureInterval();
-  int ZeroInterval();
-  int PreSetInterval();
-  virtual void ShowSettings();
-  virtual void SetNewName(QString);
-  bool Ready();
-  virtual QString Address();
-
-signals:
-  void NewMeasure(float);
-  void Stopped();
-  void UserNameChanged();
-  void FixMeasure();
+  void Remove() override;
+  int WaitInit() override;
+  QString PortName() override;
+  bool Ready() override;
+  QString Address() override;
 
 protected:
-  float _measure;
   QSerialPort* _port;
-  int _serialNumber;
-  QString _typeDetect;
-  QDate _dateManuf;
-  int _hMeasInterval;
-  int _lMeasInterval;
-  int _zeroInterval;
-  int _preSetInterval;
-  QString _unitMeasure;
-  QString _userName;
-  bool _flagReady;
   char _address;
   QTimer* _wdt;
 

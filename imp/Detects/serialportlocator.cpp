@@ -54,3 +54,10 @@ void SerialPortLocator::Remove()
   deleteLater();
 }
 
+
+QString SerialPortLocator::PortName()
+{
+  return _port->portName();
+}
+
+

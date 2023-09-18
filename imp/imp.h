@@ -6,7 +6,7 @@
 
 class Indicator;
 class QQuickWidget;
-class VTDetect;
+class ImpAbstractDetect;
 
 class Imp : public QWidget
 {
@@ -15,8 +15,8 @@ class Imp : public QWidget
 public:
     Imp(QWidget* parent = nullptr);
     QStringList DetectNames();
-    VTDetect* DetectAtId(int id);
-    VTDetect* DetectAtName(QString idName);
+    ImpAbstractDetect* DetectAtId(int id);
+    ImpAbstractDetect* DetectAtName(QString idName);
 
 signals:
     // Сигнал включения в список нового датчика
@@ -66,7 +66,7 @@ private:
     QSet<int> _useIndicators; // Множество используемых индикаторов
     bool _flagRunIndicators; // Флаг необходимости запускать индикаторы после запуска программы
 
-    void createIndicator(int index, VTDetect* baseDetect = nullptr);
+    void createIndicator(int index, ImpAbstractDetect* baseDetect = nullptr);
 
     // Количество найденых датчиков
     int _uiCounter; // для отображения прогресса поиска датчиков
@@ -74,7 +74,7 @@ private:
     uint uiModbusAddressCounter; // Счетчик применяется при индикации поиска датчиков в IndicateFindRS485Detect
     uint uiModbusAddress; // Счетчик адресов Modbus
 
-    std::vector<VTDetect*> _detects;
+    std::vector<ImpAbstractDetect*> _detects;
 
     // Описания для поиска датчиков в COM-портах
     void FindCOMDetect(void); // Поиск USB датчиков
