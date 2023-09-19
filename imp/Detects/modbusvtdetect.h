@@ -26,6 +26,7 @@ private:
   std::vector<std::vector<int>> _currentReadRegisters; // reg, length
   QTimer* _measTimer;
   QByteArray _inputBuffer;
+  QByteArray _baDataInput;
 
 
   void receveInputMessage(QByteArray message);

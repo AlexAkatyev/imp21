@@ -113,6 +113,7 @@ std::vector<ImpAbstractDetect*> DetectFactory::ComVTDetects()
       // ModbusVTDetect
       if (ImpSettings::Instance()->Value(ImpKeys::EN_RS_485).toBool())
       {
+        Logger::GetInstance()->WriteLnLog("Ищу ModbusVTDetect в " + info.portName());
         bool notFind = true;
         bool newLocator = false;
         SerialPortLocator* locator = nullptr;
@@ -130,7 +131,7 @@ std::vector<ImpAbstractDetect*> DetectFactory::ComVTDetects()
         if (locator->Ready())
         {
           std::vector<ModbusVTDetect*> detects;
-          for (int i = 1; i < 256; ++i)
+          for (int i = 17; i < 18; ++i) // (int i = 1; i < 256; ++i)
           {
             ModbusVTDetect* modbusVTD = new ModbusVTDetect(info, parent());
             detects.push_back(modbusVTD);
@@ -156,6 +157,7 @@ std::vector<ImpAbstractDetect*> DetectFactory::ComVTDetects()
           locator->Remove();
         else if (newLocator)
           _mbSpLocators.push_back(locator);
+        Logger::GetInstance()->WriteLnLog("Окончил поиски ModbusVTDetect в " + info.portName());
       }
     }
   }

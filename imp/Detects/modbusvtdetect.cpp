@@ -4,6 +4,7 @@
 #include "UtilLib/modbus.h"
 #include "serialportlocator.h"
 #include "bepvtsettings.h"
+#include "Logger/logger.h"
 
 #include <QDebug>
 
@@ -49,7 +50,15 @@ void ModbusVTDetect::Init()
 {
   if (_address < MIN_ADR || _locator == nullptr)
     return;
-  readRegisters(0, 0x6F);
+  readRegisters(0, 0x26);
+  QTimer::singleShot(500, [=]()
+  {
+    readRegisters(0x0030, 11 * 8);
+  });
+  QTimer::singleShot(1000, [=]()
+  {
+    readRegisters(0x005C, 10 * 8);
+  });
 }
 
 
@@ -90,16 +99,16 @@ void ModbusVTDetect::SetNewName(QString newName)
 
 void ModbusVTDetect::receveInputMessage(QByteArray message)
 {
+
+  //Logger::GetInstance()->WriteLnLog("Принял датчик в работу" + QString::fromStdString(message.toStdString()));
   if (_currentReadRegisters.empty()) // ничего не жду
     return;
 
-  //qDebug() << "receive " << QString::number(_address) << " : " << message;
-
   _inputBuffer += message;
-  while (_inputBuffer.size() > 1
-         && _inputBuffer.at(0) != _address
-         && (_inputBuffer.at(1) != COMMAND_READ_REGS || _inputBuffer.at(1) != ERROR_READ_REGS))
-    _inputBuffer.remove(0, 1);
+//  while (_inputBuffer.size() > 1
+//         && _inputBuffer.at(0) != _address
+//         && (_inputBuffer.at(1) != COMMAND_READ_REGS || _inputBuffer.at(1) != ERROR_READ_REGS))
+//    _inputBuffer.remove(0, 1);
 
   while (_inputBuffer.size() > 5)
   {
@@ -149,13 +158,31 @@ void ModbusVTDetect::fillParameters(int startReg, int len, QByteArray& data)
 {
   int reg = startReg;
   int end = 3 + 2 * len + 2;
-  int d;
-  long long dataMeas = 0;
+  qint16 d;
+  qint64 dataMeas = 0;
   bool flDataMeas = false;
+  std::vector<int> indexCodec = {3, 2, 1, 0, 7, 6, 5, 4};
+
   for (int i = 3; i < end; ++i)
   {
     switch (reg++)
     {
+    case 0x0025:
+      dataMeas = data.at(i++);
+      dataMeas &= 0xFF;
+      dataMeas |= (data.at(i) << 8) & 0xFF00;
+      flDataMeas = true;
+      break;
+    case 0x0026:
+      dataMeas |= (data.at(i++) << 16) & 0xFF0000;
+      dataMeas |= (data.at(i) << 24) & 0xFF000000;
+      if (flDataMeas)
+      {
+        if (dataMeas > 0x7FFFFFFF) // Значение отрицательное
+            dataMeas = dataMeas - 0x0100000000;
+        calcCalibrateResult(static_cast<int>(dataMeas));
+      }
+      break;
     case 0x0000:
       _flagReady = data.at(i++) == static_cast<char>(0xFE);
       _flagReady &= data.at(i) == static_cast<char>(0xDC);
@@ -166,7 +193,8 @@ void ModbusVTDetect::fillParameters(int startReg, int len, QByteArray& data)
       break;
     case 0x0002:
       d = data.at(i++);
-      d += data.at(i) << 8;
+      d &= 0x00FF;
+      d |= (data.at(i) << 8) & 0xFF00;
       _serialNumber = d;
       break;
     case 0x0003:
@@ -209,12 +237,14 @@ void ModbusVTDetect::fillParameters(int startReg, int len, QByteArray& data)
       break;
     case 0x0007:
       d = data.at(i++);
-      d += data.at(i) << 8;
+      d &= 0x00FF;
+      d |= (data.at(i) << 8) & 0xFF00;
       _countPeriod = d;
       break;
     case 0x0008:
       d = data.at(i++);
-      d += data.at(i) << 8;
+      d &= 0x00FF;
+      d |= (data.at(i) << 8) & 0xFF00;
       _hMeasInterval = d;
       break;
     case 0x0009: // единица измерения
@@ -241,41 +271,40 @@ void ModbusVTDetect::fillParameters(int startReg, int len, QByteArray& data)
       break;
     case 0x0021:
       d = data.at(i++);
-      d += data.at(i) << 8;
+      d &= 0x00FF;
+      d |= (data.at(i) << 8) & 0xFF00;
       _zeroInterval = d;
       break;
     case 0x0022:
       d = data.at(i++);
-      d += data.at(i) << 8;
+      d &= 0x00FF;
+      d |= (data.at(i) << 8) & 0xFF00;
       _preSetInterval = d;
-      break;
-    case 0x0025:
-      dataMeas = data.at(i++);
-      dataMeas += data.at(i) << 8;
-      flDataMeas = true;
-      break;
-    case 0x0026:
-      dataMeas += data.at(i++) << 24;
-      dataMeas += data.at(i) << 16;
-      if (flDataMeas)
-      {
-        if (dataMeas > 0x7FFFFFFF) // Значение отрицательное
-            dataMeas = dataMeas - 0x0100000000;
-        calcCalibrateResult(static_cast<int>(dataMeas));
-      }
       break;
     case 0x0030: // калибровочная таблица
     {
-      std::vector<int> index = {1, 0, 5, 4, 3, 2};
-      int sizePunkt = index.size();
-      if (i + sizePunkt * SumPoint() < end)
+      int sumPoint = 11;
+      _baDataInput.clear();
+      int sizePunkt = indexCodec.size();
+      if (i + sizePunkt * sumPoint < end)
       {
-        QByteArray baData;
-        int sumPoint = SumPoint();
         for (int k = 0; k < sumPoint; ++k)
-          for (int ind : index)
-            baData.push_back(data.at(i + sizePunkt * k + ind));
-        if (!fillCalibrateDataTable(baData, 2, 4))
+          for (int ind : indexCodec)
+            _baDataInput.push_back(data.at(i + sizePunkt * k + ind));
+        ++i;
+      }
+    }
+      break;
+    case 0x005C: // калибровочная таблица
+    {
+      int sumPoint = 10;
+      int sizePunkt = indexCodec.size();
+      if (i + sizePunkt * sumPoint < end)
+      {
+        for (int k = 0; k < sumPoint; ++k)
+          for (int ind : indexCodec)
+            _baDataInput.push_back(data.at(i + sizePunkt * k + ind));
+        if (!fillCalibrateDataTable(_baDataInput, 4, 4))
         {
           defHMeasureInterval();
           defLMeasureInterval();
