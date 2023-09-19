@@ -6,7 +6,7 @@
 #include <QDesktopWidget>
 
 #include "emvtsettings.h"
-#include "emvtdetect.h"
+#include "impabstractdetect.h"
 
 // Исходные размеры окна установок
 const int SIZE_SETTINGS_WINDOW_X = 320;
@@ -16,12 +16,13 @@ const int SIZE_SETTINGS_WINDOW_Y = 480;
 #define CODE_LOCALLY "Windows-1251"
 
 
-EmVTSettings::EmVTSettings(EmVTDetect* parent)
+EmVTSettings::EmVTSettings(ImpAbstractDetect* parent, int imageCode)
   : QWidget(nullptr)
   , _quickUi(new QQuickWidget)
   , _detect(parent)
+  , _imageCode(imageCode)
 {
-  connect(_detect, &EmVTDetect::Stopped, this, &EmVTSettings::deleteLater);
+  connect(_detect, &ImpAbstractDetect::Stopped, this, &EmVTSettings::deleteLater);
 
   _codec = QTextCodec::codecForName(CODE_LOCALLY);
 
@@ -75,6 +76,10 @@ void EmVTSettings::fillQmlWidget()
         "text", "±" + QString::number(_detect->PreSetInterval()));
   // Определение единиц измерения
   _quickUi->rootObject()->findChild<QObject*>("tfUM")->setProperty("text", _detect->MeasUnit());
+
+  // logo
+  if (_imageCode == 1)
+    _quickUi->rootObject()->findChild<QObject*>("imLogo")->setProperty("source", "qrc:/logoNIR.bmp");
 }
 
 

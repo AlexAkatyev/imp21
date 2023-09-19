@@ -11,6 +11,8 @@ class MeasServerDetect : public ImpAbstractDetect
 public:
   explicit MeasServerDetect(MBTcpLocator* locator, int countD, QObject* parent);
   void Init() override;
+  QString PortName() override;
+  void ShowSettings() override;
 
 private:
   MBTcpLocator* _locator;

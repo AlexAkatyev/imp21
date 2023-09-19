@@ -155,7 +155,8 @@ Item
             y: 16*parent.height/40
         }
         Image {
-            id: imTehnika
+            id: imLogo
+            objectName: "imLogo"
             source: "qrc:/logo.bmp"
             x: 3*parent.width/24
             y: parent.height/2
