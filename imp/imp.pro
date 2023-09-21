@@ -4,7 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml serialport qml quick quickwidgets quickcontrols2 printsupport axcontainer serialbus
+QT       += core gui xml serialport qml quick quickwidgets quickcontrols2 printsupport axcontainer
+QT       += serialbus
+QT       += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

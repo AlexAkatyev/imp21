@@ -10,3 +10,34 @@ QString convertStringToCorrectCSV(QString strInput)
     }
     return result;
 }
+
+
+std::vector<QByteArray> splitByteArray(QByteArray input, QByteArray delimiter)
+{
+  std::vector<QByteArray> result;
+  int currentIndex = 0;
+  while (currentIndex < input.size())
+  {
+    int i = input.indexOf(delimiter, currentIndex);
+    if (i == currentIndex)
+      currentIndex += delimiter.size();
+    else if (i > currentIndex)
+    {
+      QByteArray currentArray;
+      while (i != currentIndex)
+        currentArray.push_back(input.at(currentIndex++));
+      result.push_back(currentArray);
+    }
+    else if (i == -1)
+    {
+      QByteArray currentArray;
+      while (currentIndex < input.size())
+        currentArray.push_back(input.at(currentIndex++));
+      if (currentArray.size())
+        result.push_back(currentArray);
+    }
+  }
+  return result;
+}
+
+

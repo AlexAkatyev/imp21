@@ -1,18 +1,23 @@
 #include <QModbusReply>
 #include <QModbusDataUnit>
 #include <QTimer>
+#include <QUdpSocket>
+#include <QNetworkDatagram>
 
 #include "mbtcplocator.h"
 #include "measservermap.h"
 #include "impdef.h"
 #include "Logger/logger.h"
+#include "UtilLib/utillib.h"
 
 const int INIT_INTERVAL = 500;
+
 
 MBTcpLocator::MBTcpLocator(QObject* parent)
   : QModbusTcpClient(parent)
   , _initTimer(new QTimer(this))
   , _initStep(-2)
+  , _socket(new QUdpSocket(this))
 {
   _initTimer->setInterval(INIT_INTERVAL);
   connect(_initTimer, &QTimer::timeout, this, &MBTcpLocator::initContinue);
@@ -45,6 +50,9 @@ void MBTcpLocator::Init()
   Logger::GetInstance()->WriteLnLog(QString("Request. step %1. count detects %2").arg(_initStep).arg(CountDetects()));
   ++_initStep;
   _initTimer->start();
+  QHostAddress adress = QHostAddress(connectionParameter(QModbusDevice::NetworkAddressParameter).toString());
+  _socket->bind(adress, UDP_PORT);
+  connect(_socket, &QUdpSocket::readyRead, this, &MBTcpLocator::readFromUdpSocket);
 }
 
 
@@ -104,9 +112,21 @@ int MBTcpLocator::CountDetects()
 }
 
 
-int MBTcpLocator::DetectSerialNumber(int numberD)
+int MBTcpLocator::DetectId(int numberD)
 {
   return _regs[REG_LIST_ID + numberD];
+}
+
+
+int MBTcpLocator::numberD(int id)
+{
+  int number = 0;
+  while (id != _regs[REG_LIST_ID + number]
+         && number < CountDetects())
+  {
+    ++number;
+  }
+  return number;
 }
 
 
@@ -205,6 +225,54 @@ float MBTcpLocator::Measure(int numberD)
   qint32 l = _regs[regData(REG_CURRENT_MEAS + 1, numberD)] & 0xFFFF;
   h += l;
   float result = h;
-  return result/1000;
+  return result/MEAS_DIVIDER;
+}
+
+
+void MBTcpLocator::readFromUdpSocket()
+{
+  auto setIntFromArray = [](QByteArray arr, int start, int len)
+  {
+    int result = 0;
+    for (int i = len - 1; i > -1; --i)
+    {
+      result <<= 8;
+      int c = arr.at(start + i);
+      c &= 0xFF;
+      result |= c;
+    }
+    return result;
+  };
+  QByteArray delimiter;
+  for (int i = 0; i < LEN_UDP_MARKER; ++i)
+    delimiter.push_back(UDP_MARKER);
+  while (_socket->hasPendingDatagrams())
+  {
+    QNetworkDatagram datagram = _socket->receiveDatagram();
+    // вытасктваем из датаграммы, что пришло, и делим на сообщения от отдельных датчиков
+    std::vector<QByteArray> messages = splitByteArray(datagram.data(), delimiter);
+    // отрабатываем сообщения от датчиков
+    for (QByteArray message : messages)
+    {
+      if (message.size() != LEN_UDP_DATA)
+        continue;
+      int id = setIntFromArray(message, UDP_ID, LEN_UDP_ID);
+      int counter = setIntFromArray(message, UDP_COUNTER, LEN_UDP_COUNTER);
+      int iMeas = setIntFromArray(message, UDP_MEAS, LEN_UDP_MEAS);
+      float fMeas = iMeas;
+      fMeas /= MEAS_DIVIDER;
+      emit ReadyMeasure(id, counter, fMeas);
+      _regs[regData(REG_CURRENT_MEAS, numberD(id))] = (iMeas & 0xFFFF0000) >> 16;
+      _regs[regData(REG_CURRENT_MEAS + 1, numberD(id))] = iMeas & 0xFFFF;
+    }
+  }
+}
+
+
+QString MBTcpLocator::PortName()
+{
+  QString result = connectionParameter(QModbusDevice::NetworkAddressParameter).toString();
+  result.push_back(":" + QString::number(TCP_PORT));
+  return result;
 }
 

@@ -3,6 +3,11 @@
 
 #include <QtGlobal>
 
+const int MEAS_DIVIDER            = 1000;
+
+// MODBUS TCP
+const int TCP_PORT                = 502;
+
 const qint16 REG_FACTORY_CODE1    = 0x0001;
 const qint16 REG_FACTORY_CODE2    = 0x0002;
 const qint16 REG_PRODUCT_CODE     = 0x0003;
@@ -28,5 +33,20 @@ const qint16 FACTORY_CODE2        = 0xB177;
 const qint16 PRODUCT_CODE         = 0x0001;
 
 const qint16 MAX_COUNT_DETECT     = 127;
+
+
+// UDP
+const int UDP_PORT                = 50101;
+
+const char UDP_MARKER             = 0x20;
+const int LEN_UDP_MARKER          = 6;
+const int LEN_UDP_DATA            = 7;
+
+const int UDP_ID                  = 0;
+const int LEN_UDP_ID              = 2;
+const int UDP_COUNTER             = UDP_ID + LEN_UDP_ID;
+const int LEN_UDP_COUNTER         = 1;
+const int UDP_MEAS                = UDP_COUNTER + LEN_UDP_COUNTER;
+const int LEN_UDP_MEAS            = 4;
 
 #endif // MEASSERVERMAP_H
