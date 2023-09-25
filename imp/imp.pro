@@ -29,6 +29,10 @@ INCLUDEPATH += ./HelpBrowser
 INCLUDEPATH += ./checkInputNumberIF
 INCLUDEPATH += ./Detects
 
+INCLUDEPATH += $$PWD/simplexlsx
+INCLUDEPATH += $$PWD/simplexlsx\xlsx
+INCLUDEPATH += $$PWD/simplexlsx\xlsxcolors
+INCLUDEPATH += $$PWD/simplexlsx\zip
 
 SOURCES += main.cpp\
   Detects/bepvtdetect.cpp \
@@ -51,7 +55,18 @@ SOURCES += main.cpp\
     HelpBrowser/HelpBrowser.cpp \
     impsettings.cpp \
     indicator.cpp \
-    checkInputNumberIF/checkInputNumberIF.cpp
+    checkInputNumberIF/checkInputNumberIF.cpp \
+  simplexlsx/PathManager.cpp \
+  simplexlsx/XLSXColors/XLSXColorLib.cpp \
+  simplexlsx/XLSXColors/clsRGBColorRecord.cpp \
+  simplexlsx/Xlsx/Chart.cpp \
+  simplexlsx/Xlsx/Chartsheet.cpp \
+  simplexlsx/Xlsx/Drawing.cpp \
+  simplexlsx/Xlsx/SimpleXlsxDef.cpp \
+  simplexlsx/Xlsx/Workbook.cpp \
+  simplexlsx/Xlsx/Worksheet.cpp \
+  simplexlsx/Xlsx/XlsxHeaders.cpp \
+  simplexlsx/Zip/zip.cpp
 
 HEADERS  += imp.h \
     Detects/bepvtdetect.h \
@@ -76,6 +91,19 @@ HEADERS  += imp.h \
     impsettings.h \
     indicator.h \
     checkInputNumberIF/checkInputNumberIF.h \
+    simplexlsx/PathManager.hpp \
+    simplexlsx/UTF8Encoder.hpp \
+    simplexlsx/XLSXColors/XLSXColorLib.h \
+    simplexlsx/XLSXColors/clsRGBColorRecord.h \
+    simplexlsx/XMLWriter.hpp \
+    simplexlsx/Xlsx/Chart.h \
+    simplexlsx/Xlsx/Chartsheet.h \
+    simplexlsx/Xlsx/Drawing.h \
+    simplexlsx/Xlsx/SimpleXlsxDef.h \
+    simplexlsx/Xlsx/Workbook.h \
+    simplexlsx/Xlsx/Worksheet.h \
+    simplexlsx/Xlsx/XlsxHeaders.h \
+    simplexlsx/Zip/zip.h \
     versionNo.h
 
 RESOURCES += \
@@ -102,6 +130,8 @@ DISTFILES += \
     description.txt \
     indicator.qml \
     InputIndicator.qml \
-    imp.rc
+    imp.rc \
+    simplexlsx-code/Xlsx/mainpage.dox \
+    simplexlsx/Readme.txt
 
 RC_FILE = imp.rc
