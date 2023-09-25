@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml serialport qml quick quickwidgets quickcontrols2 printsupport axcontainer
+QT       += core gui xml serialport qml quick quickwidgets quickcontrols2 printsupport
 QT       += serialbus
 QT       += network
 

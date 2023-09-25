@@ -5,7 +5,6 @@
 #include <QQuickItem>
 #include <QPrinter>
 #include <QPrintDialog>
-#include <QAxObject>
 
 
 #include "indicator.h"
@@ -13,6 +12,9 @@
 #include "Detects/vtdetect.h"
 #include "imp.h"
 #include "checkInputNumberIF/checkInputNumberIF.h"
+
+#include <Xlsx/Workbook.h>
+using namespace SimpleXlsx;
 
 // Время ожидания ответа датчиков
 #define TIME_OF_WAIT_DETECT 5000
@@ -1133,53 +1135,26 @@ void Indicator::saveToXLS(QString fileName, QString text)
   if (QFile::exists(fileName))
     QFile::remove(fileName);
 
-  // получаем указатель на Excel
-  QAxObject* mExcel = new QAxObject("Excel.Application",this);
-  mExcel->setProperty("DisplayAlerts", 0); // Игнорировать сообщения
-  // на книги
-  QAxObject* workbooks = mExcel->querySubObject("Workbooks");
-  // на директорию, откуда грузить книг
-  workbooks->dynamicCall("Add()");
-  QAxObject * workbook = mExcel-> querySubObject ("ActiveWorkBook");
-  // указываем, какой лист выбрать
-  QAxObject* sheet = workbook->querySubObject("Worksheets(int)", 1);
+  CWorkbook book( "Imp21" );
+  std::vector<ColumnWidth> ColWidth;
+  ColWidth.push_back(ColumnWidth(0, 0, 30));
+  CWorksheet& sheet = book.AddSheet( "Лист 1", ColWidth);
 
   int row = 1;
   for (auto& line : linen)
   {
     int col = 1;
     QStringList cells = line.split(QLatin1Char(';'));
+    sheet.BeginRow();
     for (auto& cell : cells)
       if (row > 9 && col > 1)
-        setFloatToCell(sheet, row, col++, cell.toFloat());
+        sheet.AddCell(cell.toFloat());
       else
-        setValueToCell(sheet, row, col++, cell);
+        sheet.AddCell(cell.toStdString());
+    sheet.EndRow();
     ++row;
   }
 
-  // освобождение памяти
-  delete sheet;
-  workbook->dynamicCall("SaveAs(const QString &)", QDir::toNativeSeparators(fileName));
-  workbook->dynamicCall("Close()");
-  delete workbook;
-  //закрываем книги
-  delete workbooks;
-  //закрываем Excel
-  mExcel->dynamicCall("Quit()");
-  mExcel->setProperty("DisplayAlerts", 1);
-  delete mExcel;
+  book.Save(fileName.toStdString());
 }
-
-
-void Indicator::setValueToCell(QAxObject* sheet, int r, int c, QString text)
-{
-  sheet->querySubObject("Cells(int,int)", r, c)->setProperty("Value", text);
-}
-
-void Indicator::setFloatToCell(QAxObject* sheet, int r, int c, float f)
-{
-  sheet->querySubObject("Cells(int,int)", r, c)->setProperty("Value", f);
-}
-
-
 

@@ -9,7 +9,6 @@ class QFile;
 class QQuickWidget;
 class ImpAbstractDetect;
 class QDomNode;
-class QAxObject;
 
 // Максимальная длина истории измерений для усреднения
 #define LEN_MAD 2000
@@ -145,8 +144,6 @@ private slots:
     // запись в файл
     void saveToCSV(QString fileName, QString text);
     void saveToXLS(QString fileName, QString text);
-    void setValueToCell(QAxObject* sheet, int r, int c, QString text);
-    void setFloatToCell(QAxObject* sheet, int r, int c, float f);
 };
 
 #endif // INDICATOR_H
