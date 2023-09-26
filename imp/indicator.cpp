@@ -562,10 +562,11 @@ void Indicator::closeEvent(QCloseEvent *event)
 void Indicator::saveSettingsIndicator()
 {
   // Сохранение параметров окна
-  _settings->SetValue(IndKeys::WIN_X, frameGeometry().x());
-  _settings->SetValue(IndKeys::WIN_Y, frameGeometry().y());
-  _settings->SetValue(IndKeys::WIN_WIDTH, geometry().width());
-  _settings->SetValue(IndKeys::WIN_HEIGHT, geometry().height());
+  QRect winGeometry = geometry();
+  _settings->SetValue(IndKeys::WIN_X, winGeometry.x());
+  _settings->SetValue(IndKeys::WIN_Y, winGeometry.y());
+  _settings->SetValue(IndKeys::WIN_WIDTH, winGeometry.width());
+  _settings->SetValue(IndKeys::WIN_HEIGHT, winGeometry.height());
 
   // сохранение формулы
   _settings->SetValue(IndKeys::INDICATOR_NAME, windowTitle());
