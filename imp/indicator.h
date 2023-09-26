@@ -5,10 +5,9 @@
 #include <QWidget>
 
 class Imp;
-class QFile;
+class IndSettings;
 class QQuickWidget;
 class ImpAbstractDetect;
-class QDomNode;
 
 // Максимальная длина истории измерений для усреднения
 #define LEN_MAD 2000
@@ -111,12 +110,13 @@ private:
 
     QTimer* _timerWatchDog;  // Таймер чтения показаний датчиков для контроля работоспособноси
 
-    // Объект и файл для хранения установок окна
-    QFile* _fileSettingsIndicator;
+    // Объект для хранения установок окна
+    IndSettings* _settings;
     // сохранение настроек
-    void saveSettingsIndicator(void);
-    // Чтение установок
-    void traverseNodeIndicator(QDomNode* node);
+    void loadSettingsWindow(); // Загрузка параметров окна
+    bool loadSettingsIndicator(); // Загрузка параметров из файла установок
+    void saveSettingsIndicator(); // Сохранение параметров установок в файл
+
     QStringList createListByDetect1();
     QStringList createListByDetect2();
     int currentIndex1ByName(QString nameDetect);

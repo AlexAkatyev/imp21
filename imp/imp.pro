@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml serialport qml quick quickwidgets quickcontrols2 printsupport
+QT       += core gui serialport qml quick quickwidgets quickcontrols2 printsupport
 QT       += serialbus
 QT       += network
 
@@ -56,6 +56,7 @@ SOURCES += main.cpp\
     impsettings.cpp \
     indicator.cpp \
     checkInputNumberIF/checkInputNumberIF.cpp \
+  indsettings.cpp \
   simplexlsx/PathManager.cpp \
   simplexlsx/XLSXColors/XLSXColorLib.cpp \
   simplexlsx/XLSXColors/clsRGBColorRecord.cpp \
@@ -91,6 +92,7 @@ HEADERS  += imp.h \
     impsettings.h \
     indicator.h \
     checkInputNumberIF/checkInputNumberIF.h \
+    indsettings.h \
     simplexlsx/PathManager.hpp \
     simplexlsx/UTF8Encoder.hpp \
     simplexlsx/XLSXColors/XLSXColorLib.h \

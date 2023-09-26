@@ -1,6 +1,5 @@
 #include <QtWidgets>
 #include <QQuickWidget>
-#include <QDomNode>
 #include <QGraphicsAnchorLayout>
 #include <QQuickItem>
 #include <QPrinter>
@@ -12,6 +11,7 @@
 #include "Detects/vtdetect.h"
 #include "imp.h"
 #include "checkInputNumberIF/checkInputNumberIF.h"
+#include "indsettings.h"
 
 #include <Xlsx/Workbook.h>
 using namespace SimpleXlsx;
@@ -30,39 +30,6 @@ using namespace SimpleXlsx;
 // Длина истории измерений для фильтра
 #define LEN_HISTORY 10
 
-// Поля файла настроек
-#define DOM_ROOT "indicator-ini"
-#define DOM_WINDOW "window"
-#define DOM_TOPLEFTPOINT "topLeftPoint"
-#define DOM_X "x"
-#define DOM_Y "y"
-#define DOM_SIZE "size"
-#define DOM_WIDTH "width"
-#define DOM_HEIGHT "height"
-#define DOM_FORMULA "formula"
-#define DOM_NAME "name"
-#define DOM_SCALE1 "scale1"
-#define DOM_DETECT1 "detect1"
-#define DOM_INCREMENT1 "increment1"
-#define DOM_SCALE2 "scale2"
-#define DOM_DETECT2 "detect2"
-#define DOM_INCREMENT2 "increment2"
-#define DOM_DIVIDER "divider"
-#define DOM_BEFORESET "beforeset"
-#define DOM_DOPUSK "dopusk"
-#define DOM_GAUGE "gauge"
-#define DOM_UNITPOINT "unitpoint"
-#define DOM_HIGHLIMIT "highlimit"
-#define DOM_LOWLIMIT "lowlimit"
-#define DOM_PRIEMKA "priemka"
-#define DOM_ACCURACY "accuracy"
-#define DOM_PERIOD "period"
-#define DOM_ACCUR_DIVISION "accur_division"
-#define DOM_MEAS_MODE "meas_mode"
-#define DOM_TRANS_GAUGE "transGauge"
-#define DOM_SORT "sort"
-#define DOM_GROUPSF "groupsf"
-#define DOM_SORT_CHF "scf"
 
 // Исходные размеры окна индикатора
 const int SIZE_INDICATOR_WINDOW_X = 440;
@@ -85,14 +52,10 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   , _detect1(nullptr)
   , _detect2(nullptr)
 {
-  _fileSettingsIndicator = new QFile("indicator" + QString::number(_idIndicator) + ".xml"); // Указание файла с параметрами установок
+  _settings = new IndSettings("indicator" + QString::number(_idIndicator) + ".ini", this);
 
   // Размещение окна индикатора в центр экрана
-  QPoint center = QDesktopWidget().availableGeometry().center(); //получаем координаты центра экрана
-  center.setX(center.x() - (SIZE_INDICATOR_WINDOW_X/2));
-  center.setY(center.y() - (SIZE_INDICATOR_WINDOW_Y/2));
-  resize(SIZE_INDICATOR_WINDOW_X, SIZE_INDICATOR_WINDOW_Y);
-  move(center);
+  loadSettingsWindow();
 
   // Включение QML виджета
   QUrl source("qrc:/indicator.qml");
@@ -103,7 +66,6 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
 
   pvbx->setMargin(0); // Толщина рамки
   pvbx->addWidget(_quickUi); // Вставляем QML виджет в лайоут окна
-  //pvbx->addWidget(pcbMode);
   setLayout(pvbx); //  Установка лайоута в окно
 
   // Установка указателей на объекты виджета QML
@@ -153,34 +115,6 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   connect(_parent, SIGNAL(sigFindDetect()), this, SLOT(setComboListDetect()));
   setComboListDetect(); // Сразу список надо передать в страницу ФОРМУЛА
 
-  // Запуск периодического обновления показаний датчика на шкале
-  // Если есть файл инициализации, то эти данные обновятся
-  QString indicatorName = "Индикатор " + QString::number(_idIndicator);
-  // Присвоение имени окну
-  setTitle(indicatorName);
-  _tfUnitPoint->setProperty("text", "5");
-  _tfHiLimit->setProperty("text", "50");
-  _tfLoLimit->setProperty("text", "-50");
-  _tfNumberCharPoint->setProperty("currentIndex ", 1);
-  _detect1 = baseDetect;
-  if (_detect1 != nullptr)
-  {
-    int index = currentIndex1ByName(_detect1->UserName());
-    _cbListDetect1->setProperty("currentIndex", index);
-  }
-  _detect2 = nullptr;
-  _increment1 = 0;
-  _tfIncert1->setProperty("text", _increment1);
-  _increment2 = 0;
-  _tfIncert2->setProperty("text", _increment2);
-  _scale1 = 1;
-  _tfFactor1->setProperty("text", _scale1);
-  _scale2 = 1;
-  _tfFactor2->setProperty("text", _scale2);
-  _divider = 1;
-  _tfDivider->setProperty("text", _divider);
-  _inputIndicator->setProperty("transGauge", 0);
-
   QTimer* timerUpdateIndicator = new QTimer(this);
   connect(timerUpdateIndicator, SIGNAL(timeout()), this, SLOT(updateResult()));
   timerUpdateIndicator->setInterval(UPDATE_RESULT_TIME);
@@ -192,31 +126,11 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   _timerWatchDog->setInterval(WATCH_DOG_INTERVAL);
   _timerWatchDog->start();
 
-  // Использование параметров показаний по умолчанию
-  _periodMean = 0;
-  _lenMean = 1;
-
   // Сообщение о закрытии индикатора
   connect(this, SIGNAL(sigCloseIndicator(int)), _parent, SLOT(deleteIndicator(int)));
 
-
-  // Загрузка старых настроек, если есть
-  if (_fileSettingsIndicator->open(QIODevice::ReadOnly))
-  {
-    QString errorString;
-    int errorLine = 0;
-    int errorColumn = 0;
-    QDomDocument ddSettingsIndicator;
-    if (ddSettingsIndicator.setContent(_fileSettingsIndicator, true, &errorString, &errorLine, &errorColumn))
-    { // ошибок нет
-      _fileSettingsIndicator->close();
-      QDomElement root = ddSettingsIndicator.documentElement();
-      if (root.tagName() == DOM_ROOT) // структура правильная, заголовок свой, идем по дереву
-        traverseNodeIndicator(&root);
-    }
-    else // ошибка в файле инициализации
-      _fileSettingsIndicator->close();
-  }
+  // Загрузка настроек
+  loadSettingsIndicator();
 
   if (baseDetect)
   {
@@ -639,369 +553,164 @@ void Indicator::closeEvent(QCloseEvent *event)
   // сообщение о закрытии пользователем
   emit sigCloseIndicator(_idIndicator);    // родителю
   emit sigCloseMyIndicator();             // детям
-  // удаление файла инициализации
-  //_fileSettingsIndicator->remove(); // никогда не удалять
   // сохранение файла инициализации - последние изменения
   saveSettingsIndicator();
 }
 
 
 // сохранение настроек
-void Indicator::saveSettingsIndicator(void)
+void Indicator::saveSettingsIndicator()
 {
-  QDomDocument doc;
-  QDomElement root = doc.createElement(DOM_ROOT);
-  doc.appendChild(root);
-
   // Сохранение параметров окна
-  QDomElement window = doc.createElement(DOM_WINDOW);
-  QDomElement topLeftPoint = doc.createElement(DOM_TOPLEFTPOINT);
-  QDomElement topLeftPointX = doc.createElement(DOM_X);
-  QDomElement topLeftPointY = doc.createElement(DOM_Y);
-  QDomText topLeftPointXText = doc.createTextNode(QString().setNum(frameGeometry().x()));
-  QDomText topLeftPointYText = doc.createTextNode(QString().setNum(frameGeometry().y()));
-  QDomElement size = doc.createElement(DOM_SIZE);
-  QDomElement width = doc.createElement(DOM_WIDTH);
-  QDomText widthText = doc.createTextNode(QString().setNum(geometry().width()));
-  QDomElement height = doc.createElement(DOM_HEIGHT);
-  QDomText heightText = doc.createTextNode(QString().setNum(geometry().height()));
-
-  root.appendChild(window);
-  window.appendChild(topLeftPoint);
-  topLeftPoint.appendChild(topLeftPointX);
-  topLeftPointX.appendChild(topLeftPointXText);
-  topLeftPoint.appendChild(topLeftPointY);
-  topLeftPointY.appendChild(topLeftPointYText);
-  window.appendChild(size);
-  size.appendChild(width);
-  width.appendChild(widthText);
-  size.appendChild(height);
-  height.appendChild(heightText);
+  _settings->SetValue(IndKeys::WIN_X, frameGeometry().x());
+  _settings->SetValue(IndKeys::WIN_Y, frameGeometry().y());
+  _settings->SetValue(IndKeys::WIN_WIDTH, geometry().width());
+  _settings->SetValue(IndKeys::WIN_HEIGHT, geometry().height());
 
   // сохранение формулы
-  QDomElement formula = doc.createElement(DOM_FORMULA);
-  QDomElement dename = doc.createElement(DOM_NAME);
-  QDomText dtname = doc.createTextNode(this->windowTitle());
-  QDomElement descale1 = doc.createElement(DOM_SCALE1);
-  QDomText dtscale1 = doc.createTextNode(QString::number(static_cast<double>(_scale1)));
-  QDomElement dedetect1 = doc.createElement(DOM_DETECT1);
-  QDomText dtdetect1 = doc.createTextNode(_detect1 ? QString::number(_detect1->Id()) : "0");
-  QDomElement deincrement1 = doc.createElement(DOM_INCREMENT1);
-  QDomText dtincrement1 = doc.createTextNode(QString::number(static_cast<double>(_increment1)));
-  QDomElement descale2 = doc.createElement(DOM_SCALE2);
-  QDomText dtscale2 = doc.createTextNode(QString::number(static_cast<double>(_scale2)));
-  QDomElement dedetect2 = doc.createElement(DOM_DETECT2);
-  QDomText dtdetect2 = doc.createTextNode(_detect2 ? QString::number(_detect2->Id()) : "0");
-  QDomElement deincrement2 = doc.createElement(DOM_INCREMENT2);
-  QDomText dtincrement2 = doc.createTextNode(QString::number(static_cast<double>(_increment2)));
-  QDomElement dedivider = doc.createElement(DOM_DIVIDER);
-  QDomText dtdivider = doc.createTextNode(QString::number(static_cast<double>(_divider)));
-  QDomElement debeforeset = doc.createElement(DOM_BEFORESET);
-  QDomText dtbeforeset = doc.createTextNode(QString::number(_inputIndicator->property("beforeSet").toDouble()));
-  QDomElement dedopusk = doc.createElement(DOM_DOPUSK);
-  QDomText dtdopusk = doc.createTextNode(_inputIndicator->property("dopusk").toBool() ? "true" : "false");
-  QDomElement deperiod = doc.createElement(DOM_PERIOD);
-  QDomText dtperiod = doc.createTextNode(_tfPeriod->property("text").toString());
+  _settings->SetValue(IndKeys::INDICATOR_NAME, windowTitle());
+  _settings->SetValue(IndKeys::SCALE1, _scale1);
+  _settings->SetValue(IndKeys::DETECT1, _detect1 ? _detect1->Id() : 0);
+  _settings->SetValue(IndKeys::INCREMENT1, _increment1);
+  _settings->SetValue(IndKeys::SCALE2, _scale2);
+  _settings->SetValue(IndKeys::DETECT2, _detect2 ? _detect2->Id() : 0);
+  _settings->SetValue(IndKeys::INCREMENT2, _increment2);
 
-  root.appendChild(formula);
-  formula.appendChild(dename);
-  dename.appendChild(dtname);
-  formula.appendChild(descale1);
-  descale1.appendChild(dtscale1);
-  formula.appendChild(dedetect1);
-  dedetect1.appendChild(dtdetect1);
-  formula.appendChild(deincrement1);
-  deincrement1.appendChild(dtincrement1);
-  formula.appendChild(descale2);
-  descale2.appendChild(dtscale2);
-  formula.appendChild(dedetect2);
-  dedetect2.appendChild(dtdetect2);
-  formula.appendChild(deincrement2);
-  deincrement2.appendChild(dtincrement2);
-  formula.appendChild(dedivider);
-  dedivider.appendChild(dtdivider);
-  formula.appendChild(debeforeset);
-  debeforeset.appendChild(dtbeforeset);
-  formula.appendChild(dedopusk);
-  dedopusk.appendChild(dtdopusk);
-  formula.appendChild(deperiod);
-  deperiod.appendChild(dtperiod);
+  _settings->SetValue(IndKeys::DIVIDER, _divider);
+  _settings->SetValue(IndKeys::BEFORESET, _inputIndicator->property("beforeSet"));
+  _settings->SetValue(IndKeys::DOPUSK, _inputIndicator->property("dopusk"));
+  _settings->SetValue(IndKeys::PERIOD, _tfPeriod->property("text").toInt());
 
   // настройка шкалы
-  float flTemp;
-  QDomElement gauge = doc.createElement(DOM_GAUGE);
-  QDomElement deunitpoint = doc.createElement(DOM_UNITPOINT);
-  flTemp = _inputIndicator->property("unitPoint").toFloat();
-  flTemp = roundf(flTemp*100000)/100000;
-  QDomText dtunitpoint = doc.createTextNode(QString::number(static_cast<double>(flTemp)));
-  QDomElement dehilimit = doc.createElement(DOM_HIGHLIMIT);
-  flTemp = _inputIndicator->property("highLimit").toFloat();
-  flTemp = roundf(flTemp*100)/100;
-  QDomText dthilimit = doc.createTextNode(QString::number(static_cast<double>(flTemp)));
-  QDomElement delolimit = doc.createElement(DOM_LOWLIMIT);
-  flTemp = _inputIndicator->property("lowLimit").toFloat();
-  flTemp = roundf(flTemp*100)/100;
-  QDomText dtlolimit = doc.createTextNode(QString::number(static_cast<double>(flTemp)));
-  QDomElement depriemka = doc.createElement(DOM_PRIEMKA);
-  flTemp = _inputIndicator->property("priemka").toFloat();
-  flTemp = roundf(flTemp*100)/100;
-  QDomText dtpriemka = doc.createTextNode(QString::number(static_cast<double>(flTemp)));
-  QDomElement deaccuracy = doc.createElement(DOM_ACCURACY);
-  QDomText dtaccuracy = doc.createTextNode(_inputIndicator->property("accuracy").toString());
-  QDomElement deaccurdivision = doc.createElement(DOM_ACCUR_DIVISION);
-  QDomText dtaccurdivision = doc.createTextNode(_inputIndicator->property("accurDivision").toString());
-
-  root.appendChild(gauge);
-  gauge.appendChild(deunitpoint);
-  deunitpoint.appendChild(dtunitpoint);
-  gauge.appendChild(dehilimit);
-  dehilimit.appendChild(dthilimit);
-  gauge.appendChild(delolimit);
-  delolimit.appendChild(dtlolimit);
-  gauge.appendChild(depriemka);
-  depriemka.appendChild(dtpriemka);
-  gauge.appendChild(deaccuracy);
-  deaccuracy.appendChild(dtaccuracy);
-  gauge.appendChild(deaccurdivision);
-  deaccurdivision.appendChild(dtaccurdivision);
+  _settings->SetValue(IndKeys::UNITPOINT, _inputIndicator->property("unitPoint"));
+  _settings->SetValue(IndKeys::HIGHLIMIT, _inputIndicator->property("highLimit"));
+  _settings->SetValue(IndKeys::LOWLIMIT, _inputIndicator->property("lowLimit"));
+  _settings->SetValue(IndKeys::PRIEMKA, _inputIndicator->property("priemka"));
+  _settings->SetValue(IndKeys::ACCURACY, _inputIndicator->property("accuracy"));
+  _settings->SetValue(IndKeys::ACCUR_DIVISION, _inputIndicator->property("accurDivision"));
 
   // Режим измерения
-  QDomElement demode = doc.createElement(DOM_MEAS_MODE);
-  int imode = _quickUi->rootObject()->property("deviationMode").toBool() ? 1 : 0; // автомат/ручной режим
-  QDomText dtmode = doc.createTextNode(QString::number(imode));
-  root.appendChild(demode);
-  demode.appendChild(dtmode);
+  _settings->SetValue(IndKeys::IND_MEAS_MODE, _quickUi->rootObject()->property("deviationMode"));
 
   // Преобразование шкалы
-  QDomElement detrans = doc.createElement(DOM_TRANS_GAUGE);
-  QDomText dttrans = doc.createTextNode(_inputIndicator->property("transGauge").toString());
-  root.appendChild(detrans);
-  detrans.appendChild(dttrans);
+  _settings->SetValue(IndKeys::TRANS_GAUGE, _inputIndicator->property("transGauge"));
 
   // Режимы сортировки
-  QDomElement desort = doc.createElement(DOM_SORT);
-  root.appendChild(desort);
-  std::vector<std::pair<QString, QString>> sortIniSelect =
-  {
-    {DOM_SORT_CHF, "cbSortFormula"}
-  };
-  for (auto& para : sortIniSelect)
-  {
-    QDomElement de = doc.createElement(para.first);
-    QObject* qmlWidget = _quickUi->rootObject()->findChild<QObject*>(para.second);
-    QDomText dt = doc.createTextNode(qmlWidget->property("checked").toBool() ? "true" : "false");
-    desort.appendChild(de);
-    de.appendChild(dt);
-  }
-  std::vector<std::pair<QString, QString>> sortIni =
-  {
-    {DOM_GROUPSF, "countGroupsF"}
-  };
-  for (auto& para : sortIni)
-  {
-    QDomElement de = doc.createElement(para.first);
-    QObject* qmlWidget = _quickUi->rootObject()->findChild<QObject*>(para.second);
-    QDomText dt = doc.createTextNode(qmlWidget->property("text").toString());
-    desort.appendChild(de);
-    de.appendChild(dt);
-  }
+  QObject* qmlWidget = _quickUi->rootObject()->findChild<QObject*>("cbSortFormula");
+  _settings->SetValue(IndKeys::SORT_CHF, qmlWidget->property("checked"));
+  qmlWidget = _quickUi->rootObject()->findChild<QObject*>("countGroupsF");
+  _settings->SetValue(IndKeys::GROUPSF, qmlWidget->property("text").toString().toInt());
+}
 
-  // сохранение структуры в файл
-  if (!_fileSettingsIndicator->open(QIODevice::WriteOnly | QIODevice::Text))
-    return;
-  QTextStream out(_fileSettingsIndicator);
-  doc.save(out, 4);
-  _fileSettingsIndicator->close();
+
+void Indicator::loadSettingsWindow()
+{
+  QRect windowGeometry = QRect(_settings->Value(IndKeys::WIN_X).toInt(),
+                               _settings->Value(IndKeys::WIN_Y).toInt(),
+                               _settings->Value(IndKeys::WIN_WIDTH).toInt(),
+                               _settings->Value(IndKeys::WIN_HEIGHT).toInt());
+  setGeometry(windowGeometry);
 }
 
 
 // Чтение установок
-void Indicator::traverseNodeIndicator(QDomNode* node)
+bool Indicator::loadSettingsIndicator()
 {
-  QDomElement deTemp;
-  QDomNode domNode = node->firstChild();
-  while(!domNode.isNull())
-  {
-    QDomElement domElement = domNode.toElement();
-    if(!domElement.isNull())
-    {
-      if(domElement.tagName() == DOM_WINDOW)
-      {
-        QDomElement sizeElement =  domElement.firstChildElement(DOM_SIZE);
-        QDomElement sizeWidthElement =  sizeElement.firstChildElement(DOM_WIDTH);
-        QDomElement sizeHeightElement =  sizeElement.firstChildElement(DOM_HEIGHT);
-        QDomElement topLeftPointElement =  domElement.firstChildElement(DOM_TOPLEFTPOINT);
-        QDomElement topLeftPointXElement =  topLeftPointElement.firstChildElement(DOM_X);
-        QDomElement topLeftPointYElement =  topLeftPointElement.firstChildElement(DOM_Y);
-        // Устанавливаем размер и положение окна программы
-        QRect windowGeomerty = QRect(	topLeftPointXElement.text().toInt(),
-                                        topLeftPointYElement.text().toInt(),
-                                        sizeWidthElement.text().toInt(),
-                                        sizeHeightElement.text().toInt());
-        this->move(windowGeomerty.topLeft());
-        this->resize(windowGeomerty.size());
-      }
-      if (domElement.tagName() == DOM_SCALE1)
-      {
-        _scale1 = domElement.text().toFloat();
-        _tfFactor1->setProperty("text", round(static_cast<double>(_scale1)*100)/100);
-      }
-      if (domElement.tagName() == DOM_DETECT1)
-      {
-        QString idDetect1 = domElement.text();
-        if (idDetect1 == "0")
-        { // датчик не используется
-          _cbListDetect1->setProperty("currentIndex", 0);
-          _detect1 = nullptr;
-          _inputIndicator->setProperty("blDetect1EnableInput", false);
-        }
-        else
-        { // датчик указан
-          // По ключу выставляем активный датчик
-          _detect1 = _parent->DetectAtId(idDetect1.toInt());
-          if (_detect1)
-          { // Датчик остался в списке
-            QStringList slTemp;
-            int index = currentIndex1ByName(_detect1->UserName());
-            _cbListDetect1->setProperty("currentIndex", index);
-            _inputIndicator->setProperty("blDetect1EnableInput", index != 0);
-          }
-          else
-          { // Датчик исчез из списка
-            _cbListDetect1->setProperty("currentIndex", 0);
-            _inputIndicator->setProperty("blDetect1EnableInput", false);
-          }
-        }
-      }
-      if (domElement.tagName() == DOM_INCREMENT1)
-      {
-        _increment1 = domElement.text().toFloat();
-        _tfIncert1->setProperty("text", round(static_cast<double>(_increment1)*100)/100);
-      }
-      if (domElement.tagName() == DOM_SCALE2)
-      {
-        _scale2 = domElement.text().toFloat();
-        _tfFactor2->setProperty("text", round(static_cast<double>(_scale2)*100)/100);
-      }
-      if (domElement.tagName() == DOM_DETECT2)
-      {
-        QString idDetect2 = domElement.text();
-        if (idDetect2 == "0")
-        { // датчик не используется
-          _cbListDetect2->setProperty("currentIndex", 0);
-          _detect2 = nullptr;
-          _inputIndicator->setProperty("blDetect2EnableInput", false);
-        }
-        else
-        { // датчик указан
-          // По ключу выставляем активный датчик
-          _detect2 = _parent->DetectAtId(idDetect2.toInt());
-          if (_detect2)
-          { // Датчик остался в списке
-            QStringList slTemp;
-            int index = currentIndex2ByName(_detect2->UserName());
-            _cbListDetect2->setProperty("currentIndex", index);
-            _inputIndicator->setProperty("blDetect2EnableInput", index != 0);
-          }
-          else
-          { // Датчик исчез из списка
-            _cbListDetect2->setProperty("currentIndex", 0);
-            _inputIndicator->setProperty("blDetect2EnableInput", false);
-          }
-        }
-      }
-      if (domElement.tagName() == DOM_INCREMENT2)
-      {
-        _increment2 = domElement.text().toFloat();
-        _tfIncert2->setProperty("text", round(static_cast<double>(_increment2)*100)/100);
-      }
-      if (domElement.tagName() == DOM_DIVIDER)
-      {
-        _divider = domElement.text().toFloat();
-        _tfDivider->setProperty("text", round(static_cast<double>(_divider)*100)/100);
-      }
-      if (domElement.tagName() == DOM_BEFORESET)
-        _inputIndicator->setProperty("beforeSet", domElement.text().toFloat());
-      if (domElement.tagName() == DOM_DOPUSK)
-        _inputIndicator->setProperty("dopusk", domElement.text() == "true");
-      if (domElement.tagName() == DOM_PERIOD)
-      {
-        _periodMean = domElement.text().toInt();
-        if (_periodMean > LEN_MAD * UPDATE_RESULT_TIME)
-        {
-          _periodMean = LEN_MAD * UPDATE_RESULT_TIME;
-        }
-        _lenMean = static_cast<int>(round(_periodMean / UPDATE_RESULT_TIME));
-        _lenMean = _lenMean == 0 ? 1 : _lenMean; // Минимальное значение - 1
-        for (int i=0; i<_lenMean; i++) flHistoryMean[i] = 0; // Очистка истории
-        _tfPeriod->setProperty("text", QString::number(_periodMean));
-      }
-      if (domElement.tagName() == DOM_UNITPOINT)
-      {
-        _inputIndicator->setProperty("unitPoint", domElement.text().toFloat());
-        _tfUnitPoint->setProperty("text", domElement.text());
-      }
-      if (domElement.tagName() == DOM_HIGHLIMIT)
-      {
-        _inputIndicator->setProperty("highLimit", domElement.text().toFloat());
-        _tfHiLimit->setProperty("text", domElement.text());
-      }
-      if (domElement.tagName() == DOM_LOWLIMIT)
-      {
-        _inputIndicator->setProperty("lowLimit", domElement.text().toFloat());
-        _tfLoLimit->setProperty("text", domElement.text());
-      }
-      if (domElement.tagName() == DOM_PRIEMKA)
-      {
-        _inputIndicator->setProperty("priemka", domElement.text().toFloat());
-        _tfPriemka->setProperty("text", domElement.text());
-      }
-      if (domElement.tagName() == DOM_ACCURACY)
-      {
-        float accuracy = domElement.text().toFloat();
-        if (accuracy < 0)
-          accuracy = 0;
-        _inputIndicator->setProperty("accuracy", accuracy);
-      }
-      if (domElement.tagName() == DOM_ACCUR_DIVISION)
-      {
-        _inputIndicator->setProperty("accurDivision", domElement.text().toInt());
-      }
-      if (domElement.tagName() == DOM_MEAS_MODE)
-        if (domElement.text().toInt())
-          _quickUi->rootObject()->setProperty("deviationMode", true);
-      if (domElement.tagName() == DOM_NAME)
-        setTitle(domElement.text());
-      if (domElement.tagName() == DOM_TRANS_GAUGE)
-        _inputIndicator->setProperty("transGauge", domElement.text().toInt());
-      if(domElement.tagName() == DOM_SORT)
-      {
-        std::vector<std::pair<QString, QString>> sortIni =
-        {
-          {DOM_GROUPSF, "countGroupsF"}
-        };
-        for (auto& para : sortIni)
-        {
-          QDomElement de =  domElement.firstChildElement(para.first);
-          QObject* qmlWidget = _quickUi->rootObject()->findChild<QObject*>(para.second);
-          qmlWidget->setProperty("text", de.text().toInt());
-        }
-        std::vector<std::pair<QString, QString>> sortIniSelect =
-        {
-          {DOM_SORT_CHF, "cbSortFormula"}
-        };
-        for (auto& para : sortIniSelect)
-        {
-          QDomElement de =  domElement.firstChildElement(para.first);
-          QObject* qmlWidget = _quickUi->rootObject()->findChild<QObject*>(para.second);
-          qmlWidget->setProperty("checked", de.text() == "true");
-        }
-      }
-    }
-    traverseNodeIndicator(&domNode);
-    domNode = domNode.nextSibling();
-  }
+  _tfNumberCharPoint->setProperty("currentIndex ", _settings->Value(IndKeys::NUMBER_CHAR_POINT));
 
+  _scale1 = _settings->Value(IndKeys::SCALE1).toFloat();
+  _tfFactor1->setProperty("text",round(static_cast<double>(_scale1)*100)/100);
+  int idDetect1 = _settings->Value(IndKeys::DETECT1).toInt();
+  if (idDetect1 == 0)
+  { // датчик не используется
+    _cbListDetect1->setProperty("currentIndex", 0);
+    _detect1 = nullptr;
+    _inputIndicator->setProperty("blDetect1EnableInput", false);
+  }
+  else
+  { // датчик указан
+    // По ключу выставляем активный датчик
+    _detect1 = _parent->DetectAtId(idDetect1);
+    if (_detect1)
+    { // Датчик остался в списке
+      QStringList slTemp;
+      int index = currentIndex1ByName(_detect1->UserName());
+      _cbListDetect1->setProperty("currentIndex", index);
+      _inputIndicator->setProperty("blDetect1EnableInput", index != 0);
+    }
+    else
+    { // Датчик исчез из списка
+      _cbListDetect1->setProperty("currentIndex", 0);
+      _inputIndicator->setProperty("blDetect1EnableInput", false);
+    }
+  }
+  _increment1 = _settings->Value(IndKeys::INCREMENT1).toFloat();
+  _tfIncert1->setProperty("text", round(static_cast<double>(_increment1)*100)/100);
+
+  _scale2 = _settings->Value(IndKeys::SCALE2).toFloat();
+  _tfFactor2->setProperty("text", round(static_cast<double>(_scale2)*100)/100);
+  int idDetect2 = _settings->Value(IndKeys::DETECT2).toInt();
+  if (idDetect2 == 0)
+  { // датчик не используется
+    _cbListDetect2->setProperty("currentIndex", 0);
+    _detect2 = nullptr;
+    _inputIndicator->setProperty("blDetect2EnableInput", false);
+  }
+  else
+  { // датчик указан
+    // По ключу выставляем активный датчик
+    _detect2 = _parent->DetectAtId(idDetect2);
+    if (_detect2)
+    { // Датчик остался в списке
+      QStringList slTemp;
+      int index = currentIndex2ByName(_detect2->UserName());
+      _cbListDetect2->setProperty("currentIndex", index);
+      _inputIndicator->setProperty("blDetect2EnableInput", index != 0);
+    }
+    else
+    { // Датчик исчез из списка
+      _cbListDetect2->setProperty("currentIndex", 0);
+      _inputIndicator->setProperty("blDetect2EnableInput", false);
+    }
+  }
+  _increment2 = _settings->Value(IndKeys::INCREMENT2).toFloat();
+  _tfIncert2->setProperty("text", round(static_cast<double>(_increment2)*100)/100);
+
+  _divider = _settings->Value(IndKeys::DIVIDER).toFloat();
+  _tfDivider->setProperty("text", round(static_cast<double>(_divider)*100)/100);
+  _inputIndicator->setProperty("beforeSet", _settings->Value(IndKeys::BEFORESET));
+  _inputIndicator->setProperty("dopusk", _settings->Value(IndKeys::DOPUSK));
+  _periodMean = _settings->Value(IndKeys::PERIOD).toInt();
+  if (_periodMean > LEN_MAD * UPDATE_RESULT_TIME)
+  {
+    _periodMean = LEN_MAD * UPDATE_RESULT_TIME;
+  }
+  _lenMean = static_cast<int>(round(_periodMean / UPDATE_RESULT_TIME));
+  _lenMean = _lenMean == 0 ? 1 : _lenMean; // Минимальное значение - 1
+  for (int i=0; i<_lenMean; i++) flHistoryMean[i] = 0; // Очистка истории
+  _tfPeriod->setProperty("text", QString::number(_periodMean));
+
+  _inputIndicator->setProperty("unitPoint", _settings->Value(IndKeys::UNITPOINT));
+  _tfUnitPoint->setProperty("text", _settings->Value(IndKeys::UNITPOINT));
+  _inputIndicator->setProperty("highLimit", _settings->Value(IndKeys::HIGHLIMIT));
+  _tfHiLimit->setProperty("text", _settings->Value(IndKeys::HIGHLIMIT));
+  _inputIndicator->setProperty("lowLimit", _settings->Value(IndKeys::LOWLIMIT));
+  _tfLoLimit->setProperty("text", _settings->Value(IndKeys::LOWLIMIT));
+  _inputIndicator->setProperty("priemka", _settings->Value(IndKeys::PRIEMKA));
+  _tfPriemka->setProperty("text", _settings->Value(IndKeys::PRIEMKA));
+  float accuracy = _settings->Value(IndKeys::ACCURACY).toFloat();
+  if (accuracy < 0)
+    accuracy = 0;
+  _inputIndicator->setProperty("accuracy", accuracy);
+  _inputIndicator->setProperty("accurDivision", _settings->Value(IndKeys::ACCUR_DIVISION));
+  _quickUi->rootObject()->setProperty("deviationMode",  _settings->Value(IndKeys::IND_MEAS_MODE));
+  setTitle(_settings->Value(IndKeys::INDICATOR_NAME).toString());
+  _inputIndicator->setProperty("transGauge", _settings->Value(IndKeys::TRANS_GAUGE));
+
+  QObject* qmlWidget = _quickUi->rootObject()->findChild<QObject*>("countGroupsF");
+  qmlWidget->setProperty("text", _settings->Value(IndKeys::GROUPSF));
+  qmlWidget = _quickUi->rootObject()->findChild<QObject*>("cbSortFormula");
+  qmlWidget->setProperty("checked", _settings->Value(IndKeys::SORT_CHF));
 }
 
 
