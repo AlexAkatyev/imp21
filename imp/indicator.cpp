@@ -733,8 +733,11 @@ bool Indicator::loadSettingsIndicator()
   qmlWidget = _quickUi->rootObject()->findChild<QObject*>("tfAutoSave");
   qmlWidget->setProperty("text",  _settings->Value(IndKeys::AUTO_SAVE_PERIOD));
   _autoSaveFile = _settings->Value(IndKeys::AUTO_SAVE_FILE).toString();
+<<<<<<< HEAD
 
   return true;
+=======
+>>>>>>> e7caa0236ffc224f36e043067e0b07af2e4e617c
 }
 
 
