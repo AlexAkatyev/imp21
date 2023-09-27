@@ -26,20 +26,11 @@ signals:
 
 public slots:
     void CloseMyIndicator(void); // Закрытие окна по команде от внешних объектов
-    // Для работы с виджетом QML
-    void setComboListDetect(void); // отработка сигнала об изменении списка датчиков от главного окна
-    void saveMeas(void); // сохранение измерений
-    void setWindowName(void);
-
-private slots:
-    void changeIndication(void); // Изменение способа показаний
-    void changeLimit(void); // Изменение допусков на индикаторе
-    void getDivisionValue(void); // Определение цены деления
-    void setFormula(void); // Установка новой формулы
 
 private:
     Imp* _parent;
     int _idIndicator; // Номер индикатора
+    std::vector<QString> _measuredLogs;
 
     // Включение переменных виджета QML
     // Указатель на виджет qml в окне класса
@@ -110,6 +101,8 @@ private:
 
     QTimer* _timerWatchDog;  // Таймер чтения показаний датчиков для контроля работоспособноси
 
+    QString _autoSaveFile;
+
     // Объект для хранения установок окна
     IndSettings* _settings;
     // сохранение настроек
@@ -129,12 +122,19 @@ private:
     void setWorkIndicators();
     void setTitle(QString indicatorName);
 
-
 private slots:
+    void changeIndication(void); // Изменение способа показаний
+    void changeLimit(void); // Изменение допусков на индикаторе
+    void getDivisionValue(void); // Определение цены деления
+    void setFormula(void); // Установка новой формулы
     // Вывод от датчиков на индикатор
     void updateResult(void);
     // Определение, какой датчик не работает
     void watchDogControl(void); // Чтение результатов измерения датчиков для контроля работоспособноси
+
+    // Для работы с виджетом QML
+    void setComboListDetect(void); // отработка сигнала об изменении списка датчиков от главного окна
+    void setWindowName(void);
 
     // печать графика
     void printChart();
@@ -142,8 +142,11 @@ private slots:
     void saveChartToXLS();
 
     // запись в файл
-    void saveToCSV(QString fileName, QString text);
-    void saveToXLS(QString fileName, QString text);
+    void saveMeas(void); // сохранение измерений
+    void saveToCSV(QString fileName);
+    void saveToXLS(QString fileName);
+    void selectAutoSaveFile();
+    void autoSaveToXLSX();
 };
 
 #endif // INDICATOR_H

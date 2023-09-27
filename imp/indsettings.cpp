@@ -111,6 +111,15 @@ QString IndSettings::keyFromCode(IndKeys c)
   case NUMBER_CHAR_POINT:
     return "number_char_point";
     break;
+  case AUTO_SAVE_ENABLE:
+    return "auto_save_enable";
+    break;
+  case AUTO_SAVE_PERIOD:
+    return "auto_save_period";
+    break;
+  case AUTO_SAVE_FILE:
+    return "auto_save_file";
+    break;
   default:
     return "";
   }
@@ -193,6 +202,15 @@ QVariant IndSettings::defaultValues(IndKeys c)
     break;
   case DOPUSK:
     return true;
+    break;
+  case AUTO_SAVE_ENABLE:
+    return false;
+    break;
+  case AUTO_SAVE_PERIOD:
+    return 10;
+    break;
+  case AUTO_SAVE_FILE:
+    return "indicator.xlsx";
     break;
   default:
     return QVariant();

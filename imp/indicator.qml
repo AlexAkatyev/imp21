@@ -75,16 +75,19 @@ Item
     signal sigOpenChart();
     // Сигнал сохранения измерений
     signal sigClickedSave();
+    signal sigAutoSave();
     // Сигнал ввода имени измерения
     signal sigNameEntered();
     // Сигнал изменения общего делителя формулы
     signal sigDividerEntered();
+    // выбор файла для автосохранения
+    signal sigPeekFile();
 
     function toPixels(percentage) {
         return percentage * scaleBase / 100;
     }
 
-    function saveMeasData()
+    function fillTxtCsvForSave()
     {
         if (lmMeasData.count === 0)
             return 0;
@@ -144,10 +147,28 @@ Item
                            "\n";
             }
         }
+    }
+
+    function saveMeasData()
+    {
+        if (lmMeasData.count === 0)
+            return 0;
+        fillTxtCsvForSave();
         sigClickedSave();
         lmMeasData.clear();
         return 1;
     }
+
+    function autoSaveMeasData()
+    {
+        if (lmMeasData.count === 0)
+            return 0;
+        fillTxtCsvForSave();
+        sigAutoSave();
+        lmMeasData.clear();
+        return 1;
+    }
+
 
     function getFormula()
     {
@@ -356,6 +377,15 @@ Item
             else
                 auBuzzer.stop();
         }
+    }
+
+    Timer
+    {
+        id: timerSave
+        objectName: "timerSave"
+        repeat: true
+        interval: tfAutoSave.text * 60 * 1000
+        onTriggered: autoSaveMeasData();
     }
 
     Audio
@@ -963,7 +993,7 @@ Item
                     }
 
                     Grid {
-                        rows: 4
+                        rows: 5
                         columns: 2
                         spacing: 0
                         Text { // row 1
@@ -995,8 +1025,7 @@ Item
                         Text { // row 3
                             text: "\nРежим max - min:"
                         }
-                        CheckBox
-                        {
+                        CheckBox {
                             id: cbMode
                             checked: false
                             onCheckedChanged:
@@ -1013,11 +1042,50 @@ Item
                                 }
                             }
                         }
-                        Button // row 4
+                        CheckBox { // row 4
+                            id: automaticSave
+                            objectName: "automaticSave"
+                            text: "Автоматическое\nсохранение, мин"
+                            checked: false
+                            font.pixelSize: tfName.font.pixelSize
+                            onReleased: {
+                                if (checked) {
+                                    timerSave.start();
+                                    btSaveOption.text = "Выбрать файл выгрузки"
+                                }
+                                else {
+                                    timerSave.stop();
+                                    btSaveOption.text = "  Сохранить измерения  "
+                                }
+                            }
+                        }
+                        TextField {
+                            id: tfAutoSave
+                            objectName: "tfAutoSave"
+                            font.pixelSize: tfName.font.pixelSize
+                            validator: IntValidator{bottom: 1; top: 999;}
+                            text: "10"
+                            inputMethodHints: Qt.ImhDigitsOnly
+                            onTextChanged:
+                            {
+                                if (text < 1)
+                                    text = 1;
+                                timerSave.interval = text * 60 * 1000;
+                            }
+                            enabled: automaticSave.checked
+                        }
+                        Button // row 5
                         {
-                            text: "Сохранить измерения"
-                            enabled: lmMeasData.count > 0;
-                            onReleased: saveMeasData();
+                            id: btSaveOption
+                            text: automaticSave.checked ? "Выбрать файл выгрузки" : "  Сохранить измерения  "
+                            font.pixelSize: tfName.font.pixelSize
+                            enabled: automaticSave.checked || lmMeasData.count > 0
+                            onReleased: {
+                                if (automaticSave.checked)
+                                    sigPeekFile();
+                                else
+                                    saveMeasData();
+                            }
                         }
                     }
                 }
