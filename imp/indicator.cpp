@@ -102,6 +102,9 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   connect(_quickUi->rootObject(), SIGNAL(sigChangeIndication()), this, SLOT(changeIndication()));
   // Сохранение измерений
   connect(_quickUi->rootObject(), SIGNAL(sigClickedSave()), this, SLOT(saveMeas()));
+  connect(_quickUi->rootObject(), SIGNAL(sigAutoSave()), this, SLOT(autoSaveToXLSX()));
+  // выбор файла автосохранения
+  connect(_quickUi->rootObject(), SIGNAL(sigPeekFile()), this, SLOT(selectAutoSaveFile()));
   // Установка имени
   connect(_quickUi->rootObject(), SIGNAL(sigNameEntered()), this, SLOT(setWindowName()));
   // отработка нажатия кнопки печати
@@ -131,6 +134,8 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
 
   // Загрузка настроек
   loadSettingsIndicator();
+
+  _measuredLogs.clear();
 
   if (baseDetect)
   {
@@ -601,6 +606,13 @@ void Indicator::saveSettingsIndicator()
   _settings->SetValue(IndKeys::SORT_CHF, qmlWidget->property("checked"));
   qmlWidget = _quickUi->rootObject()->findChild<QObject*>("countGroupsF");
   _settings->SetValue(IndKeys::GROUPSF, qmlWidget->property("text").toString().toInt());
+
+  // автосохранение
+  qmlWidget = _quickUi->rootObject()->findChild<QObject*>("automaticSave");
+  _settings->SetValue(IndKeys::AUTO_SAVE_ENABLE,  qmlWidget->property("checked").toBool());
+  qmlWidget = _quickUi->rootObject()->findChild<QObject*>("tfAutoSave");
+  _settings->SetValue(IndKeys::AUTO_SAVE_PERIOD,  qmlWidget->property("text").toInt());
+  _settings->SetValue(IndKeys::AUTO_SAVE_FILE,  _autoSaveFile);
 }
 
 
@@ -712,6 +724,17 @@ bool Indicator::loadSettingsIndicator()
   qmlWidget->setProperty("text", _settings->Value(IndKeys::GROUPSF));
   qmlWidget = _quickUi->rootObject()->findChild<QObject*>("cbSortFormula");
   qmlWidget->setProperty("checked", _settings->Value(IndKeys::SORT_CHF));
+
+  // автосохранение
+  qmlWidget = _quickUi->rootObject()->findChild<QObject*>("automaticSave");
+  qmlWidget->setProperty("checked",  _settings->Value(IndKeys::AUTO_SAVE_ENABLE));
+  qmlWidget = _quickUi->rootObject()->findChild<QObject*>("timerSave");
+  qmlWidget->setProperty("running",  _settings->Value(IndKeys::AUTO_SAVE_ENABLE));
+  qmlWidget = _quickUi->rootObject()->findChild<QObject*>("tfAutoSave");
+  qmlWidget->setProperty("text",  _settings->Value(IndKeys::AUTO_SAVE_PERIOD));
+  _autoSaveFile = _settings->Value(IndKeys::AUTO_SAVE_FILE).toString();
+
+  return true;
 }
 
 
@@ -754,11 +777,11 @@ void Indicator::saveMeas(void)
     if (fdCreateTable.exec() == QDialog::Accepted) //Файл выбран
     {
       strFileName = fdCreateTable.selectedFiles().first();
-      QString text = _quickUi->rootObject()->property("textcsv").toString();
+      _measuredLogs.push_back(_quickUi->rootObject()->property("textcsv").toString());
       if (strFileName.contains(".csv", Qt::CaseInsensitive))
-        saveToCSV(strFileName, text);
+        saveToCSV(strFileName);
       else if (strFileName.contains(".xls", Qt::CaseInsensitive))
-        saveToXLS(strFileName, text);
+        saveToXLS(strFileName);
     }
 }
 
@@ -802,18 +825,23 @@ void Indicator::saveChartToCSV()
     fdCreateCSV.setDefaultSuffix("csv");
     fdCreateCSV.setViewMode(QFileDialog::List); // Файлы представляются в виде списка
     if (fdCreateCSV.exec() == QDialog::Accepted) //Файл выбран
-      saveToCSV(fdCreateCSV.selectedFiles().first(), _tStatChart->property("textcsv").toString());
+    {
+      _measuredLogs.push_back(_tStatChart->property("textcsv").toString());
+      saveToCSV(fdCreateCSV.selectedFiles().first());
+    }
 }
 
 
-void Indicator::saveToCSV(QString fileName, QString text)
+void Indicator::saveToCSV(QString fileName)
 {
   QFile file(fileName);
   if (file.open(QFile::WriteOnly | QFile::Text))
   {
       QTextStream out(&file);
-      out << convertStringToCorrectCSV(text);
+      for (QString text : _measuredLogs)
+        out << convertStringToCorrectCSV(text + "\n\n");
       file.close();
+      _measuredLogs.clear();
   }
   else
     QMessageBox::warning(this,
@@ -831,40 +859,73 @@ void Indicator::saveChartToXLS()
   fdCreateXLS.setDefaultSuffix("xlsx");
   fdCreateXLS.setViewMode(QFileDialog::List); // Файлы представляются в виде списка
   if (fdCreateXLS.exec() == QDialog::Accepted) //Файл выбран
-    saveToXLS(fdCreateXLS.selectedFiles().first(), _tStatChart->property("textcsv").toString());
+  {
+    _measuredLogs.push_back(_tStatChart->property("textcsv").toString());
+    saveToXLS(fdCreateXLS.selectedFiles().first());
+  }
 }
 
 
-void Indicator::saveToXLS(QString fileName, QString text)
+void Indicator::saveToXLS(QString fileName)
 {
-  QString out = text;
-  QStringList linen = out.split("\n");
-  if (linen.size() == 0)
-    return;
-
   if (QFile::exists(fileName))
-    QFile::remove(fileName);
+    if (!QFile::remove(fileName))
+      return;
+
+  if (_measuredLogs.empty())
+    return;
 
   CWorkbook book( "Imp21" );
   std::vector<ColumnWidth> ColWidth;
   ColWidth.push_back(ColumnWidth(0, 0, 30));
-  CWorksheet& sheet = book.AddSheet( "Лист 1", ColWidth);
 
-  int row = 1;
-  for (auto& line : linen)
+  int pageNumber = 1;
+  for (QString text : _measuredLogs)
   {
-    int col = 1;
-    QStringList cells = line.split(QLatin1Char(';'));
-    sheet.BeginRow();
-    for (auto& cell : cells)
-      if (row > 9 && col > 1)
-        sheet.AddCell(cell.toFloat());
-      else
-        sheet.AddCell(cell.toStdString());
-    sheet.EndRow();
-    ++row;
+    QString out = text;
+    QStringList linen = out.split("\n");
+    if (linen.size() == 0)
+      continue;
+
+    QString pageName = "Лист " + QString::number(pageNumber++);
+    CWorksheet& sheet = book.AddSheet(pageName.toStdString(), ColWidth);
+
+    int row = 1;
+    for (auto& line : linen)
+    {
+      int col = 1;
+      QStringList cells = line.split(QLatin1Char(';'));
+      sheet.BeginRow();
+      for (auto& cell : cells)
+        if (row > 9 && col > 1)
+          sheet.AddCell(cell.toFloat());
+        else
+          sheet.AddCell(cell.toStdString());
+      sheet.EndRow();
+      ++row;
+    }
   }
 
   book.Save(fileName.toStdString());
+  _measuredLogs.clear();
 }
+
+
+void Indicator::selectAutoSaveFile()
+{
+  QString autoSaveFile = QFileDialog::getSaveFileName(this
+                                                      , "Выберите файл для автосохранения"
+                                                      , _autoSaveFile
+                                                      , "Excel file (*.xlsx)");
+  if (!autoSaveFile.isEmpty())
+    _autoSaveFile = autoSaveFile;
+}
+
+
+void Indicator::autoSaveToXLSX()
+{
+  _measuredLogs.push_back(_quickUi->rootObject()->property("textcsv").toString());
+  saveToXLS(_autoSaveFile);
+}
+
 

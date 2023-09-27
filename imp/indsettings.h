@@ -30,6 +30,9 @@ enum IndKeys {WIN_X
               , GROUPSF
               , SORT_CHF
               , NUMBER_CHAR_POINT
+              , AUTO_SAVE_ENABLE
+              , AUTO_SAVE_FILE
+              , AUTO_SAVE_PERIOD
              };
 
 class IndSettings : public QObject
