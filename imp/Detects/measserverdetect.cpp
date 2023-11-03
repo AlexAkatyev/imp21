@@ -32,8 +32,8 @@ void MeasServerDetect::Init()
   _dateManuf = _locator->DetectDateManuf(_numberD);
   _unitMeasure = _locator->UnitMeasure(_numberD);
   _userName = _locator->NameDetect(_numberD);
-  _hMeasInterval = _locator->MeasInterval(_numberD);
-  _lMeasInterval = -_locator->MeasInterval(_numberD);
+  _hMeasInterval = _locator->MeasHiLimitInterval(_numberD);
+  _lMeasInterval = _locator->MeasLoLimitInterval(_numberD);
   _zeroInterval = _locator->SetZero(_numberD);
   _preSetInterval = _locator->PreSet(_numberD);
   _flagReady = true;

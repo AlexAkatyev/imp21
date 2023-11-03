@@ -22,7 +22,8 @@ public:
   QDate DetectDateManuf(int numberD);
   QString UnitMeasure(int numberD);
   QString NameDetect(int numberD);
-  int MeasInterval(int numberD);
+  int MeasLoLimitInterval(int numberD);
+  int MeasHiLimitInterval(int numberD);
   int SetZero(int numberD);
   int PreSet(int numberD);
   float Measure(int numberD);
@@ -43,6 +44,7 @@ private:
   QString dataToString(qint16 reg, int numberD, int length);
   void readFromUdpSocket();
   int numberD(int id);
+  float getFloatFromRegMeas(qint16 reg, int numberD);
 
 };
 

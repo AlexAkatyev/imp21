@@ -201,9 +201,15 @@ QString MBTcpLocator::dataToString(qint16 reg, int numberD, int length)
 }
 
 
-int MBTcpLocator::MeasInterval(int numberD)
+int MBTcpLocator::MeasLoLimitInterval(int numberD)
 {
-  return abs(_regs[regData(REG_INTERVAL, numberD)]);
+  return getFloatFromRegMeas(REG_LOLIMIT_INTERVAL, numberD);
+}
+
+
+int MBTcpLocator::MeasHiLimitInterval(int numberD)
+{
+  return getFloatFromRegMeas(REG_HILIMIT_INTERVAL, numberD);
 }
 
 
@@ -221,8 +227,14 @@ int MBTcpLocator::PreSet(int numberD)
 
 float MBTcpLocator::Measure(int numberD)
 {
-  qint32 h = _regs[regData(REG_CURRENT_MEAS, numberD)] << 16;
-  qint32 l = _regs[regData(REG_CURRENT_MEAS + 1, numberD)] & 0xFFFF;
+  return getFloatFromRegMeas(REG_CURRENT_MEAS, numberD);
+}
+
+
+float MBTcpLocator::getFloatFromRegMeas(qint16 reg, int numberD)
+{
+  qint32 h = _regs[regData(reg, numberD)] << 16;
+  qint32 l = _regs[regData(reg + 1, numberD)] & 0xFFFF;
   h += l;
   float result = h;
   return result/MEAS_DIVIDER;

@@ -383,14 +383,10 @@ bool BepVTDetect::defCountPeriod(const QByteArray& mas)
 
 bool BepVTDetect::defMeasureInterval(const QByteArray& mas)
 {
-  bool error = true;
-  if (mas.size() > AT_LIMIT_MESS + LEN_LIMIT_MESS)
-  {
-    _hMeasInterval = QByteArrayAtLenToInt(mas, AT_LIMIT_MESS, LEN_LIMIT_MESS);
-    error = false;
-  }
-  return error;
+  Q_UNUSED(mas)
+  return true;
 }
+
 
 bool BepVTDetect::defZeroInterval(const QByteArray& mas)
 {
