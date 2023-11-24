@@ -384,7 +384,7 @@ bool BepVTDetect::defCountPeriod(const QByteArray& mas)
 bool BepVTDetect::defMeasureInterval(const QByteArray& mas)
 {
   Q_UNUSED(mas)
-  return true;
+  return false;
 }
 
 
