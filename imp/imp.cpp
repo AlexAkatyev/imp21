@@ -45,6 +45,7 @@ const int SIZE_WINDOW_HEIGTH = 480;
 Imp::Imp(QWidget* parent)
     : QWidget(parent)
     , pQuickUi(new QQuickWidget)
+    , _indicateTimer(new QTimer(this))
 {
     Logger::GetInstance(this); // Запуск журнала
 
@@ -91,6 +92,9 @@ Imp::Imp(QWidget* parent)
     TimerBeforeFound->setSingleShot(true);
     TimerBeforeFound->setInterval(PAUSE_BEFORE_FIND_DETECT);
     connect(TimerBeforeFound, &QTimer::timeout, this, &Imp::findDetect);
+
+    _indicateTimer->setInterval(INTERVAL_TIMER);
+    connect(_indicateTimer, &QTimer::timeout, this, &Imp::indicateFindCOMDetect);
 
     // Поиск датчиков при запуске программы после паузы, чтобы оформилось главное окно
     TimerBeforeFound->start();
@@ -168,7 +172,7 @@ void Imp::findDetect()
     pitWin->setProperty("iCommand", 1); // Команда очистки таблицы
     ptextComment->setProperty("text", "Найдено датчиков: " + QString::number(0));
 
-    FindCOMDetect();
+    FindDetects();
 
     pbtFind->setProperty("enabled", true); // Разрешаем повторный поиск датчиков
     ptextComment->setProperty("text", " Найдено датчиков: " + QString::number(_detects.size()));
@@ -227,7 +231,7 @@ void Imp::reWriteDetectsToTable()
 // Поиск датчиков на COM-портах
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void Imp::FindCOMDetect(void)
+void Imp::FindDetects(void)
 {
   // удалить из списка исчезнувшие датчики
   std::vector<ImpAbstractDetect*> det;
@@ -245,34 +249,35 @@ void Imp::FindCOMDetect(void)
   if (dfactory->AvailablePorts())
   {
     // Индикация времени поиска USB датчиков
-    QTimer* indicateTimer = new QTimer(this);
-    indicateTimer->setInterval(INTERVAL_TIMER);
     _uiCounter = 0;
     _uiLength = dfactory->FindingTime();
-    connect(indicateTimer, &QTimer::timeout, this, &Imp::indicateFindCOMDetect);
     ptextComment->setProperty("text", "Поиск датчиков");
     ppbFind->setProperty("value", _uiCounter);
-    indicateTimer->start();
+    _indicateTimer->start();
 
-    for (ImpAbstractDetect* newDetect : dfactory->VTDetects())
+    connect(dfactory, &DetectFactory::readyOfDetects, this, [=]()
     {
-      bool haveId = false;
-      for (auto currently : _detects)
-        if (currently->Id() == newDetect->Id())
-        {
-          haveId = true;
-          break;
+      for (ImpAbstractDetect* newDetect : dfactory->VTDetects())
+      {
+        bool haveId = false;
+        for (auto currently : _detects)
+          if (currently->Id() == newDetect->Id())
+          {
+            haveId = true;
+            break;
+        }
+        if (haveId)
+          newDetect->deleteLater();
+        else
+          _detects.push_back(newDetect);
       }
-      if (haveId)
-        newDetect->Remove();
-      else
-        _detects.push_back(newDetect);
-    }
 
-    indicateTimer->stop();
-    indicateTimer->deleteLater();
-    ptextComment->setProperty("text", "");
-    ppbFind->setProperty("value", 1);
+      _indicateTimer->stop();
+      ptextComment->setProperty("text", "");
+      ppbFind->setProperty("value", 1);
+    });
+
+    dfactory->StartFindOfDetects();
   }
 }
 

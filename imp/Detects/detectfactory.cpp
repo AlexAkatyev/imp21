@@ -34,8 +34,10 @@ DetectFactory* DetectFactory::Instance(QObject* parent)
 
 DetectFactory::DetectFactory(QObject *parent)
   : QObject(parent)
+  , _comReady(false)
+  , _tcpReady(false)
 {
-
+  _detects.clear();
 }
 
 
@@ -58,22 +60,31 @@ int DetectFactory::FindingTime()
 }
 
 
-std::vector<ImpAbstractDetect*> DetectFactory::VTDetects()
+void DetectFactory::StartFindOfDetects()
 {
-  std::vector<ImpAbstractDetect*> result = ComVTDetects();
+  _comReady = false;
+  _tcpReady = false;
+  _detects.clear();
+  comVTDetects();
   if (ImpSettings::Instance()->Value(ImpKeys::EN_MODBUS_TCP).toBool())
+    tcpVTDetects();
+  else
   {
-    std::vector<ImpAbstractDetect*> r = TcpVTDetects();
-    result.insert(result.end(), r.begin(), r.end());
+    _tcpReady = true;
+    sendReadyOfDetects();
   }
-  return result;
 }
 
 
-std::vector<ImpAbstractDetect*> DetectFactory::ComVTDetects()
+std::vector<ImpAbstractDetect*> DetectFactory::VTDetects()
+{
+  return _detects;
+}
+
+
+void DetectFactory::comVTDetects()
 {
   Logger* logger = Logger::GetInstance();
-  std::vector<ImpAbstractDetect*> result;
 
   QList<QSerialPortInfo> ListPort;
   ListPort = QSerialPortInfo::availablePorts();
@@ -89,7 +100,7 @@ std::vector<ImpAbstractDetect*> DetectFactory::ComVTDetects()
       bepVTD->Init();
       if (bepVTD->Id())
       {
-        result.push_back(bepVTD);
+        _detects.push_back(bepVTD);
         logger->WriteLnLog("Это датчик USB");
         continue;
       }
@@ -102,7 +113,7 @@ std::vector<ImpAbstractDetect*> DetectFactory::ComVTDetects()
       em->Init();
       if (em->Id())
       {
-        result.push_back(em);
+        _detects.push_back(em);
         logger->WriteLnLog("Это измерительная головка ЭМ-08");
         continue;
       }
@@ -144,7 +155,7 @@ std::vector<ImpAbstractDetect*> DetectFactory::ComVTDetects()
           {
             if (detect->Id())
             {
-              result.push_back(detect);
+              _detects.push_back(detect);
               logger->WriteLnLog("Это датчик RS-485");
               notFind = false;
               continue;
@@ -161,15 +172,20 @@ std::vector<ImpAbstractDetect*> DetectFactory::ComVTDetects()
       }
     }
   }
-
-  return result;
+  _comReady = true;
+  sendReadyOfDetects();
 }
 
 
-std::vector<ImpAbstractDetect*> DetectFactory::TcpVTDetects()
+void DetectFactory::sendReadyOfDetects()
 {
-  std::vector<ImpAbstractDetect*> result;
+  if (_comReady && _tcpReady)
+    emit readyOfDetects();
+}
 
+
+void DetectFactory::tcpVTDetects()
+{
   // refresh list of sockets
   QStringList slAddr = ImpSettings::Instance()->Value(ImpKeys::LIST_MB_ADDR).toStringList();
   if (slAddr.isEmpty())
@@ -190,17 +206,15 @@ std::vector<ImpAbstractDetect*> DetectFactory::TcpVTDetects()
       client->setConnectionParameter(QModbusDevice::NetworkAddressParameter, socketAddr);
       client->setTimeout(5000);
       client->setNumberOfRetries(10);
-      client->connectDevice();
       _mbTcpLocators.push_back(client);
+      connect(client, &MBTcpLocator::stateChanged, this, [=](QModbusDevice::State state)
+      {
+        if (state == QModbusDevice::ConnectedState)
+          client->Init();
+      });
+      client->connectDevice();
     }
   }
-
-  qApp->processEvents(); // for connect to new hosts
-
-  // find detects at sockets
-  // request
-  for (MBTcpLocator* s : _mbTcpLocators)
-    s->Init();
 
   waitElapsed(MBTCP_WAIT_INIT);
 
@@ -209,10 +223,10 @@ std::vector<ImpAbstractDetect*> DetectFactory::TcpVTDetects()
     {
       MeasServerDetect* msd = new MeasServerDetect(s, i, parent());
       msd->Init();
-      result.push_back(msd);
+      _detects.push_back(msd);
     }
-
-  return result;
+  _tcpReady = true;
+  sendReadyOfDetects();
 }
 
 

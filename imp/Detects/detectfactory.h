@@ -16,17 +16,25 @@ public:
   ~DetectFactory();
   int AvailablePorts();
   int FindingTime();
+  void StartFindOfDetects();
   std::vector<ImpAbstractDetect*> VTDetects();
+
+signals:
+  void readyOfDetects();
 
 private:
   std::vector<SerialPortLocator*> _mbSpLocators;
   std::vector<MBTcpLocator*> _mbTcpLocators;
+  std::vector<ImpAbstractDetect*> _detects;
+  bool _comReady;
+  bool _tcpReady;
 
   explicit DetectFactory(QObject *parent);
-  std::vector<ImpAbstractDetect*> ComVTDetects();
-  std::vector<ImpAbstractDetect*> TcpVTDetects();
+  void comVTDetects();
+  void tcpVTDetects();
   void waitElapsed(int ms);
   void readRequest(MBTcpLocator* s, int startAddress, quint16 numberOfEntries);
+  void sendReadyOfDetects();
 };
 
 #endif // DETECTFACTORY_H

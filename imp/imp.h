@@ -57,6 +57,7 @@ private:
     // переопределение события изменения окна
     void resizeEvent(QResizeEvent*);
 
+    QTimer* _indicateTimer; // Для отображения поиска датчиков
     // Для паузы после запуска программы перед поиском датчиков
     QTimer *TimerBeforeFound;
 
@@ -77,7 +78,7 @@ private:
     std::vector<ImpAbstractDetect*> _detects;
 
     // Описания для поиска датчиков в COM-портах
-    void FindCOMDetect(void); // Поиск USB датчиков
+    void FindDetects(void); // Поиск USB датчиков
 
     // Переопределение закрытия главного окна
     void closeEvent(QCloseEvent*);
