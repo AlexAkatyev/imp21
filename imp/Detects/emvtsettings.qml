@@ -124,7 +124,7 @@ Item
         Text {
             x: txLeft.x
             y: 6*parent.height/40
-            text: "Тип датчика"
+            text: "Тип конвертора"
         }
         Text {
             id: txtType
@@ -135,7 +135,7 @@ Item
         Text {
             x: txLeft.x
             y: 12*parent.height/40
-            text: "Дата выпуска платы"
+            text: "Дата изготовления"
         }
         Text {
             id: txtData
