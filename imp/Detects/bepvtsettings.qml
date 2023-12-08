@@ -117,12 +117,14 @@ Item
             }
             Text {
                 text: "        "
+                visible: false
             }
             Button {
                 text:  "Записать имя датчика"
                 font.pixelSize: 11
                 onClicked: saveUserName()
                 enabled: false
+                visible: false
             }
             Text {
                 text: "Единица измерения"
@@ -133,10 +135,12 @@ Item
             }
             Text {
                 text: "Число измерительных\nпериодов"
+                visible: false
             }
             Text { // Вводится количество измерительных периодов
                 id: tfCP
                 objectName: "tfCP"
+                visible: false
             }
             Text {
                 text: "Диапазон измерения"
