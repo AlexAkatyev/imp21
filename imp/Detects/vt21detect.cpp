@@ -117,6 +117,13 @@ QString VT21Detect::getLocallyString(QByteArray baData)
 }
 
 
+QByteArray VT21Detect::setLocallyString(QString stroka)
+{
+  QTextCodec* codec = QTextCodec::codecForName(CODE_LOCALLY);
+  return codec->fromUnicode(stroka);
+}
+
+
 bool VT21Detect::fillCalibrateDataTable(QByteArray baData, int lenPoint, int lenMeasPoint)
 {
   bool error = false;

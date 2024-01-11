@@ -1,4 +1,5 @@
 #include <QTimer>
+#include <QMessageBox>
 
 #include "modbusvtdetect.h"
 #include "UtilLib/modbus.h"
@@ -94,6 +95,7 @@ void ModbusVTDetect::ShowSettings()
 void ModbusVTDetect::SetNewName(QString newName)
 {
   Q_UNUSED(newName)
+  QMessageBox::about(nullptr, "Запись имени датчика", "Для данного типа датчиков команда не доступна");
 }
 
 

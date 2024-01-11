@@ -482,8 +482,6 @@ void BepVTDetect::ShowSettings()
 
 void BepVTDetect::SetNewName(QString newName)
 {
-  return;
-
   if (newName.isEmpty())
     return;
 
@@ -509,6 +507,7 @@ void BepVTDetect::SetNewName(QString newName)
     for(;timew.elapsed() < WAIT_OF_ANSWER_WAIT;) // Время ожидания, мсек
       qApp->processEvents();// Ждем ответа, но обрабатываем возможные события
   }
+
   pushInt2(CountPeriod());
   pushInt2(HMeasureInterval());
   pushInt2(ZeroInterval());
@@ -520,12 +519,15 @@ void BepVTDetect::SetNewName(QString newName)
 
   for (int i = 0; i < SUM_POINT; ++i)
   {
-    pushInt2(_pmt.at(i).at(0));
+    if (_currency == 2)
+      pushInt4(_pmt.at(i).at(0));
+    else
+      pushInt2(_pmt.at(i).at(0));
     pushInt4(_pmt.at(i).at(1));
   }
 
-  QString nname = newName.left(LEN_NAME_DETECT);
-  mail.push_back(nname.toUtf8());
+  QByteArray nname = setLocallyString(newName.left(LEN_NAME_DETECT));
+  mail.push_back(nname);
   for (int i = nname.length(); i < LEN_NAME_DETECT; ++i)
     mail.push_back(0x20);
   pushInt4(CalibrField());

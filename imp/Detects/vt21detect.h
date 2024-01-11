@@ -30,6 +30,7 @@ signals:
   void defHMeasureInterval();
   void defLMeasureInterval();
   QString getLocallyString(QByteArray baData);
+  QByteArray setLocallyString(QString stroka);
   bool fillCalibrateDataTable(QByteArray baData, int lenPoint, int lenMeasPoint);
 
   int _countPeriod;

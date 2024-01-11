@@ -113,18 +113,14 @@ Item
                 id: tfName
                 objectName: "tfName"
                 font.pixelSize: 11
-                enabled: false
             }
             Text {
                 text: "        "
-                visible: false
             }
             Button {
                 text:  "Записать имя датчика"
                 font.pixelSize: 11
                 onClicked: saveUserName()
-                enabled: false
-                visible: false
             }
             Text {
                 text: "Единица измерения"
