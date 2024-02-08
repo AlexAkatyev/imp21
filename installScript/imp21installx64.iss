@@ -9,6 +9,7 @@ UninstallDisplayIcon={app}\MyProg.exe
 Compression=lzma2
 SolidCompression=yes
 OutputDir=..\..\build\ReleaseInstall
+OutputBaseFilename=IMP21Installx64
 ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 AppPublisherURL=ies-ltd.ru
