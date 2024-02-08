@@ -30,7 +30,7 @@ public:
   QString PortName();
 
 signals:
-  void ReadyMeasure(int id, int counter, float meas);
+  void ReadyMeasure(int id, float meas);
 
 private:
   std::map<qint16, qint16> _regs;

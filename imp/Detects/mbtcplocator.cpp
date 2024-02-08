@@ -269,11 +269,10 @@ void MBTcpLocator::readFromUdpSocket()
       if (message.size() != LEN_UDP_DATA)
         continue;
       int id = setIntFromArray(message, UDP_ID, LEN_UDP_ID);
-      int counter = setIntFromArray(message, UDP_COUNTER, LEN_UDP_COUNTER);
       int iMeas = setIntFromArray(message, UDP_MEAS, LEN_UDP_MEAS);
       float fMeas = iMeas;
       fMeas /= MEAS_DIVIDER;
-      emit ReadyMeasure(id, counter, fMeas);
+      emit ReadyMeasure(id, fMeas);
       _regs[regData(REG_CURRENT_MEAS, numberD(id))] = (iMeas & 0xFFFF0000) >> 16;
       _regs[regData(REG_CURRENT_MEAS + 1, numberD(id))] = iMeas & 0xFFFF;
     }

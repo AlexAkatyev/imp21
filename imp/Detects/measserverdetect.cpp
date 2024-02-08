@@ -1,4 +1,5 @@
 #include <QVariant>
+#include <QTimer>
 
 #include "measserverdetect.h"
 #include "mbtcplocator.h"
@@ -9,19 +10,29 @@ MeasServerDetect::MeasServerDetect(MBTcpLocator* locator, int countD, QObject* p
   : ImpAbstractDetect(parent)
   , _locator(locator)
   , _numberD(countD)
-  , _counter(0)
+  , _counterWDT(0)
 {
-  connect(_locator, &MBTcpLocator::ReadyMeasure, this, [=](int id, int counter, float meas)
+  connect(_locator, &MBTcpLocator::ReadyMeasure, this, [=](int id, float meas)
   {
     if (id == Id())
-      if (counter > _counter
-          || (counter < 50 && _counter > 200) )
       {
         _measure = meas;
         emit NewMeasure(meas);
-        _counter = counter;
+        _counterWDT = 0;
       }
   });
+
+  // Контроль жизни датчика
+  QTimer* wdt = new QTimer(this);
+  connect(wdt, &QTimer::timeout, this, [=]()
+  {
+    int limit = 10;
+    if (_counterWDT < limit)
+      _counterWDT++;
+
+    _flagReady = _counterWDT < limit;
+  });
+  wdt->start(100);
 }
 
 

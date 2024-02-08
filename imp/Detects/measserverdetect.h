@@ -17,7 +17,7 @@ public:
 private:
   MBTcpLocator* _locator;
   int _numberD;
-  int _counter;
+  int _counterWDT;
 };
 
 #endif // MEASSERVERDETECT_H
