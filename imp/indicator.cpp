@@ -771,7 +771,8 @@ void Indicator::saveMeas(void)
     QFileDialog fdCreateTable(this);
     fdCreateTable.setAcceptMode(QFileDialog::AcceptSave); // Для сохранения файла
     fdCreateTable.setFileMode(QFileDialog::AnyFile); // Для выбора несуществующего файла
-    fdCreateTable.setNameFilters({"Таблица CSV (*.csv)", "Таблица XLSX (*.xlsx)"});
+    fdCreateTable.setNameFilters({"Таблица XLSX (*.xlsx)"
+                                  , "Таблица CSV (*.csv)"});
     //fdCreateTable.setDefaultSuffix("csv");
     fdCreateTable.setViewMode(QFileDialog::List); // Файлы представляются в виде списка
     if (fdCreateTable.exec() == QDialog::Accepted) //Файл выбран
