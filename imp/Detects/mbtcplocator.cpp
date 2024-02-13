@@ -114,7 +114,10 @@ int MBTcpLocator::CountDetects()
 
 int MBTcpLocator::DetectId(int numberD)
 {
-  return _regs[REG_LIST_ID + numberD];
+  int result = _regs[REG_LIST_ID + numberD];
+  if (result < 0)
+    result += 0x10000;
+  return result;
 }
 
 
