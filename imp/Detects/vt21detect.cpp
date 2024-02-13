@@ -88,23 +88,34 @@ int VT21Detect::SumPoint()
 }
 
 
-void VT21Detect::defHMeasureInterval()
+int reduceDivider(int d)
 {
-  int result = -65535;
-  for (auto pm : _pmt)
-    if (result < pm.at(0))
-      result = pm.at(0);
-  _hMeasInterval = result;
+  if (d == 0)
+    return 1;
+  else if (d < 0)
+    return -d;
+  else
+    return d;
 }
 
 
-void VT21Detect::defLMeasureInterval()
+void VT21Detect::defHMeasureInterval(int divider)
 {
-  int result = 65535;
+  int result = INT_MIN;
+  for (auto pm : _pmt)
+    if (result < pm.at(0))
+      result = pm.at(0);
+  _hMeasInterval = result / reduceDivider(divider);
+}
+
+
+void VT21Detect::defLMeasureInterval(int divider)
+{
+  int result = INT_MAX;
   for (auto pm : _pmt)
     if (result > pm.at(0))
       result = pm.at(0);
-  _lMeasInterval = result;
+  _lMeasInterval = result / reduceDivider(divider);
 }
 
 

@@ -465,8 +465,8 @@ bool BepVTDetect::defCalibrateDataTable(const QByteArray& baStream)
 
   if (!error)
   {
-    defHMeasureInterval();
-    defLMeasureInterval();
+    defHMeasureInterval(_currency == 2 ? 100 : 1);
+    defLMeasureInterval(_currency == 2 ? 100 : 1);
   }
 
   return error;

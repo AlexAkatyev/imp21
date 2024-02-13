@@ -40,7 +40,7 @@ const int MINIMAL_HEIGHT = 300;
 const int MINIMAL_WIDTH = 300;
 
 // Периодичность считывания показаний датчиков
-const int WATCH_DOG_INTERVAL = 200;
+const int WATCH_DOG_INTERVAL = 100;
 
 
 Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* baseDetect)
