@@ -34,8 +34,6 @@ DetectFactory* DetectFactory::Instance(QObject* parent)
 
 DetectFactory::DetectFactory(QObject *parent)
   : QObject(parent)
-  , _comReady(false)
-  , _tcpReady(false)
 {
   _detects.clear();
 }
@@ -62,17 +60,13 @@ int DetectFactory::FindingTime()
 
 void DetectFactory::StartFindOfDetects()
 {
-  _comReady = false;
-  _tcpReady = false;
   _detects.clear();
-  comVTDetects();
   if (ImpSettings::Instance()->Value(ImpKeys::EN_MODBUS_TCP).toBool())
     tcpVTDetects();
   else
-  {
-    _tcpReady = true;
-    sendReadyOfDetects();
-  }
+    comVTDetects();
+
+  sendReadyOfDetects();
 }
 
 
@@ -172,15 +166,12 @@ void DetectFactory::comVTDetects()
       }
     }
   }
-  _comReady = true;
-  sendReadyOfDetects();
 }
 
 
 void DetectFactory::sendReadyOfDetects()
 {
-  if (_comReady && _tcpReady)
-    emit readyOfDetects();
+  emit readyOfDetects();
 }
 
 
@@ -225,8 +216,6 @@ void DetectFactory::tcpVTDetects()
       msd->Init();
       _detects.push_back(msd);
     }
-  _tcpReady = true;
-  sendReadyOfDetects();
 }
 
 

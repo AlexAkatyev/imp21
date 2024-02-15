@@ -17,6 +17,7 @@
 #include <QCheckBox>
 #include <QListWidget>
 #include <QPushButton>
+#include <QRadioButton>
 
 #include "about.h"
 #include "../impsettings.h"
@@ -47,21 +48,18 @@ AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH)
   aboutWidget->setLayout(aboutLayout);
 
 
-  QCheckBox* cbDetRS485 = new QCheckBox("Искать датчики по интерфейсу RS-485");
+  QRadioButton* rbDetWire = new QRadioButton("Искать проводные датчики", this);
+
+  QCheckBox* cbDetRS485 = new QCheckBox("Искать датчики по интерфейсу RS-485", this);
   cbDetRS485->setCheckState(settings->Value(ImpKeys::EN_RS_485).toBool() ? Qt::Checked : Qt::Unchecked);
   connect(cbDetRS485, &QCheckBox::stateChanged, this, [=]()
   {
     ImpSettings::Instance()->SetValue(ImpKeys::EN_RS_485, cbDetRS485->checkState() == Qt::Checked);
   });
-  QCheckBox* cbDetRadioChannel = new QCheckBox("Искать датчики через сервер Modbus TCP");
-  cbDetRadioChannel->setCheckState(ImpSettings::Instance()->Value(ImpKeys::EN_MODBUS_TCP).toBool() ? Qt::Checked : Qt::Unchecked);
-  connect(cbDetRadioChannel, &QCheckBox::stateChanged, this, [=]()
-  {
-    ImpSettings::Instance()->SetValue(ImpKeys::EN_MODBUS_TCP, cbDetRadioChannel->checkState() == Qt::Checked);
-  });
+  QRadioButton* rbDetRadioChannel = new QRadioButton("Искать датчики через сервер Modbus TCP", this);
 
-  QPushButton* btnAdd = new QPushButton("Добавить адрес");
-  QPushButton* btnRemove = new QPushButton("Удалить адрес");
+  QPushButton* btnAdd = new QPushButton("Добавить адрес", this);
+  QPushButton* btnRemove = new QPushButton("Удалить адрес", this);
   QHBoxLayout* buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(btnAdd);
   buttonLayout->addWidget(btnRemove);
@@ -88,13 +86,30 @@ AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH)
 
   QVBoxLayout* settingsLayout = new QVBoxLayout;
   settingsLayout->setSizeConstraint(QLayout::SetFixedSize);
+  settingsLayout->addWidget(rbDetWire);
   settingsLayout->addWidget(cbDetRS485);
-  settingsLayout->addWidget(cbDetRadioChannel);
+  settingsLayout->addWidget(rbDetRadioChannel);
   settingsLayout->addLayout(buttonLayout);
   settingsLayout->addWidget(lwAddr);
   QWidget* settingsWidget = new QWidget;
   settingsWidget->setLayout(settingsLayout);
 
+  connect(rbDetRadioChannel, &QRadioButton::toggled, this, [=](bool checked)
+  {
+    ImpSettings::Instance()->SetValue(ImpKeys::EN_MODBUS_TCP, checked);
+    btnAdd->setEnabled(checked);
+    btnRemove->setEnabled(checked);
+    lwAddr->setEnabled(checked);
+    cbDetRS485->setEnabled(!checked);
+    rbDetWire->setChecked(!checked);
+  });
+  connect(rbDetWire, &QRadioButton::toggled, this, [=](bool checked)
+  {
+    rbDetRadioChannel->setChecked(!checked);
+  });
+
+  rbDetWire->setChecked(!settings->Value(ImpKeys::EN_MODBUS_TCP).toBool());
+  rbDetRadioChannel->setChecked(ImpSettings::Instance()->Value(ImpKeys::EN_MODBUS_TCP).toBool());
 
   QTabWidget* tab = new QTabWidget;
   tab->addTab(aboutWidget, "Тех. поддержка");

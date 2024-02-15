@@ -26,8 +26,6 @@ private:
   std::vector<SerialPortLocator*> _mbSpLocators;
   std::vector<MBTcpLocator*> _mbTcpLocators;
   std::vector<ImpAbstractDetect*> _detects;
-  bool _comReady;
-  bool _tcpReady;
 
   explicit DetectFactory(QObject *parent);
   void comVTDetects();
