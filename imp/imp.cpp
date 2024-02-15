@@ -285,6 +285,7 @@ void Imp::FindDetects(void)
 // Создание класса для работы с установками датчика
 void Imp::createNewSettings(QString idDetect)//,
 {
+  qApp->processEvents();
   ImpAbstractDetect* detect = DetectAtId(idDetect.toInt());
   if (detect)
     detect->ShowSettings();
@@ -294,6 +295,7 @@ void Imp::createNewSettings(QString idDetect)//,
 // Создание нового индикатора
 void Imp::createNewIndicator(QString strNDS)
 {
+  qApp->processEvents();
   int id = strNDS.toInt();
   ImpAbstractDetect* baseDetect = nullptr;
   if (id)
@@ -326,6 +328,7 @@ void Imp::deleteIndicator(int idInd)
 
 void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect)
 {
+  qApp->processEvents();
     Indicator* ind;
     ind = new Indicator(this,
                         index, // Номер индикатора
