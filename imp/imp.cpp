@@ -243,18 +243,14 @@ void Imp::FindDetects(void)
       _detects.push_back(d);
     else
       d->Remove();
+  qApp->processEvents();
 
   // искать новые датчики
   DetectFactory* dfactory = DetectFactory::Instance(this);
-  if (dfactory->AvailablePorts())
-  {
-    // Индикация времени поиска USB датчиков
-    _uiCounter = 0;
-    _uiLength = dfactory->FindingTime();
-    ptextComment->setProperty("text", "Поиск датчиков");
-    ppbFind->setProperty("value", _uiCounter);
-    _indicateTimer->start();
+  static bool setConnect = false;
 
+  if (!setConnect)
+  {
     connect(dfactory, &DetectFactory::readyOfDetects, this, [=]()
     {
       for (ImpAbstractDetect* newDetect : dfactory->VTDetects())
@@ -265,7 +261,7 @@ void Imp::FindDetects(void)
           {
             haveId = true;
             break;
-        }
+          }
         if (haveId)
           newDetect->deleteLater();
         else
@@ -276,6 +272,19 @@ void Imp::FindDetects(void)
       ptextComment->setProperty("text", "");
       ppbFind->setProperty("value", 1);
     });
+
+    setConnect = true;
+  }
+
+
+  if (dfactory->AvailablePorts())
+  {
+    // Индикация времени поиска USB датчиков
+    _uiCounter = 0;
+    _uiLength = dfactory->FindingTime();
+    ptextComment->setProperty("text", "Поиск датчиков");
+    ppbFind->setProperty("value", _uiCounter);
+    _indicateTimer->start();
 
     dfactory->StartFindOfDetects();
   }
