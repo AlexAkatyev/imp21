@@ -4,7 +4,6 @@
 #include <QElapsedTimer>
 #include <QModbusTcpClient>
 #include <QModbusDataUnit>
-#include <QTimer>
 
 #include "detectfactory.h"
 #include "Detects/bepvtdetect.h"
@@ -203,34 +202,20 @@ void DetectFactory::tcpVTDetects()
       {
         if (state == QModbusDevice::ConnectedState)
           client->Init();
-        else if (state == QModbusDevice::ClosingState
-                 || state == QModbusDevice::UnconnectedState)
-        {
-          client->disconnectDevice();
-          qApp->processEvents();
-          client->connectDevice();
-        }
       });
       client->connectDevice();
     }
   }
 
-  //waitElapsed(MBTCP_WAIT_INIT);
-  QTimer::singleShot(MBTCP_WAIT_INIT, [=]()
-  {
-    for (MBTcpLocator* s : _mbTcpLocators)
+  waitElapsed(MBTCP_WAIT_INIT);
+
+  for (MBTcpLocator* s : _mbTcpLocators)
+    for (int i = 0; i < s->CountDetects(); ++i)
     {
-      if (s->state() == QModbusDevice::ConnectedState)
-        for (int i = 0; i < s->CountDetects(); ++i)
-        {
-          MeasServerDetect* msd = new MeasServerDetect(s, i, parent());
-          msd->Init();
-          _detects.push_back(msd);
-        }
-      else
-        s->disconnectDevice();
+      MeasServerDetect* msd = new MeasServerDetect(s, i, parent());
+      msd->Init();
+      _detects.push_back(msd);
     }
-  });
 }
 
 
