@@ -1,11 +1,8 @@
-#include <QTextCodec>
 
 #include "vt21detect.h"
 
 // Количество калибровочных точек
 const int SUM_POINT = 21;
-//Кодировщик шрифта - код для записи строк в датчик
-#define CODE_LOCALLY "Windows-1251"
 
 
 VT21Detect::VT21Detect(QSerialPortInfo portInfo, QObject *parent)
@@ -116,22 +113,6 @@ void VT21Detect::defLMeasureInterval(int divider)
     if (result > pm.at(0))
       result = pm.at(0);
   _lMeasInterval = result / reduceDivider(divider);
-}
-
-
-QString VT21Detect::getLocallyString(QByteArray baData)
-{
-  QByteArray data = baData.replace('\0',' '); // Для корректной работы со строкой
-  QTextCodec* codec = QTextCodec::codecForName(CODE_LOCALLY);
-  QString stroka = codec->toUnicode(data);
-  return stroka.trimmed();
-}
-
-
-QByteArray VT21Detect::setLocallyString(QString stroka)
-{
-  QTextCodec* codec = QTextCodec::codecForName(CODE_LOCALLY);
-  return codec->fromUnicode(stroka);
 }
 
 

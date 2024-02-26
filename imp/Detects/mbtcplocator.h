@@ -41,7 +41,7 @@ private:
   void readRequest(int startAddress, quint16 numberOfEntries);
   void initContinue();
   int regData(qint16 reg, int numberD);
-  QString dataToString(qint16 reg, int numberD, int length);
+  QByteArray dataToByteArray(qint16 reg, int numberD, int length);
   void readFromUdpSocket();
   int numberD(int id);
   float getFloatFromRegMeas(qint16 reg, int numberD);

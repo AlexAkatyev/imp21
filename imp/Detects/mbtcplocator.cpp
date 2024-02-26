@@ -181,26 +181,26 @@ QDate MBTcpLocator::DetectDateManuf(int numberD)
 
 QString MBTcpLocator::UnitMeasure(int numberD)
 {
-  return dataToString(REG_UNIT_DETECT, numberD, LEN_UNIT_DETECT);
+  return getLocallyString(dataToByteArray(REG_UNIT_DETECT, numberD, LEN_UNIT_DETECT));
 }
 
 
 QString MBTcpLocator::NameDetect(int numberD)
 {
-  return dataToString(REG_NAME_DETECT, numberD, LEN_NAME_DETECT);
+  return getLocallyString(dataToByteArray(REG_NAME_DETECT, numberD, LEN_NAME_DETECT));
 }
 
 
-QString MBTcpLocator::dataToString(qint16 reg, int numberD, int length)
+QByteArray MBTcpLocator::dataToByteArray(qint16 reg, int numberD, int length)
 {
-  QString result;
+  QByteArray result;
   for (int i = 0; i < length; ++i)
   {
     uint d = _regs[regData(reg + i, numberD)];
     result.push_back(static_cast<char>(d >> 8));
     result.push_back(static_cast<char>(d));
   }
-  return result.trimmed();
+  return result;
 }
 
 

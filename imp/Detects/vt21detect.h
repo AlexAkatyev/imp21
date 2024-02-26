@@ -29,8 +29,6 @@ signals:
   void calcCalibrateResult(int measData);
   void defHMeasureInterval(int divider = 1);
   void defLMeasureInterval(int divider = 1);
-  QString getLocallyString(QByteArray baData);
-  QByteArray setLocallyString(QString stroka);
   bool fillCalibrateDataTable(QByteArray baData, int lenPoint, int lenMeasPoint);
 
   int _countPeriod;

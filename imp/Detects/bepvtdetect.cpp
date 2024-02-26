@@ -6,6 +6,7 @@
 #include "bepvtsettings.h"
 
 #include "Logger/logger.h"
+#include "UtilLib/utillib.h"
 
 // Количество калибровочных точек
 const int SUM_POINT = VT21Detect::SumPoint();

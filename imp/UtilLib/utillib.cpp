@@ -1,3 +1,5 @@
+#include <QTextCodec>
+
 #include "utillib.h"
 
 // Коррекция строки для вывода чисел в правильном формате
@@ -38,6 +40,22 @@ std::vector<QByteArray> splitByteArray(QByteArray input, QByteArray delimiter)
     }
   }
   return result;
+}
+
+
+QString getLocallyString(QByteArray baData, QByteArray codeLocally)
+{
+  QByteArray data = baData.replace('\0',' '); // Для корректной работы со строкой
+  QTextCodec* codec = QTextCodec::codecForName(codeLocally);
+  QString stroka = codec->toUnicode(data);
+  return stroka.trimmed();
+}
+
+
+QByteArray setLocallyString(QString stroka, QByteArray codeLocally)
+{
+  QTextCodec* codec = QTextCodec::codecForName(codeLocally);
+  return codec->fromUnicode(stroka);
 }
 
 

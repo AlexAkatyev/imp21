@@ -6,6 +6,7 @@
 #include "serialportlocator.h"
 #include "bepvtsettings.h"
 #include "Logger/logger.h"
+#include "UtilLib/utillib.h"
 
 #include <QDebug>
 
