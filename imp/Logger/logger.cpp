@@ -7,7 +7,7 @@
 
 Logger::Logger(QObject *parent)
   : QObject(parent)
-  , _log(new QFile("imp21log.txt", parent))
+  , _log(new QFile("imp.log", parent))
 {
   _log->open(QIODevice::WriteOnly);
   WriteLnLog("Начало записи " + QDateTime::currentDateTime().toString("dd.MM.yyyy HH:mm:ss"));
