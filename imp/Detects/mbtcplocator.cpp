@@ -11,13 +11,15 @@
 #include "UtilLib/utillib.h"
 
 const int INIT_INTERVAL = 500;
+const int START_INIT_STEP = -2;
 
 
 MBTcpLocator::MBTcpLocator(QObject* parent)
   : QModbusTcpClient(parent)
   , _initTimer(new QTimer(this))
-  , _initStep(-2)
+  , _initStep(START_INIT_STEP)
   , _socket(new QUdpSocket(this))
+  , _setUdpConnect(false)
 {
   _initTimer->setInterval(INIT_INTERVAL);
   connect(_initTimer, &QTimer::timeout, this, &MBTcpLocator::initContinue);
@@ -46,13 +48,18 @@ void MBTcpLocator::OnReadReady(QModbusReply* reply)
 
 void MBTcpLocator::Init()
 {
+  _initStep = START_INIT_STEP;
   readRequest(REG_FACTORY_CODE1, 16);
   Logger::GetInstance()->WriteLnLog(QString("Request. step %1. count detects %2").arg(_initStep).arg(CountDetects()));
   ++_initStep;
   _initTimer->start();
   QHostAddress adress = QHostAddress(connectionParameter(QModbusDevice::NetworkAddressParameter).toString());
-  _socket->bind(adress, UDP_PORT);
-  connect(_socket, &QUdpSocket::readyRead, this, &MBTcpLocator::readFromUdpSocket);
+  if (!_setUdpConnect)
+  {
+    _socket->bind(adress, UDP_PORT);
+    connect(_socket, &QUdpSocket::readyRead, this, &MBTcpLocator::readFromUdpSocket);
+    _setUdpConnect = true;
+  }
 }
 
 

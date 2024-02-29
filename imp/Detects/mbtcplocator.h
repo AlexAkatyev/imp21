@@ -37,6 +37,7 @@ private:
   QTimer* _initTimer;
   int _initStep;
   QUdpSocket* _socket;
+  bool _setUdpConnect;
 
   void readRequest(int startAddress, quint16 numberOfEntries);
   void initContinue();
