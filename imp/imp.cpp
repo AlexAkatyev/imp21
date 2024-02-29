@@ -55,7 +55,7 @@ Imp::Imp(QWidget* parent)
     LoadSettingsGeneral();
 
     // Присвоение имени окну
-    this->setWindowTitle(QString("ИМП 21 v.%1.%2.%3").arg(DEF_VERSION_MAJOR).arg(DEF_VERSION_MINOR).arg(DEF_VERSION_PATCH));
+    this->setWindowTitle(QString("ИМП  v.%1.%2.%3.%4").arg(DEF_VERSION_MAJOR).arg(DEF_VERSION_MINOR).arg(DEF_VERSION_PATCH).arg(DEF_VERSION_TEST));
     QUrl source("qrc:/imp.qml");
     pQuickUi->setSource(source);
 
