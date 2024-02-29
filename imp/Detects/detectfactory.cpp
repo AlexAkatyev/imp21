@@ -177,6 +177,7 @@ void DetectFactory::sendReadyOfDetects()
 
 void DetectFactory::tcpVTDetects()
 {
+  Logger::GetInstance()->WriteLnLog("новый поиск серверов");
   // refresh list of sockets
   QStringList slAddr = ImpSettings::Instance()->Value(ImpKeys::LIST_MB_ADDR).toStringList();
   if (slAddr.isEmpty())
@@ -192,18 +193,31 @@ void DetectFactory::tcpVTDetects()
       }
     if (client == nullptr)
     {
+      Logger::GetInstance()->WriteLnLog("Начало поиска сервера на " + socketAddr);
       client = new MBTcpLocator(parent());
       client->setConnectionParameter(QModbusDevice::NetworkPortParameter, DEF_MB_TCP_PORT);
       client->setConnectionParameter(QModbusDevice::NetworkAddressParameter, socketAddr);
-      client->setTimeout(5000);
+      client->setTimeout(MBTCP_WAIT_INIT * 0.95);
       client->setNumberOfRetries(10);
       _mbTcpLocators.push_back(client);
       connect(client, &MBTcpLocator::stateChanged, this, [=](QModbusDevice::State state)
       {
+
+        Logger::GetInstance()->WriteLnLog("client " + client->PortName() + " : state : " + QString::number(state));
         if (state == QModbusDevice::ConnectedState)
+        {
           client->Init();
+          Logger::GetInstance()->WriteLnLog("Подключились. Инициализация");
+        }
       });
       client->connectDevice();
+    }
+    else
+    {
+      if (client->state() == QModbusDevice::ConnectedState)
+        client->Init();
+      else
+        client->connectDevice();
     }
   }
 
