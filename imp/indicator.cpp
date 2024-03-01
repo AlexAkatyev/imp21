@@ -761,6 +761,11 @@ void Indicator::watchDogControl(void)
     _inputIndicator->setProperty("blOverRange2", (meas2 > _detect2->HMeasureInterval()) || (meas2 < _detect2->LMeasureInterval()));
     _inputIndicator->setProperty("blDetect2WorkInput", _detect2->Ready());
   }
+  else
+  {
+    _inputIndicator->setProperty("blOverRange2", false);
+    _inputIndicator->setProperty("blDetect2EnableInput", false);
+  }
 }
 
 
