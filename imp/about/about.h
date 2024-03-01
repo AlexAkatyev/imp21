@@ -11,7 +11,7 @@ class AboutDialog : public QDialog
     Q_OBJECT
 
 public:
-    AboutDialog(QWidget* parent = 0, int V_MAJOR = 0, int V_MINOR = 0, int V_PATCH = 0);
+    AboutDialog(QWidget* parent = 0, int V_MAJOR = 0, int V_MINOR = 0, int V_PATCH = 0,int V_TEST = 0);
 
 private:
     void saveAdresses(QListWidget* lw);

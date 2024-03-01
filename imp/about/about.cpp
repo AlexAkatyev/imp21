@@ -23,7 +23,7 @@
 #include "../impsettings.h"
 #include "../impdef.h"
 
-AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH)
+AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH, int V_TEST)
   : QDialog(parent)
 {
   ImpSettings * settings = ImpSettings::Instance(parent);
@@ -34,7 +34,7 @@ AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH)
   QLabel* support = new QLabel("Техническая поддержка: imcmikro@mail.ru");
   QLabel* webAdress = new QLabel("www.imcmikro.ru");
   QLabel* thanks = new QLabel(QString(""));
-  QLabel* version = new QLabel(QString("Версия %1.%2.%3").arg(V_MAJOR).arg(V_MINOR).arg(V_PATCH));
+  QLabel* version = new QLabel(QString("Версия %1.%2.%3.%4").arg(V_MAJOR).arg(V_MINOR).arg(V_PATCH).arg(V_TEST));
   QVBoxLayout* aboutLayout = new QVBoxLayout;
   aboutLayout->setSizeConstraint(QLayout::SetFixedSize);
   aboutLayout->addWidget(version);

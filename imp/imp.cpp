@@ -36,6 +36,7 @@ const int MAX_INDICATOR = 256;
 const int VERSION_MAJOR = DEF_VERSION_MAJOR;
 const int VERSION_MINOR = DEF_VERSION_MINOR;
 const int VERSION_PATCH = DEF_VERSION_PATCH;
+const int VERSION_TEST  = DEF_VERSION_TEST;
 
 // Исходные размеры окна
 const int SIZE_WINDOW_WIDTH = 320;
@@ -356,7 +357,7 @@ void Imp::showHelp()
 
 void Imp::showAbout()
 {
-  static AboutDialog* aboutWindow = new AboutDialog(this, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
+  static AboutDialog* aboutWindow = new AboutDialog(this, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, VERSION_TEST);
   aboutWindow->show();
 }
 
