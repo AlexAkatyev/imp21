@@ -1,15 +1,15 @@
 
 [Setup]
-AppName=IMP21
-AppVersion=21.5.5.2
+AppName=IMP
+AppVersion=21.5.5.3
 WizardStyle=modern
-DefaultDirName={autopf}\..\ImcMikro\IMP21
-DefaultGroupName=IMP21
+DefaultDirName={autopf}\..\ImcMikro\IMP
+DefaultGroupName=IMP
 UninstallDisplayIcon={app}\MyProg.exe
 Compression=lzma2
 SolidCompression=yes
 OutputDir=..\..\build\ReleaseInstall
-OutputBaseFilename=IMP21Installx64
+OutputBaseFilename=IMPInstallx64
 ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 AppPublisherURL=ies-ltd.ru
@@ -461,5 +461,5 @@ Source: "..\..\build\1\translations\qt_zh_TW.qm"; DestDir: "{app}\translations";
 Name: "ruslng"; MessagesFile: "compiler:Languages\Russian.isl"
 
 [Icons]
-Name: "{group}\IMP21"; Filename: "{app}\imp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\impclient.ico"; IconIndex: 0
-Name: "{autodesktop}\IMP21"; Filename: "{app}\imp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\impclient.ico"; IconIndex: 0
+Name: "{group}\IMP"; Filename: "{app}\imp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\impclient.ico"; IconIndex: 0
+Name: "{autodesktop}\IMP"; Filename: "{app}\imp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\impclient.ico"; IconIndex: 0
