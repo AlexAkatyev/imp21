@@ -6,10 +6,14 @@
 #include <QSharedMemory>
 #include <QMessageBox>
 
+#include <QBreakpadHandler.h>
+
 int main(int argc, char *argv[])
 {
     QQuickStyle::setStyle("Material"); //Flat Material
     QApplication a(argc, argv);
+
+    QBreakpadInstance.setDumpPath(QLatin1String("crashes"));
 
     QSystemSemaphore semaphore("<imp>", 1);  // создаём семафор
     semaphore.acquire(); // Поднимаем семафор, запрещая другим экземплярам работать с разделяемой памятью

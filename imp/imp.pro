@@ -137,3 +137,7 @@ DISTFILES += \
     simplexlsx/Readme.txt
 
 RC_FILE = imp.rc
+
+include($$PWD/../qBreakpad/qBreakpad.pri)
+QMAKE_LIBDIR += $$PWD/../qBreakpad/handler
+LIBS += -lqBreakpad
