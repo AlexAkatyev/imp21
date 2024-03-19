@@ -45,9 +45,9 @@ const int LEN_UDP_DATA            = 7;
 
 const int UDP_ID                  = 0;
 const int LEN_UDP_ID              = 2;
-const int UDP_COUNTER             = UDP_ID + LEN_UDP_ID;
-const int LEN_UDP_COUNTER         = 1;
-const int UDP_MEAS                = UDP_COUNTER + LEN_UDP_COUNTER;
+const int UDP_PEEK             = UDP_ID + LEN_UDP_ID;
+const int LEN_UDP_PEEK         = 1;
+const int UDP_MEAS                = UDP_PEEK + LEN_UDP_PEEK;
 const int LEN_UDP_MEAS            = 4;
 
 #endif // MEASSERVERMAP_H

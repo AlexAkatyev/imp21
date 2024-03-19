@@ -31,6 +31,7 @@ public:
 
 signals:
   void ReadyMeasure(int id, float meas);
+  void PedalPressed(int id);
 
 private:
   std::map<qint16, qint16> _regs;

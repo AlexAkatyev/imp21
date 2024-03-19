@@ -21,6 +21,11 @@ MeasServerDetect::MeasServerDetect(MBTcpLocator* locator, int countD, QObject* p
         _counterWDT = 0;
       }
   });
+  connect(_locator, &MBTcpLocator::PedalPressed, this, [=](int id)
+  {
+    if (id == Id())
+        emit FixMeasure();
+  });
 
   // Контроль жизни датчика
   QTimer* wdt = new QTimer(this);
