@@ -63,6 +63,17 @@ Item
     property bool dopuskTest: inputIndicator.dopusk
     onDopuskTestChanged: dopusk.checked = inputIndicator.dopusk
 
+    property bool clearMeasdata: false
+    onClearMeasdataChanged:
+    {
+        if (clearMeasdata)
+        {
+            lmMeasData.clear();
+            clearMeasdata = false;
+        }
+    }
+
+
     // сигнал изменения формулы
     signal sigChangeFormula();
     // Сигнал о необходимости обновления цены деления
@@ -155,7 +166,6 @@ Item
             return 0;
         fillTxtCsvForSave();
         sigClickedSave();
-        lmMeasData.clear();
         return 1;
     }
 

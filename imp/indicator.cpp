@@ -788,6 +788,7 @@ void Indicator::saveMeas(void)
         saveToCSV(strFileName);
       else if (strFileName.contains(".xls", Qt::CaseInsensitive))
         saveToXLS(strFileName);
+       _quickUi->rootObject()->setProperty("clearMeasdata", true);
     }
 }
 
