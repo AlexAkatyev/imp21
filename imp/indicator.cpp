@@ -619,8 +619,6 @@ void Indicator::loadSettingsWindow()
 // Чтение установок
 bool Indicator::loadSettingsIndicator()
 {
-  _tfNumberCharPoint->setProperty("currentIndex ", _settings->Value(IndKeys::NUMBER_CHAR_POINT));
-
   _scale1 = _settings->Value(IndKeys::SCALE1).toFloat();
   _tfFactor1->setProperty("text",round(static_cast<double>(_scale1)*100)/100);
   int idDetect1 = _settings->Value(IndKeys::DETECT1).toInt();
@@ -701,7 +699,7 @@ bool Indicator::loadSettingsIndicator()
   _tfLoLimit->setProperty("text", _settings->Value(IndKeys::LOWLIMIT));
   _inputIndicator->setProperty("priemka", _settings->Value(IndKeys::PRIEMKA));
   _tfPriemka->setProperty("text", _settings->Value(IndKeys::PRIEMKA));
-  float accuracy = _settings->Value(IndKeys::ACCURACY).toFloat();
+  int accuracy = _settings->Value(IndKeys::ACCURACY).toInt();
   if (accuracy < 0)
     accuracy = 0;
   _inputIndicator->setProperty("accuracy", accuracy);

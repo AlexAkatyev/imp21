@@ -369,6 +369,26 @@ Item
             inputIndicator.accuracy = currentIndex;
     }
 
+    function currentIndexFromAccuracy()
+    {
+        //inputIndicator.transGauge inputIndicator.accuracy
+        if (inputIndicator.transGauge == 0) // mkm 0-3
+            return inRange(0, 3, inputIndicator.accuracy) ? inputIndicator.accuracy : 1;
+        else if (inputIndicator.transGauge == 1) // mm 3-5
+            return inRange(3, 5, inputIndicator.accuracy) ? inputIndicator.accuracy - 3 : 0;
+        else if (inputIndicator.transGauge == 2) // inch 6-7
+            return inRange(6, 7, inputIndicator.accuracy) ? inputIndicator.accuracy - 6 : 0;
+        else if (inputIndicator.transGauge == 3) // angle second 0-1
+            return inRange(0, 1, inputIndicator.accuracy) ? inputIndicator.accuracy : 0;
+        else
+            return 0;
+    }
+
+    function inRange(l, h, d)
+    {
+        return d >= l && d <= h;
+    }
+
     // Источник входных данных
     InputIndicator
     {
@@ -1251,7 +1271,7 @@ Item
                                 {
                                     inputIndicator.transGauge = 0;
                                     tfNumberCharPoint.model = getNumberCharPointModel("mkm");
-                                    tfNumberCharPoint.currentIndex = 1;
+                                    tfNumberCharPoint.currentIndex = currentIndexFromAccuracy();
                                 }
                             }
                             RadioButton {
@@ -1261,7 +1281,7 @@ Item
                                 {
                                     inputIndicator.transGauge = 1;
                                     tfNumberCharPoint.model = getNumberCharPointModel("mm");
-                                    tfNumberCharPoint.currentIndex = 0;
+                                    tfNumberCharPoint.currentIndex = currentIndexFromAccuracy();
                                 }
                             }
                             RadioButton {
@@ -1271,7 +1291,7 @@ Item
                                 {
                                     inputIndicator.transGauge = 2;
                                     tfNumberCharPoint.model = getNumberCharPointModel("inch");
-                                    tfNumberCharPoint.currentIndex = 0;
+                                    tfNumberCharPoint.currentIndex = currentIndexFromAccuracy();
                                 }
                             }
                             RadioButton {
@@ -1281,7 +1301,7 @@ Item
                                 {
                                     inputIndicator.transGauge = 3;
                                     tfNumberCharPoint.model = getNumberCharPointModel("angle seconds");
-                                    tfNumberCharPoint.currentIndex = 0;
+                                    tfNumberCharPoint.currentIndex = currentIndexFromAccuracy();
                                 }
                             }
                         }
