@@ -54,6 +54,7 @@ Imp::Imp(QWidget* parent)
     _useIndicators.clear(); // подготовка к загрузке множества индикаторов
     _flagRunIndicators = true;
     LoadSettingsGeneral();
+    setMinimumSize(SIZE_WINDOW_WIDTH, SIZE_WINDOW_HEIGTH);
 
     // Присвоение имени окну
     this->setWindowTitle(QString("ИМП  v.%1.%2.%3.%4").arg(DEF_VERSION_MAJOR).arg(DEF_VERSION_MINOR).arg(DEF_VERSION_PATCH).arg(DEF_VERSION_TEST));
