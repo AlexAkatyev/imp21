@@ -1144,7 +1144,7 @@ Item
                         TextField {
                             id: tfHiLimit
                             objectName: "tfHiLimit"
-                            width: itFormula.width/5
+                            width: itDopusk.width/3
                             font.pixelSize: 12
                         }
                         Text {
