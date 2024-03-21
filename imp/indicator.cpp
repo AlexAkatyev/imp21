@@ -139,7 +139,7 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
 
   if (baseDetect)
   {
-    setTitle(QString::number(baseDetect->Id()));
+    setTitle("Индикатор " + QString::number(_idIndicator));
     _detect1 = baseDetect;
     _detect2 = nullptr;
     setComboListDetect();
@@ -398,7 +398,7 @@ void Indicator::setWorkIndicators()
 void Indicator::setComboListDetect(void)
 {
   // Обновили список в combobox
-  QStringList slCLD1 = createListByDetect1();
+  QStringList slCLD1 = createListByDetect2();
   QStringList slCLD2 = createListByDetect2();
   _cbListDetect1->setProperty("model", slCLD1);
   _cbListDetect2->setProperty("model", slCLD2);
@@ -406,22 +406,12 @@ void Indicator::setComboListDetect(void)
   // По ключу выставляем активный датчик
   int index1 = 0; // Датчик по умолчанию исчез из списка
   if (_detect1)
-  {
-    if (_detect1->Ready()) // Датчик остался в списке и жив
-      index1 = currentIndex1ByName(_detect1->UserName());
-    else // Датчик в процессе удаления
-      _detect1 = nullptr;
-  }
+    index1 = currentIndex2ByName(_detect1->UserName());
   _cbListDetect1->setProperty("currentIndex", index1);
 
   int index2 = 0; // Датчик по умолчанию исчез из списка
-  if (_detect2 != nullptr)
-  {
-    if (_detect2->Ready()) // Датчик остался в списке и жив
-      index2 = currentIndex2ByName(_detect2->UserName());
-    else // Датчик в процессе удаления
-      _detect2 = nullptr;
-  }
+  if (_detect2)
+    index2 = currentIndex2ByName(_detect2->UserName());
   _cbListDetect2->setProperty("currentIndex", index2);
 
   setWorkIndicators();
@@ -647,7 +637,7 @@ bool Indicator::loadSettingsIndicator()
     if (_detect1)
     { // Датчик остался в списке
       QStringList slTemp;
-      int index = currentIndex1ByName(_detect1->UserName());
+      int index = currentIndex2ByName(_detect1->UserName());
       _cbListDetect1->setProperty("currentIndex", index);
       _inputIndicator->setProperty("blDetect1EnableInput", index != 0);
     }
