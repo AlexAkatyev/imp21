@@ -25,7 +25,8 @@ Logger* Logger::GetInstance(QObject *parent)
 
 void Logger::WriteLog(QString input)
 {
-  if(!_log->isOpen())
+  if(_log
+     && !_log->isOpen())
     return;
 
   QTextStream out(_log);
