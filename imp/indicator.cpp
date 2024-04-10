@@ -5,6 +5,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 
+#include <windows.h>
 
 #include "indicator.h"
 #include "UtilLib/utillib.h"
@@ -41,6 +42,8 @@ const int MINIMAL_WIDTH = 300;
 
 // Периодичность считывания показаний датчиков
 const int WATCH_DOG_INTERVAL = 100;
+
+const int WM_IMP_MESSAGE_ID = WM_APP + 0x15;
 
 
 Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* baseDetect)
@@ -113,6 +116,8 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   connect(_tStatChart, SIGNAL(sigClickedSaveCSV()), this, SLOT(saveChartToCSV()));
   // отработка нажатия кнопки сохранение XLS
   connect(_tStatChart, SIGNAL(sigClickedSaveXLS()), this, SLOT(saveChartToXLS()));
+  // выбор файла автосохранения
+  connect(_quickUi->rootObject(), SIGNAL(sigSendMeasurementMessage()), this, SLOT(sendWmAppMessage()));
 
   // получение информиции о имеющихся датчиках от главного окна
   connect(_parent, SIGNAL(sigFindDetect()), this, SLOT(setComboListDetect()));
@@ -923,4 +928,15 @@ void Indicator::autoSaveToXLSX()
   saveToXLS(_autoSaveFile);
 }
 
+
+void Indicator::sendWmAppMessage()
+{
+  float m = _quickUi->rootObject()->property("measValue").toFloat() * 1000;
+  int i = m;
+  WPARAM wParam = _idIndicator;
+  HWND wndHndl = FindWindow(L"XLMAIN", 0); // Notepad  XLMAIN
+  if (wndHndl == NULL)
+    wndHndl = HWND_BROADCAST;
+  PostMessage(wndHndl, WM_IMP_MESSAGE_ID, wParam, (LPARAM)i);
+}
 

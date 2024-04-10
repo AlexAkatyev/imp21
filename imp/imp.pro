@@ -140,4 +140,5 @@ RC_FILE = imp.rc
 
 include($$PWD/../qBreakpad/qBreakpad.pri)
 QMAKE_LIBDIR += $$PWD/../qBreakpad/handler
-LIBS += -lqBreakpad
+LIBS += -lqBreakpad \
+        -lUser32

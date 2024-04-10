@@ -147,6 +147,9 @@ private slots:
     void saveToXLS(QString fileName);
     void selectAutoSaveFile();
     void autoSaveToXLSX();
+
+    // сообщение в систему
+    void sendWmAppMessage();
 };
 
 #endif // INDICATOR_H

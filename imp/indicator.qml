@@ -93,6 +93,8 @@ Item
     signal sigDividerEntered();
     // выбор файла для автосохранения
     signal sigPeekFile();
+    // Send broadcast message with measurement
+    signal sigSendMeasurementMessage(); // see measValue
 
     function toPixels(percentage) {
         return percentage * scaleBase / 100;
@@ -270,7 +272,10 @@ Item
     function releaseData()
     {
         if (!deviationMode) // ручной замер
+        {
             lmMeasData.append({"time":(new Date()), "meas":measValue});
+            sigSendMeasurementMessage();
+        }
     }
 
     function setStatMode()
