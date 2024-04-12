@@ -121,6 +121,8 @@ private:
 
     void setWorkIndicators();
     void setTitle(QString indicatorName);
+    void setWindowTitleMain(QString indicatorName);
+    QString _userTitle;
 
 private slots:
     void changeIndication(void); // Изменение способа показаний

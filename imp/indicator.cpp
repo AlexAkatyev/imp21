@@ -144,7 +144,7 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
 
   if (baseDetect)
   {
-    setTitle("Индикатор " + QString::number(_idIndicator));
+    setTitle("Индикатор");
     _detect1 = baseDetect;
     _detect2 = nullptr;
     setComboListDetect();
@@ -569,7 +569,7 @@ void Indicator::saveSettingsIndicator()
   _settings->SetValue(IndKeys::WIN_HEIGHT, winGeometry.height());
 
   // сохранение формулы
-  _settings->SetValue(IndKeys::INDICATOR_NAME, windowTitle());
+  _settings->SetValue(IndKeys::INDICATOR_NAME, _userTitle);
   _settings->SetValue(IndKeys::SCALE1, _scale1);
   _settings->SetValue(IndKeys::DETECT1, _detect1 ? _detect1->Id() : 0);
   _settings->SetValue(IndKeys::INCREMENT1, _increment1);
@@ -733,8 +733,21 @@ bool Indicator::loadSettingsIndicator()
 
 void Indicator::setTitle(QString indicatorName)
 {
+  setWindowTitleMain(indicatorName);
   _tfName->setProperty("text", indicatorName);
-  this->setWindowTitle(indicatorName);
+}
+
+
+void Indicator::setWindowName()
+{
+  setWindowTitleMain(_tfName->property("text").toString());
+}
+
+
+void Indicator::setWindowTitleMain(QString name)
+{
+  _userTitle = name;
+  setWindowTitle(_userTitle + " : " + QString::number(_idIndicator + 1));
 }
 
 
@@ -783,13 +796,6 @@ void Indicator::saveMeas(void)
         saveToXLS(strFileName);
        _quickUi->rootObject()->setProperty("clearMeasdata", true);
     }
-}
-
-
-void Indicator::setWindowName(void)
-{
-    QString indicatorName = _tfName->property("text").toString();
-    this->setWindowTitle(indicatorName);
 }
 
 
