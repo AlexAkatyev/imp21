@@ -669,17 +669,17 @@ Item
                 width: parent.width / 4
                 visible: Math.abs(inputIndicator.beforeSet) > 0.5 * Math.pow(10,-inputIndicator.accuracy)
                 Text {
-                    id: txNameBeforeSet
+                    id: txBeforeSet
                     anchors.top: parent.top
-                    anchors.left: parent.left
-                    text: "Предустанов : "
+                    anchors.right: parent.right
+                    text: setTextBeforeSet()
                     color: "red"
                 }
                 Text {
-                    id: txBeforeSet
+                    id: txNameBeforeSet
                     anchors.top: parent.top
-                    anchors.left: txNameBeforeSet.right
-                    text: setTextBeforeSet()
+                    anchors.right: txBeforeSet.left
+                    text: "Предустанов : "
                     color: "red"
                 }
             }
