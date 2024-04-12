@@ -456,6 +456,7 @@ Source: "..\..\build\1\translations\qt_ru.qm"; DestDir: "{app}\translations"; Fl
 Source: "..\..\build\1\translations\qt_sk.qm"; DestDir: "{app}\translations"; Flags: ignoreversion
 Source: "..\..\build\1\translations\qt_uk.qm"; DestDir: "{app}\translations"; Flags: ignoreversion
 Source: "..\..\build\1\translations\qt_zh_TW.qm"; DestDir: "{app}\translations"; Flags: ignoreversion
+Source: "..\rec.xlsm"; DestDir: "{app}"; Flags: ignoreversion
 
 [Languages]
 Name: "ruslng"; MessagesFile: "compiler:Languages\Russian.isl"
