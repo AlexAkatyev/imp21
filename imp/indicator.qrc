@@ -16,5 +16,6 @@
         <file>1kHz_44100Hz_16bit_05sec.wav</file>
         <file>ext_csv_filetype_icon_176252.png</file>
         <file>ext_xlsx_icon_176245.png</file>
+        <file>Ionic-Ionicons-Stop-512.png</file>
     </qresource>
 </RCC>

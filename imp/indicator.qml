@@ -36,12 +36,13 @@ Item
     property real measDeviation: 0
     property int  prevTabIndex: 0
     property bool stateMeasure: false // true - идет замер
+    property bool pauseMeasure: false // true - пауза в измерении
     property string textcsv: "";
     property bool setZero: false // нуль не установлен
     property real measValue: inputIndicator.mTranformFormulaReal + inputIndicator.zeroShift
     onMeasValueChanged:
     {
-        if (stateMeasure)
+        if (stateMeasure && !pauseMeasure)
         {
             if (measMin > measValue)
             {
@@ -257,6 +258,7 @@ Item
     {
         if (deviationMode)
         {
+            pauseMeasure = false;
             stateMeasure = !stateMeasure;
             if (stateMeasure) // начинается замер
             {
@@ -492,17 +494,42 @@ Item
             id: btData
             anchors.left: btRight.right
             anchors.bottom: parent.bottom
-            visible: itMainGauge.visible
-            text: itMin.visible ? (stateMeasure ? "Стоп" : "Старт") : "Data"
+            visible: itMainGauge.visible && !itMin.visible
+            text: "Data"
             width: btMenu.width
-            onReleased: itMin.visible ? releaseMouseClicked() : releaseData();
+            onReleased: releaseData()
+        }
+        Button {
+            id: btStartPause
+            anchors.left: btRight.right
+            anchors.bottom: parent.bottom
+            visible: itMainGauge.visible && itMin.visible
+            icon.source: stateMeasure ? (pauseMeasure ? "qrc:/Play-1-Pressed-icon.png" : "qrc:/PauseNormal.png") : "qrc:/Play-1-Pressed-icon.png"
+            width: btMenu.width / 2
+            onReleased:
+            {
+                if (stateMeasure)
+                    pauseMeasure = !pauseMeasure;
+                else
+                    releaseMouseClicked();
+            }
+        }
+        Button {
+            id: btStop
+            anchors.left: btStartPause.right
+            anchors.bottom: parent.bottom
+            visible: btStartPause.visible
+            icon.source: "qrc:/Ionic-Ionicons-Stop-512.png"
+            width: btMenu.width / 2
+            onReleased: releaseMouseClicked()
+            enabled: stateMeasure
             Rectangle {
                 anchors.fill: parent
                 anchors.bottomMargin: 5
                 anchors.topMargin: 5
                 radius: 4
                 color: "tomato"
-                opacity: itMin.visible ? (stateMeasure ? 0.5 : 0) : 0
+                opacity: stateMeasure ? 0.5 : 0
             }
         }
         // Окно сортировки
