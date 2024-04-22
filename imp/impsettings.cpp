@@ -103,7 +103,7 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
     return false;
     break;
   case EN_MODBUS_TCP:
-    return true;
+    return false;
     break;
   case LIST_MB_ADDR:
   {
