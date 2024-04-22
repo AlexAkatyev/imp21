@@ -153,7 +153,7 @@ QVariant IndSettings::defaultValues(IndKeys c)
     return SIZE_WINDOW_HEIGTH;
     break;
   case INDICATOR_NAME:
-    return "Индикатор б/н";
+    return "Индикатор";
     break;
   case UNITPOINT:
     return 5;
@@ -195,6 +195,12 @@ QVariant IndSettings::defaultValues(IndKeys c)
     return 0;
     break;
   case PRIEMKA:
+    return 0;
+    break;
+  case ACCURACY:
+    return 1;
+    break;
+  case ACCUR_DIVISION:
     return 0;
     break;
   case IND_MEAS_MODE:
