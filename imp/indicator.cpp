@@ -340,10 +340,10 @@ void Indicator::setFormula(void)
   qApp->processEvents();
   QString strCurrent1 = _cbListDetect1->property("currentText").toString();
   if (_detect1)
-    disconnect(_detect1, &VTDetect::FixMeasure, this, &Indicator::runButtonRelease);
+    disconnect(_detect1, &VTDetect::PressedButton, this, &Indicator::runButtonRelease);
   _detect1 = _parent->DetectAtName(strCurrent1);
   if (_detect1)
-    connect(_detect1, &VTDetect::FixMeasure, this, &Indicator::runButtonRelease);
+    connect(_detect1, &VTDetect::PressedButton, this, &Indicator::runButtonRelease);
   if (_detect1 && abs(inTempi1.fNumber) > _detect1->PreSetInterval())
   { // В введенном поле есть ошибки
     error = true;
@@ -355,10 +355,10 @@ void Indicator::setFormula(void)
   qApp->processEvents();
   QString strCurrent2 = _cbListDetect2->property("currentText").toString();
   if (_detect2)
-    disconnect(_detect2, &VTDetect::FixMeasure, this, &Indicator::runButtonRelease);
+    disconnect(_detect2, &VTDetect::PressedButton, this, &Indicator::runButtonRelease);
   _detect2 = _parent->DetectAtName(strCurrent2);
   if (_detect2)
-    connect(_detect2, &VTDetect::FixMeasure, this, &Indicator::runButtonRelease);
+    connect(_detect2, &VTDetect::PressedButton, this, &Indicator::runButtonRelease);
   if (_detect2 && abs(inTempi2.fNumber) > _detect2->PreSetInterval())
   { // В введенном поле есть ошибки
     error = true;

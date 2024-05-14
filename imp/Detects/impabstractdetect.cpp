@@ -13,6 +13,7 @@ ImpAbstractDetect::ImpAbstractDetect(QObject *parent)
   , _zeroInterval(0)
   , _preSetInterval(0)
   , _flagReady(false)
+  , _prevStateButton(false)
 {
 
 }
@@ -131,3 +132,21 @@ QString ImpAbstractDetect::Address()
   return "";
 }
 
+
+void ImpAbstractDetect::setStateButton(bool press)
+{
+  if (_prevStateButton)
+  {
+    if (press)
+      emit HoldedButton();
+    else
+      emit ReleasedButton();
+  }
+  else
+  {
+    if (press)
+      emit PressedButton();
+  }
+
+  _prevStateButton = press;
+}

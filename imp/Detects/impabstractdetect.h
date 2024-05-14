@@ -33,9 +33,12 @@ signals:
   void NewMeasure(float);
   void Stopped();
   void UserNameChanged();
-  void FixMeasure();
+  void ReleasedButton();
+  void PressedButton();
+  void HoldedButton();
 
 protected:
+  void setStateButton(bool press);
   float _measure;
   int _serialNumber;
   QString _typeDetect;
@@ -47,6 +50,9 @@ protected:
   int _zeroInterval;
   int _preSetInterval;
   bool _flagReady;
+
+private:
+  bool _prevStateButton;
 
 };
 

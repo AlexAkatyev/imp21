@@ -284,8 +284,7 @@ void MBTcpLocator::readFromUdpSocket()
       float fMeas = iMeas;
       fMeas /= MEAS_DIVIDER;
       emit ReadyMeasure(id, fMeas);
-      if (peek)
-        emit PedalPressed(id);
+      emit PedalPressed(peek, id);
       _regs[regData(REG_CURRENT_MEAS, numberD(id))] = (iMeas & 0xFFFF0000) >> 16;
       _regs[regData(REG_CURRENT_MEAS + 1, numberD(id))] = iMeas & 0xFFFF;
     }

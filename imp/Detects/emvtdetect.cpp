@@ -160,8 +160,7 @@ void EmVTDetect::routeInput()
     break;
   }
 
-  if (receiveData.at(AT_BUTTON) == DEF_FIX)
-    emit FixMeasure();
+  setStateButton(receiveData.at(AT_BUTTON) == DEF_FIX);
 
   _input.clear();
 }
