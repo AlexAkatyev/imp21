@@ -116,7 +116,7 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   connect(_tStatChart, SIGNAL(sigClickedSaveCSV()), this, SLOT(saveChartToCSV()));
   // отработка нажатия кнопки сохранение XLS
   connect(_tStatChart, SIGNAL(sigClickedSaveXLS()), this, SLOT(saveChartToXLS()));
-  // выбор файла автосохранения
+  // передача измерения в Windows
   connect(_quickUi->rootObject(), SIGNAL(sigSendMeasurementMessage()), this, SLOT(sendWmAppMessage()));
 
   // получение информиции о имеющихся датчиках от главного окна
