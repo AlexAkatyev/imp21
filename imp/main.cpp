@@ -1,3 +1,5 @@
+#include <windows.h>
+
 #include <QApplication>
 #include <QtQuickControls2>
 #include "imp.h"
@@ -50,6 +52,8 @@ int main(int argc, char *argv[])
         msgBox.exec();
         return 1;
     }
+
+    SetThreadExecutionState(ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED);
 
     Imp w;
     w.show();
