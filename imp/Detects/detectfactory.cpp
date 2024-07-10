@@ -43,7 +43,10 @@ DetectFactory::DetectFactory(QObject *parent)
 DetectFactory::~DetectFactory()
 {
   for (auto d : _mbTcpLocators)
+  {
+    d->blockSignals(true);
     d->disconnectDevice();
+  }
 }
 
 
