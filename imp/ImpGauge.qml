@@ -27,11 +27,18 @@ Item
     property bool blDetect2Work: inputIndicator.blDetect2WorkInput
     property bool blRect1Color: false
     property bool blRect2Color: false
+    property string peekMeasText: " "
 
     onImpGaugevalueChanged: canvasGauge.requestPaint(); // перерисовка сдвинутой стрелки
     onLowLimitgChanged: canvasGauge.requestPaint(); // Перерисовка шкалы
     onHighLimitgChanged: canvasGauge.requestPaint(); // Перерисовка шкалы
     onUnitPointgChanged: canvasGauge.requestPaint(); // Перерисовка шкалы
+    onPeekMeasTextChanged:
+    {
+        peekMeas.text = peekMeasText;
+        peekMeas.opacity = 1;
+        oaPeekMeas.running = true;
+    }
 
     function toPixels(percentage) {
         return percentage * outerRadius;
@@ -237,6 +244,27 @@ Item
             loops: 1
             to: "tomato"
             duration: 100
+        }
+    }
+
+    // Вывод захваченного значения
+    Text
+    {
+        id: peekMeas
+        text: " "
+        font.pixelSize: toPixels(0.04)
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: messText.top
+        color: "black"
+        opacity: 0
+        OpacityAnimator
+        {
+            id: oaPeekMeas
+            target: peekMeas
+            loops: 1
+            from: 1
+            to: 0
+            duration: 500
         }
     }
 

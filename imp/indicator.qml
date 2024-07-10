@@ -267,7 +267,7 @@ Item
                 measDeviation = 0;
             }
             else //замер окончен
-                lmMeasData.append({"min":measMin, "max":measMax, "deviation":measDeviation});
+                appendMeasDataToModel(false);
         }
     }
 
@@ -275,10 +275,31 @@ Item
     {
         if (!deviationMode) // ручной замер
         {
-            lmMeasData.append({"time":(new Date()), "meas":measValue});
+            appendMeasDataToModel(true);
             sigSendMeasurementMessage();
         }
     }
+
+
+    function appendMeasDataToModel(handle)
+    {
+        if (handle)
+        {
+            lmMeasData.append({"time":(new Date()), "meas":measValue});
+            impGauge.peekMeasText = "Запись " + impGauge.round10(measValue, inputIndicator.accuracy);
+        }
+        else
+        {
+            lmMeasData.append({"min":measMin, "max":measMax, "deviation":measDeviation});
+            impGauge.peekMeasText = "Запись min: "
+                                    + impGauge.round10(measMin, inputIndicator.accuracy)
+                                    + " max: "
+                                    + impGauge.round10(measMax, inputIndicator.accuracy)
+                                    + " dev: "
+                                    + impGauge.round10(measDeviation, inputIndicator.accuracy);
+        }
+    }
+
 
     function setStatMode()
     {
