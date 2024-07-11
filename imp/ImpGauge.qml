@@ -28,16 +28,21 @@ Item
     property bool blRect1Color: false
     property bool blRect2Color: false
     property string peekMeasText: " "
+    property bool peekedData: false
 
     onImpGaugevalueChanged: canvasGauge.requestPaint(); // перерисовка сдвинутой стрелки
     onLowLimitgChanged: canvasGauge.requestPaint(); // Перерисовка шкалы
     onHighLimitgChanged: canvasGauge.requestPaint(); // Перерисовка шкалы
     onUnitPointgChanged: canvasGauge.requestPaint(); // Перерисовка шкалы
-    onPeekMeasTextChanged:
+    onPeekedDataChanged:
     {
-        peekMeas.text = peekMeasText;
-        peekMeas.opacity = 1;
-        oaPeekMeas.running = true;
+        if (peekedData)
+        {
+            peekMeas.text = peekMeasText;
+            peekMeas.opacity = 1;
+            oaPeekMeas.running = true;
+        }
+        peekedData = false;
     }
 
     function toPixels(percentage) {

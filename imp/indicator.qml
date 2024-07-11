@@ -298,6 +298,7 @@ Item
                                     + " dev: "
                                     + impGauge.round10(measDeviation, inputIndicator.accuracy);
         }
+        impGauge.peekedData = true;
     }
 
 
