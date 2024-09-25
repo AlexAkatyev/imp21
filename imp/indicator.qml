@@ -660,7 +660,7 @@ Item
                     anchors.left: parent.left
                     anchors.leftMargin: parent.width/2
                     text: impGauge.round10(measMin, inputIndicator.accuracy)
-                    font.pixelSize: 12
+                    font.pixelSize: parent.height - 2
                 }
                 Text {
                     id: txtMin
