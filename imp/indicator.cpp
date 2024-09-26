@@ -937,7 +937,7 @@ void Indicator::autoSaveToXLSX()
 
 void Indicator::sendWmAppMessage()
 {
-  float m = _quickUi->rootObject()->property("measValue").toFloat() * 1000;
+  float m = _quickUi->rootObject()->property("sendData").toFloat() * 1000;
   int i = m;
   WPARAM wParam = _idIndicator;
   HWND wndHndl = FindWindow(L"XLMAIN", 0); // Notepad  XLMAIN

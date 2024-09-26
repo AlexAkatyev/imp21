@@ -57,6 +57,7 @@ Item
         }
         boolBuzzerPlay = getBuzzerPlay();
     }
+    property real sendData: 0.0
 
     property string highLevelFormula: "\nВерхнее предельное отклонение"
     property string lowLevelFormula: "\nНижнее предельное отклонение"
@@ -95,7 +96,7 @@ Item
     // выбор файла для автосохранения
     signal sigPeekFile();
     // Send broadcast message with measurement
-    signal sigSendMeasurementMessage(); // see measValue
+    signal sigSendMeasurementMessage(); // see sendData
 
     function toPixels(percentage) {
         return percentage * scaleBase / 100;
@@ -276,8 +277,14 @@ Item
         if (!deviationMode) // ручной замер
         {
             appendMeasDataToModel(true);
-            sigSendMeasurementMessage();
+            sendData = measValue;
         }
+        else
+        {
+            sendData = measDeviation;
+        }
+
+        sigSendMeasurementMessage();
     }
 
 
