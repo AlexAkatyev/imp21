@@ -728,6 +728,7 @@ Item
                     id: txBeforeSet
                     anchors.top: parent.top
                     anchors.right: parent.right
+                    anchors.rightMargin: 4
                     text: setTextBeforeSet()
                     color: "red"
                 }
