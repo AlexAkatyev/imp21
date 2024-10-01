@@ -661,7 +661,7 @@ Item
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
                 width: parent.width / 3
-                height: visible ? parent.height / 20 : 0
+                height: visible ? (parent.height < parent.width ? parent.height : parent.width) / 20 : 0
                 Text {
                     id: tMeasMin
                     anchors.left: parent.left
@@ -714,7 +714,7 @@ Item
                 Text {
                     id: txtMaxMin
                     anchors.right: tMeasMaxMin.left
-                    text: "max-min : "
+                    text: "Δm : "
                     font.pixelSize: tMeasMin.font.pixelSize
                 }
             }
