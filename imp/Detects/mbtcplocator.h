@@ -18,6 +18,7 @@ public:
   bool IsMBTcpLocator();
   int CountDetects();
   int DetectId(int numberD);
+  bool ActivityState(int numberD);
   QString DetectType(int numberD);
   QDate DetectDateManuf(int numberD);
   QString UnitMeasure(int numberD);

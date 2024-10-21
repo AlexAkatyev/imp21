@@ -146,6 +146,13 @@ int MBTcpLocator::regData(qint16 reg, int numberD)
 }
 
 
+bool MBTcpLocator::ActivityState(int numberD)
+{
+  short data = _regs[regData(REG_ACTIVITY_STATE, numberD)];
+  return data == 0x0001;
+}
+
+
 QString MBTcpLocator::DetectType(int numberD)
 {
   QString result = "Тип не определен";
@@ -161,7 +168,7 @@ QString MBTcpLocator::DetectType(int numberD)
     result = "Датчик с частотным преобразованием с ADG419";
     break;
   case 4:
-    result = "Датчик с манометрическое преобразованием";
+    result = "Датчик с манометрическим преобразованием";
     break;
   case 5:
     result = "Датчик для вискозиметра АКВ-2В";

@@ -14,6 +14,7 @@ const qint16 REG_PRODUCT_CODE     = 0x0003;
 const qint16 REG_DETECTS_COUNT    = 0x0010;
 const qint16 REG_LIST_ID          = 0x0100;
 const qint16 REG_CURRENT_MEAS     = 0x0200;
+const qint16 REG_ACTIVITY_STATE   = 0x0203;
 const qint16 REG_TYPE_DETECT      = 0x0206;
 const qint16 REG_DATE_MANUF       = REG_TYPE_DETECT + 2;
 const qint16 REG_YEAR_MANUF       = REG_DATE_MANUF + 1;
