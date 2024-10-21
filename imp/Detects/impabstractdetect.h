@@ -18,6 +18,7 @@ public:
   QString TypeDetect();
   QDate DateManuf();
   QString UserName();
+  QString ActiveStateInfo();
   virtual QString PortName();
   QString MeasUnit();
   int HMeasureInterval();
@@ -50,6 +51,7 @@ protected:
   int _zeroInterval;
   int _preSetInterval;
   bool _flagReady;
+  bool _active;
 
 private:
   bool _prevStateButton;

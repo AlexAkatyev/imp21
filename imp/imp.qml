@@ -15,9 +15,9 @@ Item
     height: scaleY
 
     property string strSerialNumber: ""
+    property string strActive: ""
     property string strNameDetect: ""
     property string strTypeDetect: ""
-//    property string strKodDetect: ""
     property string strDataManuf: ""
     property string strPort: ""
     property string strModbusAddress: ""
@@ -37,6 +37,7 @@ Item
         if (iCommand === 2) // 2 - добавить запись
         {
             lmDetect.append({serialNumber:strSerialNumber,
+                            activeState:strActive,
                             nameDetect:strNameDetect,
                             typeDetect:strTypeDetect,
                             dataManuf:strDataManuf,
@@ -188,11 +189,20 @@ Item
                 }
                 Column
                 {
-                    Text
+                    Row
                     {
-                        id: textName
-                        font.pointSize: 12
-                        text: nameDetect
+                        Text
+                        {
+                            id: textName
+                            font.pointSize: 12
+                            text: nameDetect
+                        }
+                        Text
+                        {
+                            id: textActive
+                            font.pointSize: 12
+                            text: activeState
+                        }
                     }
                     Text
                     {

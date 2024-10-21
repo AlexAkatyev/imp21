@@ -13,6 +13,7 @@ ImpAbstractDetect::ImpAbstractDetect(QObject *parent)
   , _zeroInterval(0)
   , _preSetInterval(0)
   , _flagReady(false)
+  , _active(false)
   , _prevStateButton(false)
 {
 
@@ -67,9 +68,16 @@ QDate ImpAbstractDetect::DateManuf()
   return _dateManuf;
 }
 
+
 QString ImpAbstractDetect::UserName()
 {
   return _userName;
+}
+
+
+QString ImpAbstractDetect::ActiveStateInfo()
+{
+  return _active ? "" : "(не активен)";
 }
 
 

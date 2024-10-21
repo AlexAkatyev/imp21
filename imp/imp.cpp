@@ -219,6 +219,7 @@ void Imp::reWriteDetectsToTable()
     // Передача описания найденного датчика в графический интерфейс
     pitWin->setProperty("strSerialNumber", QString::number(detect->Id()));
     pitWin->setProperty("strNameDetect", detect->UserName());
+    pitWin->setProperty("strActive", detect->ActiveStateInfo());
     pitWin->setProperty("strTypeDetect", detect->TypeDetect());
     pitWin->setProperty("strDataManuf", detect->DateManuf().toString("dd.MM.yyyy"));
     pitWin->setProperty("strPort", detect->PortName());
