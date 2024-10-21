@@ -57,7 +57,7 @@ Imp::Imp(QWidget* parent)
     setMinimumSize(SIZE_WINDOW_WIDTH, SIZE_WINDOW_HEIGTH);
 
     // Присвоение имени окну
-    this->setWindowTitle(QString("ИМП  v.%1.%2.%3.%4").arg(DEF_VERSION_MAJOR).arg(DEF_VERSION_MINOR).arg(DEF_VERSION_PATCH).arg(DEF_VERSION_TEST));
+    this->setWindowTitle(QString("ИМП  v.%1.%2.%3").arg(DEF_VERSION_MAJOR).arg(DEF_VERSION_MINOR).arg(DEF_VERSION_PATCH));
     QUrl source("qrc:/imp.qml");
     pQuickUi->setSource(source);
 
