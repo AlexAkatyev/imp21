@@ -60,7 +60,7 @@ void MeasServerDetect::Init()
 QString MeasServerDetect::PortName()
 {
   QString result = _locator->PortName();
-  result.push_back(" уст-во " + QString::number(_numberD));
+  result.push_back(":" + QString::number(_numberD));
   return result;
 }
 
