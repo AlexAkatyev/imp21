@@ -3,6 +3,7 @@
 
 #include "Detects/impabstractdetect.h"
 
+class QTimer;
 class MBTcpLocator;
 
 class MeasServerDetect : public ImpAbstractDetect
@@ -15,9 +16,12 @@ public:
   void ShowSettings() override;
 
 private:
+  void updateState();
+
   MBTcpLocator* _locator;
   int _numberD;
   int _counterWDT;
+  QTimer* _stateTimer;
 };
 
 #endif // MEASSERVERDETECT_H

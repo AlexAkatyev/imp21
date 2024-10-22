@@ -32,6 +32,7 @@ private slots:
     void findDetect(); // Поиск датчиков
     void indicateFindCOMDetect(); // Индикация в главном окне хода поиска USB датчиков
     void reWriteDetectsToTable();
+    void changeActiveStatusToTable();
     // Создание класса для работы с установками датчика - в качестве параметра - серийный номер датчика
     void createNewSettings(QString);
     // Создание нового индикатора, можно задать имя датчика
@@ -60,6 +61,7 @@ private:
     QTimer* _indicateTimer; // Для отображения поиска датчиков
     // Для паузы после запуска программы перед поиском датчиков
     QTimer *TimerBeforeFound;
+    QTimer* _timerUpdaterActiveStatus;
 
     // Объект и файл для хранения установок главного окна
     bool LoadSettingsGeneral(); // Загрузка параметров из файла установок

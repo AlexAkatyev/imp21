@@ -28,6 +28,8 @@ const int PAUSE_BEFORE_FIND_DETECT = 500;
 
 // Параметры индикации поиска датчиков
 const int INTERVAL_TIMER = 100;
+// обновление статуса активности датчика
+const int INTERVAL_UPDATE = 400;
 
 // Максимальное количество индикаторов
 const int MAX_INDICATOR = 256;
@@ -98,6 +100,10 @@ Imp::Imp(QWidget* parent)
     _indicateTimer->setInterval(INTERVAL_TIMER);
     connect(_indicateTimer, &QTimer::timeout, this, &Imp::indicateFindCOMDetect);
 
+    _timerUpdaterActiveStatus = new QTimer(this);
+    _timerUpdaterActiveStatus->setInterval(INTERVAL_UPDATE);
+    connect(_timerUpdaterActiveStatus, &QTimer::timeout, this, &Imp::changeActiveStatusToTable);
+
     // Поиск датчиков при запуске программы после паузы, чтобы оформилось главное окно
     TimerBeforeFound->start();
 }
@@ -138,7 +144,10 @@ bool Imp::LoadSettingsGeneral()
   this->setGeometry(windowGeometry);
   QStringList lInd = settings->Value(ImpKeys::INDICATORS).toStringList();
   for (QString num : lInd)
+  {
     _useIndicators.insert(num.toInt());
+  }
+  return true;
 }
 
 
@@ -163,6 +172,7 @@ void Imp::SaveSettingsGeneral()
 void Imp::findDetect()
 {
     QVariant enableNewIndiator;
+    _timerUpdaterActiveStatus->stop();
 
     pbtFind->setProperty("enabled", false); // Чтобы не было накладывающихся поисков
     if(_flagRunIndicators)
@@ -198,6 +208,7 @@ void Imp::findDetect()
         _flagRunIndicators = false; // старые индикаторы больше не запускать
     }
     emit sigFindDetect();
+    _timerUpdaterActiveStatus->start();
 }
 
 
@@ -225,6 +236,20 @@ void Imp::reWriteDetectsToTable()
     pitWin->setProperty("strPort", detect->PortName());
     pitWin->setProperty("strModbusAddress", detect->Address());
     pitWin->setProperty("iCommand", 2); // Команда на добавление записи
+  }
+}
+
+
+void Imp::changeActiveStatusToTable()
+{
+  for (ImpAbstractDetect* d : _detects)
+  {
+    if (d->ActiveStatusChanged())
+    {
+      pitWin->setProperty("strSerialNumber", QString::number(d->Id()));
+      pitWin->setProperty("strActive", d->ActiveStateInfo());
+      pitWin->setProperty("iCommand", 4); // Команда на коррекцию записи
+    }
   }
 }
 
@@ -311,12 +336,16 @@ void Imp::createNewIndicator(QString strNDS)
   int id = strNDS.toInt();
   ImpAbstractDetect* baseDetect = nullptr;
   if (id)
+  {
     for (auto detect : _detects)
+    {
       if (id == detect->Id())
       {
         baseDetect = detect;
         break;
       }
+    }
+  }
 
     if (!_flagRunIndicators) // Первый поиск датчиков и запуск старых индикаторов завершен
     {

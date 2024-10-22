@@ -37,7 +37,9 @@ signals:
 private:
   std::map<qint16, qint16> _regs;
   QTimer* _initTimer;
+  QTimer* _stateTimer;
   int _initStep;
+  int _stateIndex;
   QUdpSocket* _socket;
   bool _setUdpConnect;
 

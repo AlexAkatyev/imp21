@@ -29,6 +29,7 @@ public:
   virtual void SetNewName(QString);
   virtual bool Ready();
   virtual QString Address();
+  bool ActiveStatusChanged();
 
 signals:
   void NewMeasure(float);
@@ -51,7 +52,8 @@ protected:
   int _zeroInterval;
   int _preSetInterval;
   bool _flagReady;
-  bool _active;
+  bool _activeStatus;
+  bool _activeStatusChanged;
 
 private:
   bool _prevStateButton;

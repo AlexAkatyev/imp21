@@ -12,17 +12,34 @@
 
 const int INIT_INTERVAL = 500;
 const int START_INIT_STEP = -2;
+const int STATE_INTERVAL = 100;
+const int STATE_INDEX_START = 0;
 
 
 MBTcpLocator::MBTcpLocator(QObject* parent)
   : QModbusTcpClient(parent)
   , _initTimer(new QTimer(this))
+  , _stateTimer(new QTimer(this))
   , _initStep(START_INIT_STEP)
+  , _stateIndex(STATE_INDEX_START)
   , _socket(new QUdpSocket(this))
   , _setUdpConnect(false)
 {
   _initTimer->setInterval(INIT_INTERVAL);
   connect(_initTimer, &QTimer::timeout, this, &MBTcpLocator::initContinue);
+  _stateTimer->setInterval(STATE_INTERVAL);
+  connect(_stateTimer, &QTimer::timeout, this, [=]()
+  {
+    if (_stateIndex < CountDetects())
+    {
+      readRequest(REG_ACTIVITY_STATE + LEN_STEP_DETECT * _stateIndex, 1);
+    }
+    ++_stateIndex;
+    if (_stateIndex >= CountDetects())
+    {
+      _stateIndex = STATE_INDEX_START;
+    }
+  });
 }
 
 
@@ -52,6 +69,7 @@ void MBTcpLocator::Init()
   readRequest(REG_FACTORY_CODE1, 16);
   Logger::GetInstance()->WriteLnLog(QString("Request. step %1. count detects %2").arg(_initStep).arg(CountDetects()));
   ++_initStep;
+  _stateTimer->stop();
   _initTimer->start();
   QHostAddress adress = QHostAddress(connectionParameter(QModbusDevice::NetworkAddressParameter).toString());
   if (!_setUdpConnect)
@@ -80,6 +98,7 @@ void MBTcpLocator::initContinue()
   else
   {
     _initTimer->stop();
+    _stateTimer->start();
     Logger::GetInstance()->WriteLnLog(QString("Init timer stopped. step %1. count detects %2").arg(_initStep).arg(CountDetects()));
   }
 }

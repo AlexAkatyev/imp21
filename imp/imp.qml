@@ -25,6 +25,7 @@ Item
                              // 1 - стереть список
                              // 2 - добавить запись
                              // 3 - стереть запись
+                             // 4 - коррекция записи
     property int iSumDetect: 0
     property bool blCalibrate: false // false - measure, true - calibrate
 
@@ -54,6 +55,19 @@ Item
                 }
             }
         }
+        if (iCommand === 4) // 4 - коррекция записи
+        {
+            for (var i = 0; i < lmDetect.count; i++)
+            {
+                if (lmDetect.get(i).serialNumber === strSerialNumber)
+                {
+                    lmDetect.get(i).activeState = strActive;
+                    lvDetect.update();
+                    break;
+                }
+            }
+        }
+
         iCommand = 0; // 0 - нет команды
     }
 
