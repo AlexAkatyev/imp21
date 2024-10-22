@@ -12,7 +12,7 @@
 
 const int INIT_INTERVAL = 500;
 const int START_INIT_STEP = -2;
-const int STATE_INTERVAL = 100;
+const int STATE_INTERVAL = 200;
 const int STATE_INDEX_START = 0;
 
 
@@ -25,6 +25,7 @@ MBTcpLocator::MBTcpLocator(QObject* parent)
   , _socket(new QUdpSocket(this))
   , _setUdpConnect(false)
 {
+  _regs = std::map<qint16, qint16>();
   _initTimer->setInterval(INIT_INTERVAL);
   connect(_initTimer, &QTimer::timeout, this, &MBTcpLocator::initContinue);
   _stateTimer->setInterval(STATE_INTERVAL);
