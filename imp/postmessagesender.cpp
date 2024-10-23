@@ -83,8 +83,4 @@ void PostMessageSender::send()
       );
 
   _sendData.pop_front();
-  if (_sendData.empty())
-  {
-    _senderTimer->stop();
-  }
 }
