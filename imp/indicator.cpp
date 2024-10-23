@@ -5,14 +5,13 @@
 #include <QPrinter>
 #include <QPrintDialog>
 
-#include <windows.h>
-
 #include "indicator.h"
 #include "UtilLib/utillib.h"
 #include "Detects/vtdetect.h"
 #include "imp.h"
 #include "checkInputNumberIF/checkInputNumberIF.h"
 #include "indsettings.h"
+#include "postmessagesender.h"
 
 #include <Xlsx/Workbook.h>
 using namespace SimpleXlsx;
@@ -42,8 +41,6 @@ const int MINIMAL_WIDTH = 374;
 
 // Периодичность считывания показаний датчиков
 const int WATCH_DOG_INTERVAL = 100;
-
-const int WM_IMP_MESSAGE_ID = WM_APP + 0x15;
 
 
 Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* baseDetect)
@@ -937,12 +934,11 @@ void Indicator::autoSaveToXLSX()
 
 void Indicator::sendWmAppMessage()
 {
-  float m = _quickUi->rootObject()->property("sendData").toFloat() * 1000;
-  int i = m;
-  WPARAM wParam = _idIndicator;
-  HWND wndHndl = FindWindow(L"XLMAIN", 0); // Notepad  XLMAIN
-  if (wndHndl == NULL)
-    wndHndl = HWND_BROADCAST;
-  PostMessage(wndHndl, WM_IMP_MESSAGE_ID, wParam, (LPARAM)i);
+  PostMessageSender::Instance()->Do
+      (
+        DataSender::Indicator
+        , _idIndicator
+        , _quickUi->rootObject()->property("sendData").toFloat()
+      );
 }
 

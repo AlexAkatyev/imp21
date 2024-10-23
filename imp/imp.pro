@@ -57,6 +57,7 @@ SOURCES += main.cpp\
     indicator.cpp \
     checkInputNumberIF/checkInputNumberIF.cpp \
   indsettings.cpp \
+  postmessagesender.cpp \
   simplexlsx/PathManager.cpp \
   simplexlsx/XLSXColors/XLSXColorLib.cpp \
   simplexlsx/XLSXColors/clsRGBColorRecord.cpp \
@@ -93,6 +94,7 @@ HEADERS  += imp.h \
     indicator.h \
     checkInputNumberIF/checkInputNumberIF.h \
     indsettings.h \
+    postmessagesender.h \
     simplexlsx/PathManager.hpp \
     simplexlsx/UTF8Encoder.hpp \
     simplexlsx/XLSXColors/XLSXColorLib.h \
