@@ -934,7 +934,7 @@ void Indicator::autoSaveToXLSX()
 
 void Indicator::sendWmAppMessage()
 {
-  PostMessageSender::Instance()->Do
+  PostMessageSender::Instance(_parent)->Do
       (
         DataSender::Indicator
         , _idIndicator

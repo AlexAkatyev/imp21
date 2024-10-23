@@ -164,7 +164,7 @@ void ImpAbstractDetect::setStateButton(bool press)
   {
     if (press)
     {
-      PostMessageSender::Instance()->Do
+      PostMessageSender::Instance(this->parent())->Do
           (
             DataSender::Meter
             , _serialNumber
