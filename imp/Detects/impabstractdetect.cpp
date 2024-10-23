@@ -1,4 +1,5 @@
 #include "impabstractdetect.h"
+#include "../postmessagesender.h"
 
 ImpAbstractDetect::ImpAbstractDetect(QObject *parent)
   : QObject(parent)
@@ -162,7 +163,15 @@ void ImpAbstractDetect::setStateButton(bool press)
   else
   {
     if (press)
+    {
+      PostMessageSender::Instance()->Do
+          (
+            DataSender::Meter
+            , _serialNumber
+            , _measure
+          );
       emit PressedButton();
+    }
   }
 
   _prevStateButton = press;
