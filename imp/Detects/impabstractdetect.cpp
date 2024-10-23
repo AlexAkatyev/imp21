@@ -13,7 +13,7 @@ ImpAbstractDetect::ImpAbstractDetect(QObject *parent)
   , _zeroInterval(0)
   , _preSetInterval(0)
   , _flagReady(false)
-  , _activeStatus(false)
+  , _activeStatus(true)
   , _activeStatusChanged(false)
   , _prevStateButton(false)
 {
