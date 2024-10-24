@@ -6,7 +6,7 @@
 const int WM_IMP_INDICATOR_MESSAGE_ID = WM_APP + 0x15;
 const int WM_IMP_METER_MESSAGE_ID = WM_IMP_INDICATOR_MESSAGE_ID + 1;
 const int ROUNDING = 1000;
-const int SEND_INTERVAL = 45;
+const int SEND_INTERVAL = 250;
 
 PostMessageSender::PostMessageSender(QObject* parent)
   : QObject(parent)
@@ -68,7 +68,7 @@ void PostMessageSender::send()
   }
   sendData d = *_sendData.begin();
   int i = d.data * ROUNDING;
-  WPARAM wParam = d.id;
+  WPARAM wParam = d.id - 1; // инкрементируется при конвертации
   HWND wndHndl = FindWindow(L"XLMAIN", 0); // Notepad  XLMAIN
   if (wndHndl == NULL)
   {

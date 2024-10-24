@@ -937,7 +937,7 @@ void Indicator::sendWmAppMessage()
   PostMessageSender::Instance(_parent)->Do
       (
         DataSender::Indicator
-        , _idIndicator
+        , _idIndicator + 1
         , _quickUi->rootObject()->property("sendData").toFloat()
       );
 }
