@@ -29,7 +29,7 @@ private:
   };
 
   PostMessageSender(QObject* parent);
-  int getMesId(DataSender sender);
+  int getMesId(DataSender sender, int repeater);
   void send();
 
   QTimer* _senderTimer;

@@ -4,9 +4,11 @@
 #include <windows.h>
 
 const int WM_IMP_INDICATOR_MESSAGE_ID = WM_APP + 0x15;
-const int WM_IMP_METER_MESSAGE_ID = WM_IMP_INDICATOR_MESSAGE_ID + 1;
+const int WM_IMP_METER_MESSAGE_ID = WM_IMP_INDICATOR_MESSAGE_ID + 10;
 const int ROUNDING = 1000;
-const int SEND_INTERVAL = 250;
+const int SEND_INTERVAL = 100;
+const int DO_NOT_ACKNOWLEDGE = 1;
+const int ATTEMPTS_COUNT = 2;
 
 PostMessageSender::PostMessageSender(QObject* parent)
   : QObject(parent)
@@ -49,23 +51,30 @@ void PostMessageSender::Do(DataSender sender, int id, float data)
 }
 
 
-int PostMessageSender::getMesId(DataSender sender)
+int PostMessageSender::getMesId(DataSender sender, int repeater)
 {
+  auto fixId = [](int baseCode, int repeater)
+  {
+    return baseCode + repeater - 1;
+  };
+
   if (sender == DataSender::Meter)
   {
-    return WM_IMP_METER_MESSAGE_ID;
+    return fixId(WM_IMP_METER_MESSAGE_ID, repeater);
   }
-  return WM_IMP_INDICATOR_MESSAGE_ID;
+  return fixId(WM_IMP_INDICATOR_MESSAGE_ID, repeater);
 }
 
 
 void PostMessageSender::send()
 {
+  static int repeaterCount = 0;
   if (_sendData.empty())
   {
     _senderTimer->stop();
     return;
   }
+
   sendData d = *_sendData.begin();
   int i = d.data * ROUNDING;
   WPARAM wParam = d.id - 1; // инкрементируется при конвертации
@@ -73,14 +82,27 @@ void PostMessageSender::send()
   if (wndHndl == NULL)
   {
     wndHndl = HWND_BROADCAST;
+    repeaterCount = DO_NOT_ACKNOWLEDGE;
   }
+  else
+  {
+    if (repeaterCount == 0)
+    {
+      repeaterCount = ATTEMPTS_COUNT;
+    }
+  }
+
   PostMessage
       (
         wndHndl
-        , getMesId(d.sender)
+        , getMesId(d.sender, repeaterCount)
         , wParam
         , (LPARAM)i
       );
 
-  _sendData.pop_front();
+  --repeaterCount;
+  if (repeaterCount == 0)
+  {
+    _sendData.pop_front();
+  }
 }
