@@ -87,5 +87,5 @@ HelpBrowser::HelpBrowser(QObject* pparent, const QString& strPath, const QString
 
 void HelpBrowser::deleteHelpBrowser(void)
 {
-    this->~QObject();
+    this->deleteLater();
 }
