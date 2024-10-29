@@ -52,7 +52,6 @@ SOURCES += main.cpp\
     UtilLib/utillib.cpp \
         imp.cpp \
     about/about.cpp \
-    HelpBrowser/HelpBrowser.cpp \
     impsettings.cpp \
     indicator.cpp \
     checkInputNumberIF/checkInputNumberIF.cpp \
@@ -88,7 +87,6 @@ HEADERS  += imp.h \
     UtilLib/modbus.h \
     UtilLib/utillib.h \
     about/about.h \
-    HelpBrowser/HelpBrowser.h \
     impdef.h \
     impsettings.h \
     indicator.h \
@@ -113,7 +111,6 @@ HEADERS  += imp.h \
 RESOURCES += \
     Detects/bepvtsettings.qrc \
     Detects/emvtsettings.qrc \
-    HelpBrowser/resource.qrc \
     indicator.qrc \
     imp.qrc
 

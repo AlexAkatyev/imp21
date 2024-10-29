@@ -3,6 +3,8 @@
  * Описание функций главного окна
  *
  * */
+#include <sstream>
+
 #include "imp.h"
 
 #include <QQuickItem>
@@ -15,9 +17,7 @@
 #include <QVBoxLayout>
 
 #include "about/about.h"
-#include "HelpBrowser/HelpBrowser.h"
 #include "indicator.h"
-//#include "command_detect.h"
 #include "versionNo.h"
 #include "Detects/detectfactory.h"
 #include "Logger/logger.h"
@@ -43,6 +43,8 @@ const int VERSION_TEST  = DEF_VERSION_TEST;
 // Исходные размеры окна
 const int SIZE_WINDOW_WIDTH = 320;
 const int SIZE_WINDOW_HEIGTH = 480;
+
+const char* HELP_INFO = "doc\\index.htm";
 
 // Конструктор главного окна
 Imp::Imp(QWidget* parent)
@@ -381,8 +383,9 @@ void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect)
 
 void Imp::showHelp()
 {
-  static HelpBrowser* helpWindow = new HelpBrowser(this, ":/", "index.htm");
-  helpWindow->show();
+  std::stringstream stream;
+  stream << HELP_INFO;
+  system(stream.str().c_str());
 }
 
 
