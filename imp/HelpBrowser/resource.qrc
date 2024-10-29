@@ -11,6 +11,7 @@
         <file alias="charts.htm">doc/charts.htm</file>
         <file alias="contacts.htm">doc/contacts.htm</file>
         <file alias="help.htm">doc/help.htm</file>
+        <file alias="otherApps.htm">doc/otherApps.htm</file>
         <file>doc/about.files/colorschememapping.xml</file>
         <file>doc/about.files/filelist.xml</file>
         <file>doc/about.files/themedata.thmx</file>
@@ -57,6 +58,5 @@
         <file>doc/otherApps.files/image010.png</file>
         <file>doc/otherApps.files/image011.jpg</file>
         <file>doc/otherApps.files/themedata.thmx</file>
-        <file>doc/otherApps.htm</file>
     </qresource>
 </RCC>
