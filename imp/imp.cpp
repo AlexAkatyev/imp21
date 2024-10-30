@@ -391,7 +391,7 @@ void Imp::showHelp()
 
 void Imp::showAbout()
 {
-  static AboutDialog* aboutWindow = new AboutDialog(this, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, VERSION_TEST);
+  static AboutDialog* aboutWindow = new AboutDialog(this, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
   aboutWindow->show();
 }
 
