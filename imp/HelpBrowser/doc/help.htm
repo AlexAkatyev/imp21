@@ -16,8 +16,6 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <!--[if gte mso 9]><xml>
  <w:WordDocument>
   <w:Zoom>110</w:Zoom>
-  <w:SpellingState>Clean</w:SpellingState>
-  <w:GrammarState>Clean</w:GrammarState>
   <w:TrackMoves>false</w:TrackMoves>
   <w:TrackFormatting/>
   <w:ValidateAgainstSchemas/>
@@ -336,6 +334,19 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-fareast-font-family:"Times New Roman";
 	mso-fareast-theme-font:minor-fareast;
 	color:black;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	mso-themecolor:hyperlink;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-noshow:yes;
+	mso-style-priority:99;
+	color:purple;
+	mso-themecolor:followedhyperlink;
+	text-decoration:underline;
+	text-underline:single;}
 p
 	{mso-style-noshow:yes;
 	mso-style-priority:99;
@@ -349,12 +360,6 @@ p
 	mso-fareast-font-family:"Times New Roman";
 	mso-fareast-theme-font:minor-fareast;
 	color:black;}
-span.SpellE
-	{mso-style-name:"";
-	mso-spl-e:yes;}
-span.GramE
-	{mso-style-name:"";
-	mso-gram-e:yes;}
 .MsoChpDefault
 	{mso-style-type:export-only;
 	mso-default-props:yes;
@@ -395,14 +400,14 @@ div.WordSection1
 <meta name="" content="">
 <meta name=created content="00:00:00">
 <!--[if gte mso 9]><xml>
- <o:shapedefaults v:ext="edit" spidmax="2050"/>
+ <o:shapedefaults v:ext="edit" spidmax="3074"/>
 </xml><![endif]--><!--[if gte mso 9]><xml>
  <o:shapelayout v:ext="edit">
   <o:idmap v:ext="edit" data="1"/>
  </o:shapelayout></xml><![endif]-->
 </head>
 
-<body lang=RU style='tab-interval:35.4pt'>
+<body lang=RU link=blue vlink=purple style='tab-interval:35.4pt'>
 
 <div class=WordSection1>
 
@@ -411,44 +416,55 @@ div.WordSection1
 <br>
 <b>1. Программа не запускается</b><br>
 Причина: Операционная система не поддерживает программу.<br>
-Решение: Установите операционную систему <span class=SpellE>Windows</span> 10
-или более позднюю.<br>
+Решение: Установите операционную систему Windows 10 или более позднюю.</p>
+
+<p style='margin-bottom:11.9pt'><br>
 Причина: Повреждены файлы программы.<br>
-Решение: Переустановите программу.<br>
-<br>
-<b>2. Программа не обнаруживает USB датчики</b><br>
-Причина: Порт или датчик используются другим процессом.<br>
-Решение: Закройте остальные программы на компьютере, если не помогло,
-перезагрузите компьютер.<br style='mso-special-character:line-break'>
+Решение: Переустановите программу.<br style='mso-special-character:line-break'>
 <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
 <![endif]><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
-<p style='margin-bottom:11.9pt'>Причина: Повреждена программа драйвера
-измерителя.<br>
-Решение: Переустановите драйвер, предусмотренный изготовителем измерителя.<br
-style='mso-special-character:line-break'>
+<p style='margin-bottom:11.9pt'><br>
+<b>2. Программа не обнаруживает USB датчики</b><br>
+Причина: Порт или датчик используются другим процессом или программой, например
+Measserver.<br>
+Решение: Закройте остальные программы на компьютере, если не помогло,
+перезагрузите компьютер.<br style='mso-special-character:line-break'>
 <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
-<![endif]><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
+<![endif]></p>
+
+<p style='margin-bottom:11.9pt'>Причина: Не установлена или повреждена
+программа драйвера измерителя.<br>
+Решение: Установите драйвер, предусмотренный изготовителем измерителя.
+Вероятнее всего подойдет драйвер, поставляемый с программой, который расположен
+в папке <a href="../driver">driver</a>.<br style='mso-special-character:line-break'>
+<![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
+<![endif]></p>
 
 <p style='margin-bottom:11.9pt'>Причина: Отказ USB порта.<br>
 Решение: Подключите датчик к другому USB порту.<br style='mso-special-character:
 line-break'>
 <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
-<![endif]><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
+<![endif]></p>
 
 <p style='margin-bottom:11.9pt'>Причина: Отказ датчика.<br>
 Решение: Замените датчик.<br style='mso-special-character:line-break'>
 <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
+<![endif]></p>
+
+<p style='margin-bottom:11.9pt'>Причина: Не установлены драйвера на датчики.<br>
+Решение: Установите на компьютер драйверы датчиков. Драйвер находится в рабочем
+каталоге программы.<br style='mso-special-character:line-break'>
+<![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
 <![endif]><span lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
 
-<p style='margin-bottom:11.9pt'>Причина: <span class=GramE>Не установлены
-драйвера на датчики.</span><br>
-Решение: Установите на компьютер драйверы датчиков. Драйвер находится в рабочем
-каталоге программы.<br>
-<br>
+<p style='margin-bottom:11.9pt'><br>
 <b>4. Стрелки на индикаторе движутся хаотично</b><br>
 Причина: Измеритель повреждён.<br>
-Решение: Действовать, как предусмотрено описанием на измеритель.</p>
+Решение: Действовать, как предусмотрено описанием на измеритель.<span
+lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
+
+<p style='margin-bottom:11.9pt'><span lang=EN-US style='mso-ansi-language:EN-US'><o:p>&nbsp;</o:p></span></p>
 
 <p style='margin-bottom:11.9pt'><b>5. Другие ошибки в работе датчиков</b><br>
 Причина: Особенности работы отдельных партий датчиков.<br>
