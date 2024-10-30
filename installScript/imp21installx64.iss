@@ -480,11 +480,11 @@ Source: "..\imp\HelpBrowser\doc\about.files\themedata.thmx"; DestDir: "{app}\doc
 Source: "..\imp\HelpBrowser\doc\appAbout.files\colorschememapping.xml"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\appAbout.files\filelist.xml"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\appAbout.files\image001.png"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
-Source: "..\imp\HelpBrowser\doc\appAbout.files\image003.jpg"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\appAbout.files\image002.jpg"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\appAbout.files\image004.jpg"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\appAbout.files\image005.png"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
-Source: "..\imp\HelpBrowser\doc\appAbout.files\image007.jpg"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\appAbout.files\image006.jpg"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\appAbout.files\image010.png"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
-Source: "..\imp\HelpBrowser\doc\appAbout.files\image011.jpg"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\appAbout.files\themedata.thmx"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\charts.files\colorschememapping.xml"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\charts.files\filelist.xml"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
