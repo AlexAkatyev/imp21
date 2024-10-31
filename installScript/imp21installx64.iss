@@ -458,7 +458,9 @@ Source: "..\..\build\1\translations\qt_uk.qm"; DestDir: "{app}\translations"; Fl
 Source: "..\..\build\1\translations\qt_zh_TW.qm"; DestDir: "{app}\translations"; Flags: ignoreversion
 Source: "..\rec.xlsm"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\1251.reg"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\driver\CP210x_Universal_Windows_Driver.zip"; DestDir: "{app}\driver"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\about.htm"; DestDir: "{app}\doc"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\appAbout.htm"; DestDir: "{app}\doc"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\charts.htm"; DestDir: "{app}\doc"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\contacts.htm"; DestDir: "{app}\doc"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\help.htm"; DestDir: "{app}\doc"; Flags: ignoreversion
@@ -475,11 +477,30 @@ Source: "..\imp\HelpBrowser\doc\start.htm"; DestDir: "{app}\doc"; Flags: ignorev
 Source: "..\imp\HelpBrowser\doc\about.files\colorschememapping.xml"; DestDir: "{app}\doc\about.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\about.files\filelist.xml"; DestDir: "{app}\doc\about.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\about.files\themedata.thmx"; DestDir: "{app}\doc\about.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\appAbout.files\colorschememapping.xml"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\appAbout.files\filelist.xml"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\appAbout.files\image001.png"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\appAbout.files\image002.jpg"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\appAbout.files\image004.jpg"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\appAbout.files\image005.png"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\appAbout.files\image006.jpg"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\appAbout.files\image010.png"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\appAbout.files\themedata.thmx"; DestDir: "{app}\doc\appAbout.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\charts.files\colorschememapping.xml"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\charts.files\filelist.xml"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\charts.files\image001.png"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\charts.files\image002.png"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\charts.files\image003.png"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\charts.files\image004.png"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\charts.files\image005.png"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\charts.files\image006.png"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\charts.files\image007.png"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\charts.files\image008.png"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\charts.files\image009.png"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\charts.files\image010.png"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\charts.files\image011.png"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\charts.files\image012.png"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\charts.files\image013.png"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\charts.files\themedata.thmx"; DestDir: "{app}\doc\charts.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\contacts.files\colorschememapping.xml"; DestDir: "{app}\doc\contacts.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\contacts.files\filelist.xml"; DestDir: "{app}\doc\contacts.files"; Flags: ignoreversion
@@ -499,6 +520,9 @@ Source: "..\imp\HelpBrowser\doc\indicators.files\image002.png"; DestDir: "{app}\
 Source: "..\imp\HelpBrowser\doc\indicators.files\image003.png"; DestDir: "{app}\doc\indicators.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\indicators.files\image004.png"; DestDir: "{app}\doc\indicators.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\indicators.files\image005.png"; DestDir: "{app}\doc\indicators.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\indicators.files\image006.png"; DestDir: "{app}\doc\indicators.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\indicators.files\image007.png"; DestDir: "{app}\doc\indicators.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\indicators.files\image008.png"; DestDir: "{app}\doc\indicators.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\indicators.files\themedata.thmx"; DestDir: "{app}\doc\indicators.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\main.files\colorschememapping.xml"; DestDir: "{app}\doc\main.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\main.files\filelist.xml"; DestDir: "{app}\doc\main.files"; Flags: ignoreversion
@@ -517,8 +541,10 @@ Source: "..\imp\HelpBrowser\doc\otherApps.files\image011.jpg"; DestDir: "{app}\d
 Source: "..\imp\HelpBrowser\doc\otherApps.files\themedata.thmx"; DestDir: "{app}\doc\otherApps.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\settings.files\colorschememapping.xml"; DestDir: "{app}\doc\settings.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\settings.files\filelist.xml"; DestDir: "{app}\doc\settings.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\settings.files\image001.png"; DestDir: "{app}\doc\settings.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\settings.files\image002.png"; DestDir: "{app}\doc\settings.files"; Flags: ignoreversion
+Source: "..\imp\HelpBrowser\doc\settings.files\image003.png"; DestDir: "{app}\doc\settings.files"; Flags: ignoreversion
 Source: "..\imp\HelpBrowser\doc\settings.files\themedata.thmx"; DestDir: "{app}\doc\settings.files"; Flags: ignoreversion
-Source: "..\driver\CP210x_Universal_Windows_Driver.zip"; DestDir: "{app}\driver"; Flags: ignoreversion
 
 [Languages]
 Name: "ruslng"; MessagesFile: "compiler:Languages\Russian.isl"

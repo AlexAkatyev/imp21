@@ -25,16 +25,16 @@ w\:* {behavior:url(#default#VML);}
   <o:Author>Алексей Акатьев</o:Author>
   <o:Template>Normal</o:Template>
   <o:LastAuthor>Alex Akatyev</o:LastAuthor>
-  <o:Revision>3</o:Revision>
-  <o:TotalTime>14</o:TotalTime>
+  <o:Revision>8</o:Revision>
+  <o:TotalTime>52</o:TotalTime>
   <o:Created>2022-04-29T09:17:00Z</o:Created>
-  <o:LastSaved>2024-10-29T06:37:00Z</o:LastSaved>
+  <o:LastSaved>2024-10-30T07:22:00Z</o:LastSaved>
   <o:Pages>1</o:Pages>
-  <o:Words>313</o:Words>
-  <o:Characters>1788</o:Characters>
-  <o:Lines>14</o:Lines>
+  <o:Words>329</o:Words>
+  <o:Characters>1878</o:Characters>
+  <o:Lines>15</o:Lines>
   <o:Paragraphs>4</o:Paragraphs>
-  <o:CharactersWithSpaces>2097</o:CharactersWithSpaces>
+  <o:CharactersWithSpaces>2203</o:CharactersWithSpaces>
   <o:Version>12.00</o:Version>
  </o:DocumentProperties>
  <o:OfficeDocumentSettings>
@@ -46,8 +46,6 @@ w\:* {behavior:url(#default#VML);}
 <!--[if gte mso 9]><xml>
  <w:WordDocument>
   <w:Zoom>110</w:Zoom>
-  <w:SpellingState>Clean</w:SpellingState>
-  <w:GrammarState>Clean</w:GrammarState>
   <w:TrackMoves>false</w:TrackMoves>
   <w:TrackFormatting/>
   <w:ValidateAgainstSchemas/>
@@ -348,11 +346,10 @@ w\:* {behavior:url(#default#VML);}
  @font-face
 	{font-family:"Cambria Math";
 	panose-1:2 4 5 3 5 4 6 3 2 4;
-	mso-font-charset:1;
+	mso-font-charset:204;
 	mso-generic-font-family:roman;
-	mso-font-format:other;
 	mso-font-pitch:variable;
-	mso-font-signature:0 0 0 0 0 0;}
+	mso-font-signature:-536869121 1107305727 33554432 0 415 0;}
 @font-face
 	{font-family:Tahoma;
 	panose-1:2 11 6 4 3 5 4 4 2 4;
@@ -422,9 +419,6 @@ span.a
 	mso-fareast-theme-font:minor-fareast;
 	mso-hansi-font-family:Tahoma;
 	mso-bidi-font-family:Tahoma;}
-span.GramE
-	{mso-style-name:"";
-	mso-gram-e:yes;}
 .MsoChpDefault
 	{mso-style-type:export-only;
 	mso-default-props:yes;
@@ -464,7 +458,7 @@ div.WordSection1
 <meta name=changed content="2021-11-09T19:34:02.119000000">
 <meta name="" content="">
 <!--[if gte mso 9]><xml>
- <o:shapedefaults v:ext="edit" spidmax="2050"/>
+ <o:shapedefaults v:ext="edit" spidmax="4098"/>
 </xml><![endif]--><!--[if gte mso 9]><xml>
  <o:shapelayout v:ext="edit">
   <o:idmap v:ext="edit" data="1"/>
@@ -515,24 +509,27 @@ lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
 <b style='mso-bidi-font-weight:normal'>2<span style='mso-bidi-font-weight:bold'>.
 Запуск окна индикатора</span></b><br>
 <a href="indicators.htm">Окно индикатора</a> открывается в трех случаях:<br>
-- после запуска программы и последующего поиска датчиков, если в предыдущем
-сеансе работы это <a href="indicators.htm">окно индикатора</a> использовалось;<br>
-- при нажатии кнопки <b>НОВЫЙ ИНДИКАТОР</b>;<br>
-- при двойном щелчке левой кнопки мыши над соответствующей записью из списка
-найденных датчиков.<br>
-В первом случае, <a href="indicators.htm">окно индикатора</a> запустится с
-ранее установленными настройками и формулой для показаний индикатора.<br>
-Во втором случае, будет запущено в середине экрана <a href="indicators.htm">окно
-индикатора</a> с настройками по умолчанию, <span class=GramE>принятые</span> в
-программе.<br>
+<br>
+2.1 после запуска программы и последующего поиска датчиков, если в предыдущем
+сеансе работы это <a href="indicators.htm">окно индикатора</a> использовалось и
+было закрыто не пользователем, а главным окном программы.<br>
+В этом случае, <a href="indicators.htm">окно индикатора</a> запустится с ранее
+установленными настройками и формулой для показаний индикатора.<br>
+<br>
+2.2 при нажатии кнопки <b>НОВЫЙ ИНДИКАТОР.</b><br>
+В этом случае <a href="indicators.htm">окно индикатора</a> будет запущено в
+середине экрана с настройками по умолчанию, принятыми в программе.<br>
 При этом в формуле индикатора будет выбран только первый датчик. Выбранный
-датчик будет случайным.<br>
-В третьем случае, будет запущено в середине экрана <a href="indicators.htm">окно
-индикатора</a> с настройками по умолчанию принятые в программе,<br>
+датчик будет первым из списка датчиков.<br>
+<br>
+2.3 при двойном щелчке левой кнопки мыши над соответствующей записью из списка
+найденных датчиков.<br>
+В этом случае <a href="indicators.htm">окно индикатора</a> будет запущено в
+середине экрана с настройками по умолчанию принятыми в программе,<br>
 но показания индикатора будут соответствовать показаниям выбранного датчика.<br>
-Для одного датчика может открыто несколько индикаторов, так же, как показания
-одного датчика <span class=GramE>могут</span> использованы с нескольких
-индикаторах.<br>
+<br>
+Для одного датчика можно открыть несколько индикаторов, так же, как показания
+одного датчика могут использованы с нескольких индикаторах.<br>
 Всего <a href="indicators.htm">окон индикаторов</a> можно открыть не более 255.<br>
 <br>
 <b style='mso-bidi-font-weight:normal'>3. Окно настроек датчиков<br>
@@ -543,16 +540,16 @@ lang=EN-US style='mso-ansi-language:EN-US'><o:p></o:p></span></p>
 Вид окна настроек, его содержание зависят от типа, изготовителя и принципа
 действия датчика.<br>
 <br>
-<b>4. Получение помощи</b><span class=GramE><br>
-Д</span>ля получения дополнительной информации о программе, используйте кнопки <b>ПОМОЩЬ</b>
-и <b>A</b>.<br>
+<b>4. Получение помощи</b><br>
+Для получения дополнительной информации о программе, используйте кнопки <b>ПОМОЩЬ</b>
+и <a href="appAbout.htm">А</a>.<br>
 <br>
 <b style='mso-bidi-font-weight:normal'>5<span style='mso-bidi-font-weight:bold'>.
 Закрытие программы</span></b><br>
 Программа закрывается закрытием главного окна. При этом окна помощи, окна
 индикаторов и настроек закрываются автоматически.<br>
-Все окна индикаторов, которые были закрыты программой автоматически, а не пользователем,
-при последующем запуске восстанавливаются.</p>
+Все окна индикаторов, которые были закрыты программой автоматически, а не
+пользователем, при последующем запуске восстанавливаются.</p>
 
 </div>
 
