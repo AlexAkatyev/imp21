@@ -13,7 +13,7 @@ documentation for details.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Работа в приложении ИМП:
+   :caption: Работа в приложении **ИМП**:
 
    About
    Start

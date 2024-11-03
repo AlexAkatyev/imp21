@@ -81,6 +81,20 @@
 
 .. raw:: html
 
+    <style> .highlightedlightyellow {background-color:LightGoldenrodYellow; color:black} </style>
+
+.. role:: highlightedlightyellow
+
+
+.. raw:: html
+
+    <style> .highlightedpink {background-color:pink; color:black} </style>
+
+.. role:: highlightedpink
+
+
+.. raw:: html
+
     <style> .highlightedred {background-color:#e81f1f; color:black} </style>
 
 .. role:: highlightedred
