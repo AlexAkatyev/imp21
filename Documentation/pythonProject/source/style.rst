@@ -7,6 +7,13 @@
 .. role:: bolditalic
 
 
+.. raw:: html
+
+    <style> .bolditalicred {font-weight: bold; font-style: italic; color:#ff0000} </style>
+
+.. role:: bolditalicred
+
+
 
 .. ПОДЧЁРКИВАНИЕ:
 

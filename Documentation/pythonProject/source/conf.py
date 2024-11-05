@@ -6,8 +6,8 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'ИМП'
-copyright = '2024, ООО НИР'
+html_title = 'ИМП. Руководство пользователя'
+copyright = '2024, ООО НИР, ies-ltd.ru'
 author = 'ООО НИР'
 release = '21.8.1'
 
