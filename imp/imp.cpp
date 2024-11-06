@@ -44,7 +44,7 @@ const int VERSION_TEST  = DEF_VERSION_TEST;
 const int SIZE_WINDOW_WIDTH = 320;
 const int SIZE_WINDOW_HEIGTH = 480;
 
-const char* HELP_INFO = "doc\\index.htm";
+const char* HELP_INFO = "build\\html\\index.htm";
 
 // Конструктор главного окна
 Imp::Imp(QWidget* parent)
