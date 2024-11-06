@@ -1,4 +1,5 @@
 #include <QTimer>
+#include <QDebug>
 
 #include "postmessagesender.h"
 #include <windows.h>
@@ -77,7 +78,7 @@ void PostMessageSender::send()
 
   sendData d = *_sendData.begin();
   int i = d.data * ROUNDING;
-  WPARAM wParam = d.id - 1; // инкрементируется при конвертации
+  WPARAM wParam = d.id;
   HWND wndHndl = FindWindow(L"XLMAIN", 0); // Notepad  XLMAIN
   if (wndHndl == NULL)
   {
@@ -99,6 +100,12 @@ void PostMessageSender::send()
         , wParam
         , (LPARAM)i
       );
+  qDebug()
+      << "PostMessage"
+      << ((wndHndl == HWND_BROADCAST) ? "broadcast" : "xlmain")
+      << QString::number(getMesId(d.sender, repeaterCount))
+      << QString::number(wParam)
+      << QString::number((LPARAM)i);
 
   --repeaterCount;
   if (repeaterCount == 0)
