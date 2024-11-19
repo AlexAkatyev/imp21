@@ -985,7 +985,8 @@ Item
                             id: tfFactor1
                             objectName: "tfFactor1"
                             text: "1"
-                            width: itFormula.width / 28
+                            width: itFormula.width / 8
+                            horizontalAlignment: "AlignHCenter"
                             font.pixelSize: tfName.font.pixelSize
                             ToolTip.text: "Множитель датчика 1"
                             ToolTip.visible: hovered
@@ -1018,7 +1019,8 @@ Item
                             id: tfIncert1
                             objectName: "tfIncert1"
                             text: "0"
-                            width: tfFactor1.width
+                            width: 2 * tfFactor1.width
+                            horizontalAlignment: "AlignHCenter"
                             font.pixelSize: tfName.font.pixelSize
                             ToolTip.text: "Предустанов датчика 1"
                             ToolTip.visible: hovered
@@ -1045,6 +1047,7 @@ Item
                             objectName: "tfFactor2"
                             text: "1"
                             width: tfFactor1.width
+                            horizontalAlignment: "AlignHCenter"
                             font.pixelSize: tfName.font.pixelSize
                             ToolTip.text: "Множитель датчика 2"
                             ToolTip.visible: hovered
@@ -1078,6 +1081,7 @@ Item
                             objectName: "tfIncert2"
                             text: "0"
                             width: tfIncert1.width
+                            horizontalAlignment: "AlignHCenter"
                             font.pixelSize: tfName.font.pixelSize
                             ToolTip.text: "Предустанов датчика 2"
                             ToolTip.visible: hovered
