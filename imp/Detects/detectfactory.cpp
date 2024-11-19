@@ -66,9 +66,21 @@ void DetectFactory::StartFindOfDetects()
 {
   _detects.clear();
   if (ImpSettings::Instance()->Value(ImpKeys::EN_MODBUS_TCP).toBool())
+  {
     tcpVTDetects();
+    if (_detects.empty())
+    {
+      comVTDetects();
+    }
+  }
   else
+  {
     comVTDetects();
+    if (_detects.empty())
+    {
+      tcpVTDetects();
+    }
+  }
 
   sendReadyOfDetects();
 }
