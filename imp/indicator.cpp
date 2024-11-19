@@ -341,13 +341,7 @@ void Indicator::setFormula(void)
   _detect1 = _parent->DetectAtName(strCurrent1);
   if (_detect1)
     connect(_detect1, &VTDetect::PressedButton, this, &Indicator::runButtonRelease);
-  if (_detect1 && abs(inTempi1.fNumber) > _detect1->PreSetInterval())
-  { // В введенном поле есть ошибки
-    error = true;
-    QMessageBox::warning(this,
-                         "Недопустимое значение предустанова для датчика 1",
-                         "Значение предустанова для датчика 1 должно быть не более " + QString::number(_detect1->PreSetInterval()));
-  }
+
   // Датчик 2
   qApp->processEvents();
   QString strCurrent2 = _cbListDetect2->property("currentText").toString();
@@ -356,13 +350,6 @@ void Indicator::setFormula(void)
   _detect2 = _parent->DetectAtName(strCurrent2);
   if (_detect2)
     connect(_detect2, &VTDetect::PressedButton, this, &Indicator::runButtonRelease);
-  if (_detect2 && abs(inTempi2.fNumber) > _detect2->PreSetInterval())
-  { // В введенном поле есть ошибки
-    error = true;
-    QMessageBox::warning(this,
-                         "Недопустимое значение предустанова для датчика 2",
-                         "Значение предустанова для датчика 2 должно быть не более " + QString::number(_detect2->PreSetInterval()));
-  }
   // Проверки
   QString unit1 = _detect1 ? _detect1->MeasUnit() : "";
   QString unit2 = _detect2 ? _detect2->MeasUnit() : "";
