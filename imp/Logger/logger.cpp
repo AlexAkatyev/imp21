@@ -44,7 +44,20 @@ void Logger::WriteLnLog(QString input)
 
 void Logger::WriteBytes(QByteArray input)
 {
-  _log->write(input);
-  WriteLnLog();
+  QString strOut;
+  for (int i = 0; i < input.length(); ++i)
+  {
+    uchar d = input[i];
+    strOut += "0x" + QString::number(d, 16);
+    if ((i + 1) % 16)
+    {
+      strOut += " ";
+    }
+    else
+    {
+      strOut += "\n";
+    }
+  }
+  WriteLnLog(strOut);
 }
 
