@@ -802,7 +802,7 @@ Item
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: impGauge.exorbitantFilter(impGauge.round10(inputIndicator.mess, inputIndicator.accuracy))
                             color: impGauge.getColorMessText()
-                            font.pixelSize: impGauge.toPixels(0.9)
+                            font.pixelSize: toPixels(18)
                         }
                         Grid {
                             columns: 2
