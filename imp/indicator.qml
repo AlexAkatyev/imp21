@@ -1212,6 +1212,12 @@ Item
                             objectName: "tfHiLimit"
                             width: itDopusk.width/3
                             font.pixelSize: 12
+                            onTextChanged:
+                            {
+                                tfHiLevelF.text = text;
+                                inputIndicator.highLimit = text;
+                                setInterval();
+                            }
                         }
                         Text {
                             text: lowLevelFormula + "   "
@@ -1221,6 +1227,12 @@ Item
                             objectName: "tfLoLimit"
                             width: tfHiLimit.width
                             font.pixelSize: tfHiLimit.font.pixelSize
+                            onTextChanged:
+                            {
+                                tfLoLevelF.text = text;
+                                inputIndicator.lowLimit = text;
+                                setInterval();
+                            }
                         }
                         Text {
                             text: "\nПриемочная граница    "
@@ -1421,10 +1433,11 @@ Item
                     TextField {
                         id: tfHiLevelF
                         objectName: "tfHiLevelF"
-                        text: inputIndicator.highLimit
+                        text: tfHiLimit.text
                         onTextChanged: {
-                            setInterval();
                             tfHiLimit.text = text;
+                            inputIndicator.highLimit = text;
+                            setInterval();
                         }
                     }
                     // row 3
@@ -1434,10 +1447,11 @@ Item
                     TextField {
                         id: tfLoLevelF
                         objectName: "tfLoLevelF"
-                        text: inputIndicator.lowLimit
+                        text: tfLoLimit.text
                         onTextChanged: {
-                            setInterval();
                             tfLoLimit.text = text;
+                            inputIndicator.lowLimit = text;
+                            setInterval();
                         }
                     }
                     // row 4

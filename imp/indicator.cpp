@@ -42,6 +42,10 @@ const int MINIMAL_WIDTH = 374;
 // Периодичность считывания показаний датчиков
 const int WATCH_DOG_INTERVAL = 100;
 
+const int PRECISION_SCALE = 3;
+const int PRECISION_INCREMENT = 7;
+const int PRECISION_RANGE = 7;
+const int PRECISION_DIVISION = 6;
 
 Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* baseDetect)
   : QWidget(nullptr, Qt::Window)
@@ -175,7 +179,7 @@ void Indicator::getDivisionValue(void)
   QVariant varTemp;
   int iAccurDivision = 0;
   varTemp = _tfUnitPoint->property("text");
-  InputNumber inTemp = checkInputNumberIF(varTemp.toString(), NUMBER_UNSIGNED_FLOAT, 6);
+  InputNumber inTemp = checkInputNumberIF(varTemp.toString(), NUMBER_UNSIGNED_FLOAT, PRECISION_DIVISION);
   if (inTemp.InfoError.isEmpty())
   { // Ошибок нет
     float  fTemp = inTemp.fNumber;
@@ -203,7 +207,7 @@ void Indicator::changeLimit(void)
   float fHiLimit = static_cast<float>(INT_MAX);
   float fLoLimit = static_cast<float>(INT_MIN);
   QVariant varTemp = _tfHiLimit->property("text");
-  InputNumber inTemp = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT);
+  InputNumber inTemp = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT, PRECISION_RANGE);
   if (inTemp.InfoError.isEmpty())
   { // Ошибок нет
     fHiLimit = inTemp.fNumber;
@@ -213,7 +217,7 @@ void Indicator::changeLimit(void)
     QMessageBox::warning(this, "Верхнее предельное отклонение", inTemp.InfoError);
   }
   varTemp = _tfLoLimit->property("text");
-  inTemp = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT);
+  inTemp = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT, PRECISION_RANGE);
   if (inTemp.InfoError.isEmpty())
   { // Ошибок нет
     fLoLimit = inTemp.fNumber;
@@ -240,7 +244,7 @@ void Indicator::changeLimit(void)
                          "Верхнее предельное отклонение\n не может быть меньше\n нижнего предельного отклонения");
   }
   varTemp = _tfPriemka->property("text");
-  inTemp = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT);
+  inTemp = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT, PRECISION_RANGE);
   if (inTemp.InfoError.isEmpty() && inTemp.fNumber >= 0) // Ошибок нет
     _inputIndicator->setProperty("priemka", inTemp.fNumber);
   else // В введенном поле есть ошибки
@@ -291,7 +295,7 @@ void Indicator::setFormula(void)
   bool error = false;
   // Множитель 1 ------------------------------------------------
   varTemp = _tfFactor1->property("text");
-  inTemps1 = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT);
+  inTemps1 = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT, PRECISION_SCALE);
   if (inTemps1.InfoError.isEmpty() == false)
   { // В введенном поле есть ошибки
     error = true;
@@ -299,7 +303,7 @@ void Indicator::setFormula(void)
   }
   // Множитель 2 ------------------------------------------------
   varTemp = _tfFactor2->property("text");
-  inTemps2 = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT);
+  inTemps2 = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT, PRECISION_SCALE);
   if (inTemps2.InfoError.isEmpty() == false)
   { // В введенном поле есть ошибки
     error = true;
@@ -307,7 +311,7 @@ void Indicator::setFormula(void)
   }
   // Слагаемое 1 ------------------------------------------------
   varTemp = _tfIncert1->property("text");
-  inTempi1 = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT);
+  inTempi1 = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT, PRECISION_INCREMENT);
   if (inTempi1.InfoError.isEmpty() == false)
   { // В введенном поле есть ошибки
     error = true;
@@ -315,7 +319,7 @@ void Indicator::setFormula(void)
   }
   // Слагаемое 2 ------------------------------------------------
   varTemp = _tfIncert2->property("text");
-  inTempi2 = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT);
+  inTempi2 = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT, PRECISION_INCREMENT);
   if (inTempi2.InfoError.isEmpty() == false)
   { // В введенном поле есть ошибки
     error = true;
@@ -323,7 +327,7 @@ void Indicator::setFormula(void)
   }
   // Общий делитель ---------------------------------------------
   varTemp = _tfDivider->property("text");
-  inTempD = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT);
+  inTempD = checkInputNumberIF(varTemp.toString(), NUMBER_FLOAT, PRECISION_SCALE);
   if (!inTempD.InfoError.isEmpty())
   { // В введенном поле есть ошибки
     error = true;
@@ -557,22 +561,22 @@ void Indicator::saveSettingsIndicator()
 
   // сохранение формулы
   _settings->SetValue(IndKeys::INDICATOR_NAME, _userTitle);
-  _settings->SetValue(IndKeys::SCALE1, _scale1);
+  _settings->SetValue(IndKeys::SCALE1, _tfFactor1->property("text"));
   _settings->SetValue(IndKeys::DETECT1, _detect1 ? _detect1->Id() : 0);
-  _settings->SetValue(IndKeys::INCREMENT1, _increment1);
-  _settings->SetValue(IndKeys::SCALE2, _scale2);
+  _settings->SetValue(IndKeys::INCREMENT1, _tfIncert1->property("text"));
+  _settings->SetValue(IndKeys::SCALE2, _tfFactor2->property("text"));
   _settings->SetValue(IndKeys::DETECT2, _detect2 ? _detect2->Id() : 0);
-  _settings->SetValue(IndKeys::INCREMENT2, _increment2);
+  _settings->SetValue(IndKeys::INCREMENT2, _tfIncert2->property("text"));
 
-  _settings->SetValue(IndKeys::DIVIDER, _divider);
+  _settings->SetValue(IndKeys::DIVIDER, _tfDivider->property("text"));
   _settings->SetValue(IndKeys::BEFORESET, _inputIndicator->property("beforeSet"));
   _settings->SetValue(IndKeys::DOPUSK, _inputIndicator->property("dopusk"));
   _settings->SetValue(IndKeys::PERIOD, _tfPeriod->property("text").toInt());
 
   // настройка шкалы
   _settings->SetValue(IndKeys::UNITPOINT, _inputIndicator->property("unitPoint"));
-  _settings->SetValue(IndKeys::HIGHLIMIT, _inputIndicator->property("highLimit"));
-  _settings->SetValue(IndKeys::LOWLIMIT, _inputIndicator->property("lowLimit"));
+  _settings->SetValue(IndKeys::HIGHLIMIT, _tfHiLimit->property("text"));
+  _settings->SetValue(IndKeys::LOWLIMIT, _tfLoLimit->property("text"));
   _settings->SetValue(IndKeys::PRIEMKA, _inputIndicator->property("priemka"));
   _settings->SetValue(IndKeys::ACCURACY, _inputIndicator->property("accuracy"));
   _settings->SetValue(IndKeys::ACCUR_DIVISION, _inputIndicator->property("accurDivision"));
@@ -611,8 +615,9 @@ void Indicator::loadSettingsWindow()
 // Чтение установок
 bool Indicator::loadSettingsIndicator()
 {
-  _scale1 = _settings->Value(IndKeys::SCALE1).toFloat();
-  _tfFactor1->setProperty("text",round(static_cast<double>(_scale1)*100)/100);
+  QVariant v = _settings->Value(IndKeys::SCALE1);
+  _scale1 = v.toDouble();
+  _tfFactor1->setProperty("text", v);
   int idDetect1 = _settings->Value(IndKeys::DETECT1).toInt();
   if (idDetect1 == 0)
   { // датчик не используется
@@ -637,11 +642,13 @@ bool Indicator::loadSettingsIndicator()
       _inputIndicator->setProperty("blDetect1EnableInput", false);
     }
   }
-  _increment1 = _settings->Value(IndKeys::INCREMENT1).toFloat();
-  _tfIncert1->setProperty("text", round(static_cast<double>(_increment1)*100)/100);
+  v = _settings->Value(IndKeys::INCREMENT1);
+  _increment1 = v.toDouble();
+  _tfIncert1->setProperty("text", v);
 
-  _scale2 = _settings->Value(IndKeys::SCALE2).toFloat();
-  _tfFactor2->setProperty("text", round(static_cast<double>(_scale2)*100)/100);
+  v = _settings->Value(IndKeys::SCALE2);
+  _scale2 = v.toDouble();
+  _tfFactor2->setProperty("text", v);
   int idDetect2 = _settings->Value(IndKeys::DETECT2).toInt();
   if (idDetect2 == 0)
   { // датчик не используется
@@ -666,11 +673,13 @@ bool Indicator::loadSettingsIndicator()
       _inputIndicator->setProperty("blDetect2EnableInput", false);
     }
   }
-  _increment2 = _settings->Value(IndKeys::INCREMENT2).toFloat();
-  _tfIncert2->setProperty("text", round(static_cast<double>(_increment2)*100)/100);
+  v = _settings->Value(IndKeys::INCREMENT2);
+  _increment2 = v.toDouble();
+  _tfIncert2->setProperty("text", v);
 
-  _divider = _settings->Value(IndKeys::DIVIDER).toFloat();
-  _tfDivider->setProperty("text", round(static_cast<double>(_divider)*100)/100);
+  v = _settings->Value(IndKeys::DIVIDER);
+  _divider = v.toFloat();
+  _tfDivider->setProperty("text", v);
   _inputIndicator->setProperty("beforeSet", _settings->Value(IndKeys::BEFORESET));
   _inputIndicator->setProperty("dopusk", _settings->Value(IndKeys::DOPUSK));
   _periodMean = _settings->Value(IndKeys::PERIOD).toInt();
@@ -685,10 +694,17 @@ bool Indicator::loadSettingsIndicator()
 
   _inputIndicator->setProperty("unitPoint", _settings->Value(IndKeys::UNITPOINT));
   _tfUnitPoint->setProperty("text", _settings->Value(IndKeys::UNITPOINT));
-  _inputIndicator->setProperty("highLimit", _settings->Value(IndKeys::HIGHLIMIT));
-  _tfHiLimit->setProperty("text", _settings->Value(IndKeys::HIGHLIMIT));
-  _inputIndicator->setProperty("lowLimit", _settings->Value(IndKeys::LOWLIMIT));
-  _tfLoLimit->setProperty("text", _settings->Value(IndKeys::LOWLIMIT));
+
+  v = _settings->Value(IndKeys::HIGHLIMIT);
+  _inputIndicator->setProperty("highLimit", v);
+  _tfHiLimit->setProperty("text", v);
+  _quickUi->rootObject()->findChild<QObject*>("tfHiLevelF")->setProperty("text",v);
+
+  v = _settings->Value(IndKeys::LOWLIMIT);
+  _inputIndicator->setProperty("lowLimit", v);
+  _tfLoLimit->setProperty("text", v);
+  _quickUi->rootObject()->findChild<QObject*>("tfLoLevelF")->setProperty("text", v);
+
   _inputIndicator->setProperty("priemka", _settings->Value(IndKeys::PRIEMKA));
   _tfPriemka->setProperty("text", _settings->Value(IndKeys::PRIEMKA));
   int accuracy = _settings->Value(IndKeys::ACCURACY).toInt();

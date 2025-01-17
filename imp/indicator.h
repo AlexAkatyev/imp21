@@ -85,10 +85,12 @@ private:
     // Флаг готовности функции
     bool _formulaComlete;
     // Входные параметры для формулы
-    float _scale1, _increment1;
-    float _scale2, _increment2;
+    double _scale1;
+    double _scale2;
     ImpAbstractDetect* _detect1;
     ImpAbstractDetect* _detect2;
+    double _increment1;
+    double _increment2;
     float _divider;
     std::vector<float> _zeroShifts;
     // Диапазон измерения датчиков
