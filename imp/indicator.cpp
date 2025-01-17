@@ -52,6 +52,7 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   , _detect1(nullptr)
   , _detect2(nullptr)
 {
+  _zeroShifts = {0, 0};
   _settings = new IndSettings("indicator" + QString::number(_idIndicator) + ".ini", this);
 
   // Размещение окна индикатора в центр экрана
@@ -103,6 +104,8 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   // Сохранение измерений
   connect(_quickUi->rootObject(), SIGNAL(sigClickedSave()), this, SLOT(saveMeas()));
   connect(_quickUi->rootObject(), SIGNAL(sigAutoSave()), this, SLOT(autoSaveToXLSX()));
+  // Установка 0 значения датчиков
+  connect(_quickUi->rootObject(), SIGNAL(sigSetZeroShift()), this, SLOT(setZeroShifts()));
   // выбор файла автосохранения
   connect(_quickUi->rootObject(), SIGNAL(sigPeekFile()), this, SLOT(selectAutoSaveFile()));
   // Установка имени
@@ -482,10 +485,10 @@ float Indicator::calculateChannel(int number)
   float result = 0;
   switch (number) {
   case 1:
-    result = _scale1 * (_detect1 ? _detect1->CurrentMeasure() : 0) + _increment1;
+    result = _scale1 * (_detect1 ? _detect1->CurrentMeasure() - _zeroShifts[0] : 0) + _increment1;
     break;
   case 2:
-    result = _scale2 * (_detect2 ? _detect2->CurrentMeasure() : 0) + _increment2;
+    result = _scale2 * (_detect2 ? _detect2->CurrentMeasure() - _zeroShifts[1] : 0) + _increment2;
     break;
   default:
     break;
@@ -929,3 +932,18 @@ void Indicator::sendWmAppMessage()
       );
 }
 
+
+void Indicator::setZeroShifts()
+{
+  bool setZero = _quickUi->rootObject()->property("setZero").toBool();
+  if (setZero)
+  {
+    _zeroShifts[0] = _detect1 ? _detect1->CurrentMeasure() : 0;
+    _zeroShifts[1] = _detect2 ? _detect2->CurrentMeasure() : 0;
+  }
+  else
+  {
+    _zeroShifts[0] = 0;
+    _zeroShifts[1] = 0;
+  }
+}

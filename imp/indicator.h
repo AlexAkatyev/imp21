@@ -90,6 +90,7 @@ private:
     ImpAbstractDetect* _detect1;
     ImpAbstractDetect* _detect2;
     float _divider;
+    std::vector<float> _zeroShifts;
     // Диапазон измерения датчиков
     int iRange1; // датчик 1
     int iRange2; // датчик 2
@@ -129,6 +130,7 @@ private slots:
     void changeLimit(void); // Изменение допусков на индикаторе
     void getDivisionValue(void); // Определение цены деления
     void setFormula(void); // Установка новой формулы
+    void setZeroShifts(); // Установка 0 датчиков
     // Вывод от датчиков на индикатор
     void updateResult(void);
     // Определение, какой датчик не работает

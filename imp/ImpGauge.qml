@@ -5,7 +5,7 @@ Item
 {
     id: impGauge 
     objectName: "impGauge" 
-    property real impGaugevalue: inputIndicator.mess + inputIndicator.zeroShift
+    property real impGaugevalue: inputIndicator.mess
     property int tickmarkInset: toPixels(0.04)
     property int minorTickmarkInset: tickmarkInset
     property int labelStepSize: 20
@@ -150,7 +150,7 @@ Item
         // 2 - limit
         // 3 - priemka
         var result = 0;
-        var mess = inputIndicator.mess + inputIndicator.zeroShift;
+        var mess = inputIndicator.mess;
         if (inputIndicator.blOverRange1 | inputIndicator.blOverRange2)
             result = 1;
         else if (inputIndicator.dopusk)
@@ -232,7 +232,7 @@ Item
     {
         id: messText
         font.pixelSize: toPixels(0.3)
-        text: exorbitantFilter(round10(inputIndicator.mess + inputIndicator.zeroShift, inputIndicator.accuracy))
+        text: exorbitantFilter(round10(inputIndicator.mess, inputIndicator.accuracy))
         color: getColorMessText()
         horizontalAlignment: Text.AlignRight
         anchors.horizontalCenter: parent.horizontalCenter

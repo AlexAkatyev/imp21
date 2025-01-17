@@ -39,7 +39,7 @@ Item
     property bool pauseMeasure: false // true - пауза в измерении
     property string textcsv: "";
     property bool setZero: false // нуль не установлен
-    property real measValue: inputIndicator.mTranformFormulaReal + inputIndicator.zeroShift
+    property real measValue: inputIndicator.mTranformFormulaReal
     onMeasValueChanged:
     {
         if (stateMeasure && !pauseMeasure)
@@ -97,6 +97,8 @@ Item
     signal sigPeekFile();
     // Send broadcast message with measurement
     signal sigSendMeasurementMessage(); // see sendData
+    // Установить/сбросить 0 позицию датчиков
+    signal sigSetZeroShift();
 
     function toPixels(percentage) {
         return percentage * scaleBase / 100;
@@ -220,8 +222,6 @@ Item
 
     function getBuzzerPlay()
     {
-//        return (((inputIndicator.mess + inputIndicator.zeroShift) > inputIndicator.highLimit) |
-//                ((inputIndicator.mess + inputIndicator.zeroShift) < inputIndicator.lowLimit)) ? audioEnable : false;
         return (impGauge.getColorMessText() !== "black") ? (audioEnable & inputIndicator.dopusk) : false;
     }
 
@@ -506,8 +506,8 @@ Item
             enabled: setZero | inputIndicator.enableSetZero;
             onReleased:
             {
-                inputIndicator.zeroShift = setZero ? 0 : -inputIndicator.mess;
                 setZero = !setZero;
+                sigSetZeroShift();
             }
         }
         Button {
@@ -768,8 +768,8 @@ Item
                         height: impGauge.height
                         radius: width/2
                         color: "red"
-                        opacity: (((inputIndicator.mess + inputIndicator.zeroShift) > inputIndicator.highLimit) |
-                                  ((inputIndicator.mess + inputIndicator.zeroShift) < inputIndicator.lowLimit)) ? 0.1 : 0
+                        opacity: ((inputIndicator.mess > inputIndicator.highLimit) |
+                                  (inputIndicator.mess < inputIndicator.lowLimit)) ? 0.1 : 0
                         OpacityAnimator {
                             loops: 1
                             to: 0.1
@@ -800,7 +800,7 @@ Item
                         Text {
                             id: measIndicate
                             anchors.horizontalCenter: parent.horizontalCenter
-                            text: impGauge.exorbitantFilter(impGauge.round10(inputIndicator.mess + inputIndicator.zeroShift, inputIndicator.accuracy))
+                            text: impGauge.exorbitantFilter(impGauge.round10(inputIndicator.mess, inputIndicator.accuracy))
                             color: impGauge.getColorMessText()
                             font.pixelSize: impGauge.toPixels(0.9)
                         }
@@ -853,7 +853,7 @@ Item
             visible: statChart.visible
             opacity: 0.7
             font.pixelSize: 32
-            text: impGauge.exorbitantFilter(impGauge.round10(inputIndicator.mess + inputIndicator.zeroShift, inputIndicator.accuracy))
+            text: impGauge.exorbitantFilter(impGauge.round10(inputIndicator.mess, inputIndicator.accuracy))
             color: impGauge.getColorMessText()
         }
     }

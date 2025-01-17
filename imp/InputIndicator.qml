@@ -8,7 +8,6 @@ Item
     property int accuracy: 1
     property real lowLimit: -50
     property real highLimit: 50
-    property real zeroShift: 0
     property real unitPoint: 5 // Менять цену деления для перерисовки шкалы
     property string messUnit: "_____"
     property int accurDivision: 0 //количество отображаемых знаков после запятой на метках циферблата
