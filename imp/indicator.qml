@@ -1296,24 +1296,24 @@ Item
                             onCheckedChanged: cbStrelka.checked = !checked
                         }
                         Text {
-                            text: "\nЦена деления"
+                            text: "\n  Цена деления"
                         }
                         TextField{
                             id: tfUnitPoint
                             objectName: "tfUnitPoint"
-                            width: itGauge.width/3
+                            width: 4 * itGauge.width / 10
                             font.pixelSize: 14
                             inputMethodHints: Qt.ImhDigitsOnly
                         }
                         Text {
-                            text: "\nДискретность"
+                            text: "\n  Дискретность"
                         }
                         ComboBox {
                             id: tfNumberCharPoint
                             objectName: "tfNumberCharPoint"
                             model: getNumberCharPointModel("mkm")
                             currentIndex: 1
-                            width: itGauge.width/4
+                            width: tfUnitPoint.width
                             font.pixelSize: 14
                         }
                     }
