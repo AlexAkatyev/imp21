@@ -12,16 +12,13 @@ Item
     property string messUnit: "_____"
     property int accurDivision: 0 //количество отображаемых знаков после запятой на метках циферблата
 
-    // преобразование измерений из единиц измерния датчиков в единицы измерения пользователя
-    // 0 - без преобразования
-    // 1 - из мкм в мм
-    // 2 - из мкм в inch
-    // 3 - из мкм/м в угловые секунды
     property int transGauge: -1
     onTransGaugeChanged: {
-        mess = getMeasForTransform(messReal);
         getMeasUnitForTransform();
+        sigChangeTransGauge();
     }
+    signal sigChangeTransGauge();
+
     // единица измерения датчика
     property string messUnitDetect: "_____"
     onMessUnitDetectChanged: {
@@ -32,16 +29,9 @@ Item
     property real messReal: 0
     property real mTranformFormulaReal: 0
     onMessRealChanged: {
-        mTranformFormulaReal = getMeasForTransform(messReal);
+        mTranformFormulaReal = messReal;
         mess = mTranformFormulaReal;
     }
-
-    property real mDetect1: 0 // Показания датчика 1 с учетом коэффициента и сдвига
-    property real mTranformD1: 0
-    onMDetect1Changed: mTranformD1 = getMeasForTransform(mDetect1)
-    property real mDetect2: 0 // Показания датчика 2 с учетом коэффициента и сдвига
-    property real mTranformD2: 0
-    onMDetect2Changed: mTranformD2 = getMeasForTransform(mDetect2)
 
 
     // контроль работоспособности датчика
@@ -75,25 +65,6 @@ Item
         }
     }
 
-    function getMeasForTransform(mr) {
-        var result = 0;
-        switch (transGauge) {
-        case 1:
-            result = mr / 1000;
-            break;
-        case 2:
-            result = mr / 25400;
-            break;
-        case 3:
-            result = mr; // нужно узнать формулу
-            break;
-        default:
-            result = mr;
-
-            break;
-        }
-        return result;
-    }
 
     function getMeasUnitForTransform() {
         switch (transGauge) {

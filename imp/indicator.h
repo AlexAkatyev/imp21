@@ -28,6 +28,19 @@ public slots:
     void CloseMyIndicator(void); // Закрытие окна по команде от внешних объектов
 
 private:
+    // преобразование измерений из единиц измерния датчиков в единицы измерения пользователя
+    // 0 - без преобразования
+    // 1 - из мкм в мм
+    // 2 - из мкм в inch
+    // 3 - из мкм/м в угловые секунды
+    enum TransToUnit
+    {
+      UnitMKM = 0
+      , UnitMM = 1
+      , UnitInch = 2
+      , UnitAngleSec = 3
+    };
+
     Imp* _parent;
     int _idIndicator; // Номер индикатора
     std::vector<QString> _measuredLogs;
@@ -81,6 +94,7 @@ private:
     float calculateResult();
     float calculateChannel(int number);
     void enableSetZero();
+    float getMeasForTransform(float mr);
 
     // Флаг готовности функции
     bool _formulaComlete;
@@ -93,6 +107,8 @@ private:
     double _increment2;
     float _divider;
     std::vector<float> _zeroShifts;
+    TransToUnit _transGauge;
+
     // Диапазон измерения датчиков
     int iRange1; // датчик 1
     int iRange2; // датчик 2
@@ -130,6 +146,7 @@ private:
 private slots:
     void changeIndication(void); // Изменение способа показаний
     void changeLimit(void); // Изменение допусков на индикаторе
+    void changedTransGauge();
     void getDivisionValue(void); // Определение цены деления
     void setFormula(void); // Установка новой формулы
     void setZeroShifts(); // Установка 0 датчиков

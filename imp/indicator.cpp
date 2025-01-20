@@ -5,6 +5,8 @@
 #include <QPrinter>
 #include <QPrintDialog>
 
+#include <cmath>
+
 #include "indicator.h"
 #include "UtilLib/utillib.h"
 #include "Detects/vtdetect.h"
@@ -55,6 +57,7 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   , _formulaComlete(true)
   , _detect1(nullptr)
   , _detect2(nullptr)
+  , _transGauge(UnitMKM)
 {
   _zeroShifts = {0, 0};
   _settings = new IndSettings("indicator" + QString::number(_idIndicator) + ".ini", this);
@@ -122,6 +125,8 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   connect(_tStatChart, SIGNAL(sigClickedSaveXLS()), this, SLOT(saveChartToXLS()));
   // передача измерения в Windows
   connect(_quickUi->rootObject(), SIGNAL(sigSendMeasurementMessage()), this, SLOT(sendWmAppMessage()));
+  // изменения в единице измерения
+  connect(_inputIndicator, SIGNAL(sigChangeTransGauge()), this, SLOT(changedTransGauge()));
 
   // получение информиции о имеющихся датчиках от главного окна
   connect(_parent, SIGNAL(sigFindDetect()), this, SLOT(setComboListDetect()));
@@ -478,8 +483,6 @@ void Indicator::updateResult(void)
     flResult = sum / _lenMean; // Вот вам и усреднение
   }
   _inputIndicator->setProperty("messReal", flResult);
-  _inputIndicator->setProperty("mDetect1", calculateChannel(1));
-  _inputIndicator->setProperty("mDetect2", calculateChannel(2));
   enableSetZero();
 }
 
@@ -489,10 +492,10 @@ float Indicator::calculateChannel(int number)
   float result = 0;
   switch (number) {
   case 1:
-    result = _scale1 * (_detect1 ? _detect1->CurrentMeasure() - _zeroShifts[0] : 0) + _increment1;
+    result = _scale1 * (_detect1 ? getMeasForTransform(_detect1->CurrentMeasure()) - _zeroShifts[0] : 0) + _increment1;
     break;
   case 2:
-    result = _scale2 * (_detect2 ? _detect2->CurrentMeasure() - _zeroShifts[1] : 0) + _increment2;
+    result = _scale2 * (_detect2 ? getMeasForTransform(_detect2->CurrentMeasure()) - _zeroShifts[1] : 0) + _increment2;
     break;
   default:
     break;
@@ -585,7 +588,7 @@ void Indicator::saveSettingsIndicator()
   _settings->SetValue(IndKeys::IND_MEAS_MODE, _quickUi->rootObject()->property("deviationMode"));
 
   // Преобразование шкалы
-  _settings->SetValue(IndKeys::TRANS_GAUGE, _inputIndicator->property("transGauge"));
+  _settings->SetValue(IndKeys::TRANS_GAUGE, _transGauge);
 
   // Режимы сортировки
   QObject* qmlWidget = _quickUi->rootObject()->findChild<QObject*>("cbSortFormula");
@@ -714,7 +717,9 @@ bool Indicator::loadSettingsIndicator()
   _inputIndicator->setProperty("accurDivision", _settings->Value(IndKeys::ACCUR_DIVISION));
   _quickUi->rootObject()->setProperty("deviationMode",  _settings->Value(IndKeys::IND_MEAS_MODE));
   setTitle(_settings->Value(IndKeys::INDICATOR_NAME).toString());
-  _inputIndicator->setProperty("transGauge", _settings->Value(IndKeys::TRANS_GAUGE));
+  v = _settings->Value(IndKeys::TRANS_GAUGE);
+  _transGauge = static_cast<TransToUnit>(v.toInt());
+  _inputIndicator->setProperty("transGauge", v);
 
   QObject* qmlWidget = _quickUi->rootObject()->findChild<QObject*>("countGroupsF");
   qmlWidget->setProperty("text", _settings->Value(IndKeys::GROUPSF));
@@ -962,4 +967,33 @@ void Indicator::setZeroShifts()
     _zeroShifts[0] = 0;
     _zeroShifts[1] = 0;
   }
+}
+
+
+float Indicator::getMeasForTransform(float mr)
+{
+    float result = 0;
+    switch (_transGauge)
+    {
+    case UnitMM: // мкм - мм
+        result = mr / 1000;
+        break;
+    case UnitInch: // мкм - дюйм
+        result = mr / 25400;
+        break;
+    case UnitAngleSec: // мкм/м -> угловая секунда
+        result = 3600 * asin(mr) * 180 / M_PI;
+        break;
+    default:
+        result = mr;
+
+        break;
+    }
+    return result;
+}
+
+
+void Indicator::changedTransGauge()
+{
+  _transGauge = static_cast<TransToUnit>(_inputIndicator->property("transGauge").toInt());
 }
