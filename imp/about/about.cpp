@@ -84,15 +84,15 @@ AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH)
     saveAdresses(lwAddr);
   });
 
-  QVBoxLayout* settingsLayout = new QVBoxLayout;
-  settingsLayout->setSizeConstraint(QLayout::SetFixedSize);
-  settingsLayout->addWidget(rbDetWire);
-  settingsLayout->addWidget(cbDetRS485);
-  settingsLayout->addWidget(rbDetRadioChannel);
-  settingsLayout->addLayout(buttonLayout);
-  settingsLayout->addWidget(lwAddr);
-  QWidget* settingsWidget = new QWidget;
-  settingsWidget->setLayout(settingsLayout);
+  QVBoxLayout* findSettingsLayout = new QVBoxLayout;
+  findSettingsLayout->setSizeConstraint(QLayout::SetFixedSize);
+  findSettingsLayout->addWidget(rbDetWire);
+  findSettingsLayout->addWidget(cbDetRS485);
+  findSettingsLayout->addWidget(rbDetRadioChannel);
+  findSettingsLayout->addLayout(buttonLayout);
+  findSettingsLayout->addWidget(lwAddr);
+  QWidget* findSettingsWidget = new QWidget;
+  findSettingsWidget->setLayout(findSettingsLayout);
 
   connect(rbDetRadioChannel, &QRadioButton::toggled, this, [=](bool checked)
   {
@@ -111,15 +111,23 @@ AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH)
   rbDetWire->setChecked(!settings->Value(ImpKeys::EN_MODBUS_TCP).toBool());
   rbDetRadioChannel->setChecked(ImpSettings::Instance()->Value(ImpKeys::EN_MODBUS_TCP).toBool());
 
+  QVBoxLayout* dataSettingsLayout = new QVBoxLayout;
+  dataSettingsLayout->setSizeConstraint(QLayout::SetFixedSize);
+  QWidget* dataSettingsWidget = new QWidget;
+  dataSettingsWidget->setLayout(dataSettingsLayout);
+  QCheckBox* cbData = new QCheckBox("Запись одновременно во всех индикаторах", this);
+  dataSettingsLayout->addWidget(cbData);
+
   QTabWidget* tab = new QTabWidget;
+  tab->addTab(findSettingsWidget, "Поиск");
+  tab->addTab(dataSettingsWidget, "Раб. место");
   tab->addTab(aboutWidget, "Тех. поддержка");
-  tab->addTab(settingsWidget, "Настройки");
 
   QVBoxLayout* generalLayout = new QVBoxLayout;
   generalLayout->addWidget(tab);
   setLayout(generalLayout);
 
-  setWindowTitle("О программе");
+  setWindowTitle("Настройки");
 }
 
 
