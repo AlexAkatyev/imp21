@@ -65,6 +65,9 @@ QString ImpSettings::keyFromCode(ImpKeys c)
   case LIST_MB_ADDR:
     return "list_mb_addr";
     break;
+  case RECORDING_IN_ALL_INDICATORS:
+    return "recording_in_all_indicators";
+    break;
   default:
     return "";
   }
@@ -112,6 +115,9 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
     return sl;
     break;
   }
+  case RECORDING_IN_ALL_INDICATORS:
+    return false;
+    break;
   default:
     return QVariant();
   }

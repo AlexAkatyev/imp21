@@ -116,6 +116,11 @@ AboutDialog::AboutDialog(QWidget* parent, int V_MAJOR, int V_MINOR, int V_PATCH)
   QWidget* dataSettingsWidget = new QWidget;
   dataSettingsWidget->setLayout(dataSettingsLayout);
   QCheckBox* cbData = new QCheckBox("Запись одновременно во всех индикаторах", this);
+  cbData->setChecked(settings->Value(ImpKeys::RECORDING_IN_ALL_INDICATORS).toBool());
+  connect(cbData, &QAbstractButton::toggled, this, [=](bool checked)
+  {
+    settings->SetValue(ImpKeys::RECORDING_IN_ALL_INDICATORS, checked);
+  });
   dataSettingsLayout->addWidget(cbData);
 
   QTabWidget* tab = new QTabWidget;

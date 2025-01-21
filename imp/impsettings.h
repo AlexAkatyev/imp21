@@ -12,6 +12,7 @@ enum ImpKeys {WIN_X
               , EN_RS_485
               , EN_MODBUS_TCP
               , LIST_MB_ADDR
+              , RECORDING_IN_ALL_INDICATORS
              };
 
 class ImpSettings : public QObject
