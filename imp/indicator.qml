@@ -99,6 +99,8 @@ Item
     signal sigSendMeasurementMessage(); // see sendData
     // Установить/сбросить 0 позицию датчиков
     signal sigSetZeroShift();
+    // нажата клавиша Data
+    signal sigReleaseData();
 
     function toPixels(percentage) {
         return percentage * scaleBase / 100;
@@ -526,7 +528,11 @@ Item
             visible: itMainGauge.visible && !itMin.visible
             text: "Data"
             width: btMenu.width
-            onReleased: releaseData()
+            onReleased:
+            {
+                releaseData();
+                sigReleaseData();
+            }
         }
         Button {
             id: btStartPause

@@ -56,6 +56,7 @@ Imp::Imp(QWidget* parent)
 
     // Загрузка параметров из файла установок
     _useIndicators.clear(); // подготовка к загрузке множества индикаторов
+    _indicators.clear();
     _flagRunIndicators = true;
     LoadSettingsGeneral();
     setMinimumSize(SIZE_WINDOW_WIDTH, SIZE_WINDOW_HEIGTH);
@@ -366,6 +367,17 @@ void Imp::createNewIndicator(QString strNDS)
 void Imp::deleteIndicator(int idInd)
 {
     _useIndicators.erase(_useIndicators.find(idInd));
+    for (auto it = _indicators.begin(); it != _indicators.end(); )
+    {
+      if ((*it)->Id() == idInd)
+      {
+        it = _indicators.erase(it);
+      }
+      else
+      {
+        ++it;
+      }
+    }
 }
 
 
@@ -376,6 +388,25 @@ void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect)
     ind = new Indicator(this,
                         index, // Номер индикатора
                         baseDetect); // ссылка на датчик
+    _indicators.push_back(ind);
+    connect(ind, &Indicator::sigDataPressed, this, [=]()
+    {
+      ImpSettings* settings = ImpSettings::Instance(this);
+      bool translate = settings->Value(ImpKeys::RECORDING_IN_ALL_INDICATORS).toBool();
+      if (!translate)
+      {
+        return;
+      }
+      Indicator* ind = static_cast<Indicator*>(sender());
+      int senderId = ind->Id();
+      for (Indicator* i : _indicators)
+      {
+        if (i->Id() != senderId)
+        {
+          i->RunButtonRelease();
+        }
+      }
+    });
     // Закрытие индикатора при закрытии главного окна
     connect(this, &Imp::sigCloseIndicatorWindows, ind, &Indicator::CloseMyIndicator);
 }

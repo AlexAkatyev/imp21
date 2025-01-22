@@ -123,6 +123,8 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   connect(_tStatChart, SIGNAL(sigClickedSaveCSV()), this, SLOT(saveChartToCSV()));
   // отработка нажатия кнопки сохранение XLS
   connect(_tStatChart, SIGNAL(sigClickedSaveXLS()), this, SLOT(saveChartToXLS()));
+  // отработка нажатия кнопки DATA
+  connect(_quickUi->rootObject(), SIGNAL(sigReleaseData()), this, SIGNAL(sigDataPressed()));
   // передача измерения в Windows
   connect(_quickUi->rootObject(), SIGNAL(sigSendMeasurementMessage()), this, SLOT(sendWmAppMessage()));
   // изменения в единице измерения
@@ -164,6 +166,12 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
 
   setMinimumSize(QSize(MINIMAL_WIDTH, MINIMAL_HEIGHT));
   this->show(); // Окно выводим на экран
+}
+
+
+int Indicator::Id()
+{
+  return _idIndicator;
 }
 
 
@@ -349,19 +357,19 @@ void Indicator::setFormula(void)
   qApp->processEvents();
   QString strCurrent1 = _cbListDetect1->property("currentText").toString();
   if (_detect1)
-    disconnect(_detect1, &VTDetect::PressedButton, this, &Indicator::runButtonRelease);
+    disconnect(_detect1, &VTDetect::PressedButton, this, &Indicator::RunButtonRelease);
   _detect1 = _parent->DetectAtName(strCurrent1);
   if (_detect1)
-    connect(_detect1, &VTDetect::PressedButton, this, &Indicator::runButtonRelease);
+    connect(_detect1, &VTDetect::PressedButton, this, &Indicator::RunButtonRelease);
 
   // Датчик 2
   qApp->processEvents();
   QString strCurrent2 = _cbListDetect2->property("currentText").toString();
   if (_detect2)
-    disconnect(_detect2, &VTDetect::PressedButton, this, &Indicator::runButtonRelease);
+    disconnect(_detect2, &VTDetect::PressedButton, this, &Indicator::RunButtonRelease);
   _detect2 = _parent->DetectAtName(strCurrent2);
   if (_detect2)
-    connect(_detect2, &VTDetect::PressedButton, this, &Indicator::runButtonRelease);
+    connect(_detect2, &VTDetect::PressedButton, this, &Indicator::RunButtonRelease);
   // Проверки
   QString unit1 = _detect1 ? _detect1->MeasUnit() : "";
   QString unit2 = _detect2 ? _detect2->MeasUnit() : "";
@@ -381,7 +389,7 @@ void Indicator::setFormula(void)
 }
 
 
-void Indicator::runButtonRelease()
+void Indicator::RunButtonRelease()
 {
   QMetaObject::invokeMethod(_quickUi->rootObject(), "releaseData", Qt::QueuedConnection);
 }

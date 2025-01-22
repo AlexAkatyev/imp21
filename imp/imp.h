@@ -67,6 +67,7 @@ private:
     bool LoadSettingsGeneral(); // Загрузка параметров из файла установок
     void SaveSettingsGeneral(); // Сохранение параметров установок в файл
     QSet<int> _useIndicators; // Множество используемых индикаторов
+    std::vector<Indicator*> _indicators;
     bool _flagRunIndicators; // Флаг необходимости запускать индикаторы после запуска программы
 
     void createIndicator(int index, ImpAbstractDetect* baseDetect = nullptr);

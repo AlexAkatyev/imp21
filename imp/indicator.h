@@ -19,13 +19,16 @@ public:
     Indicator(QWidget* parent,         // родитель
               int identificator,       // Номер индикатора
               ImpAbstractDetect* baseDetect = nullptr);    // Ссылка на датчик
+    int Id();
 
 signals:
     void sigCloseIndicator(int); // Закрытие окна индикатора, передается номер индикатора - для родительского окна
     void sigCloseMyIndicator(void); // Сигнал о закрытии окна дочерним окнам
+    void sigDataPressed(); // нажатие на кнопку DATA
 
 public slots:
     void CloseMyIndicator(void); // Закрытие окна по команде от внешних объектов
+    void RunButtonRelease(); // Отработать нажатие в другом индикаторе или своего датчика
 
 private:
     // преобразование измерений из единиц измерния датчиков в единицы измерения пользователя
@@ -81,7 +84,6 @@ private:
 
     // Входные данные для индикатора +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     QObject* _inputIndicator;
-    void runButtonRelease();
 
 
 
