@@ -990,7 +990,7 @@ float Indicator::getMeasForTransform(float mr)
         result = mr / 25400;
         break;
     case UnitAngleSec: // мкм/м -> угловая секунда
-        result = 3600 * asin(mr) * 180 / M_PI;
+        result = 3600 * atanf(mr / 1000000) * 180 / M_PI;
         break;
     default:
         result = mr;
