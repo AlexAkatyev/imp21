@@ -108,7 +108,7 @@ Imp::Imp(QWidget* parent)
     connect(_timerUpdaterActiveStatus, &QTimer::timeout, this, &Imp::changeActiveStatusToTable);
 
     // Поиск датчиков при запуске программы после паузы, чтобы оформилось главное окно
-    TimerBeforeFound->start();
+    //TimerBeforeFound->start(); // вернуть при заливке в dev !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
 
