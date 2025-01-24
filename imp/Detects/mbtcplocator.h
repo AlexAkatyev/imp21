@@ -29,6 +29,7 @@ public:
   int PreSet(int numberD);
   float Measure(int numberD);
   QString PortName();
+  void ReportReadyWrite(int numberD, bool ready);
 
 signals:
   void ReadyMeasure(int id, float meas);
@@ -46,6 +47,7 @@ private:
   void readRequest(int startAddress, quint16 numberOfEntries);
   void initContinue();
   int regData(qint16 reg, int numberD);
+  int regDataWrite(qint16 reg, int numberD);
   QByteArray dataToByteArray(qint16 reg, int numberD, int length);
   void readFromUdpSocket();
   int numberD(int id);

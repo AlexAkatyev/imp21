@@ -14,6 +14,7 @@ public:
   void Init() override;
   QString PortName() override;
   void ShowSettings() override;
+  void ReportReadyWrite(bool ready) override;
 
 private:
   void updateState();

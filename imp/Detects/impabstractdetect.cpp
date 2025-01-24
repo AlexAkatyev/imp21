@@ -176,3 +176,9 @@ void ImpAbstractDetect::setStateButton(bool press)
 
   _prevStateButton = press;
 }
+
+
+void ImpAbstractDetect::ReportReadyWrite(bool ready)
+{
+  Q_UNUSED(ready);
+}
