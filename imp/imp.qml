@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.1
 import QtQml.Models 2.2
+import QtQuick.Layouts 1.3
 
 
 Item
@@ -77,91 +78,161 @@ Item
     signal sigFindDetect();
     signal sigSelectDetectToInit(string SerialNum);
 
-
     Rectangle
     {
-        id: rectTitle
-        height: itWin.height/20
-        width: itWin.width
-        color: "tomato"
-        Text
-        {
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            id: textTitle
-            text: "Измеритель микроперемещений"
-            font.pixelSize: rectTitle.height * 0.7
-        }
-    }
-    Row
-    {
-        id: rowOption
-        anchors.top: rectTitle.bottom
-        ProgressBar
-        {
-            id: pbFind
-            objectName: "pbFind"
-            height: itWin.height/15
-            width: 6*itWin.width/10
-            value: 0 // from 0 to 1
-            background: Rectangle
-            {
-                width: pbFind.width
-                height: pbFind.height
-                color: "white"
-            }
-            contentItem: Item
-            {
-                width: parent.width
-                height: parent.height
-                Rectangle
-                {
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: pbFind.visualPosition * parent.width
-                    height: parent.height * 0.8
+        id: actionbar
+        height: 155
+        color: "lightgray"
+        anchors.left: itWin.left
+        anchors.right: itWin.right
 
-                    radius: height/4
-                    color: "tomato"
+
+        Row {
+            padding: 20
+            spacing: 10
+
+            Column {
+
+                Row {
+                    spacing: 10
+
+                    Button
+                    {
+                        id: btFind
+                        objectName: "btFind"
+                        height: 100
+                        width: 100
+                        text: "Поиск
+датчиков"
+
+                        icon.name: "transducers_search"
+                        icon.source: "transducers_search.png"
+                        display: Button.TextUnderIcon
+                        onClicked: sigFindDetect();
+                    }
+
+                    Button
+                    {
+                        id: btIndicator
+                        objectName: "btIndicator"
+                        height: 100
+                        width: 100
+                        text: "Новый
+индикатор"
+                        icon.name: "indicator_add"
+                        icon.source: "indicator_add.png"
+                        display: Button.TextUnderIcon
+                        onClicked: sigNewIndicator("Нет"); // Датчик для нового индикатора не выбран
+                    }
                 }
-                Text {
-                    id: textComment
-                    objectName: "textComment"
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    text: " "
-                }
-                Text {
-                    id: textPercent
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    text: String(Math.round(pbFind.value * 100)) + "%  "
-                    visible: ((pbFind.value === 1) | (pbFind.value === 0)) ? false : true
+
+                ProgressBar
+                {
+                    id: pbFind
+                    objectName: "pbFind"
+                    height: 30
+                    width: 210
+                    value: 0 // from 0 to 1
+                    background: Rectangle
+                    {
+                        width: pbFind.width
+                        height: pbFind.height
+                        color: "lightgray"
+                    }
+                    contentItem: Item
+                    {
+                        width: parent.width
+                        height: parent.height
+                        Rectangle
+                        {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: pbFind.visualPosition * parent.width
+                            height: parent.height * 0.8
+
+                            radius: height/4
+                            color: "green"
+                        }
+                        Text {
+                            id: textComment
+                            objectName: "textComment"
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.left: parent.left
+                            text: " "
+                        }
+                        Text {
+                            id: textPercent
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: parent.right
+                            text: String(Math.round(pbFind.value * 100)) + "%  "
+                            visible: ((pbFind.value === 1) | (pbFind.value === 0)) ? false : true
+                        }
+                    }
                 }
             }
-        }
-        Button
-        {
-            id: btHelp
-            height: itWin.height/15
-            width: 3*itWin.width/10
-            text: "Помощь"
-            onClicked: sigClickedbtHelp();
-        }
-        Button
-        {
-            id: btAbout
-            height: itWin.height/15
-            width: itWin.width/10
-            text: "A"
-            onClicked: sigClickedbtAbout();
+
+            ToolSeparator {
+                height: 120
+            }
+
+            Column {
+                id: search_group
+                spacing: -10
+                padding: -10
+
+                RadioButton {
+                    text: "Искать проводные датчики"
+                }
+
+                CheckBox {
+                    text: "Искать датчики по протоколу RS-485"
+                }
+
+                RadioButton {
+                    text: "Искать датчики через сервер Modbus TCP"
+                }
+
+            }
+
+            ToolSeparator {
+                height: 120
+            }
+
+            Button
+            {
+                height: 100
+                width: 100
+                text: "Добавить
+адрес"
+                icon.name: "address_add"
+                icon.source: "address_add.png"
+                display: Button.TextUnderIcon
+            }
+
+            Button
+            {
+                height: 100
+                width: 100
+                text: "Удалить
+адрес"
+                icon.name: "address_remove"
+                icon.source: "address_remove.png"
+                display: Button.TextUnderIcon
+            }
+
+            TextArea {
+                height: 100
+                width: 100
+                background: Rectangle {
+                border.color: "gray"
+                }
+            }
         }
     }
 
     ListView
     {
         id: lvDetect
-        anchors.top: rowOption.bottom
-        anchors.bottom: rowCommand.top
+        anchors.top: actionbar.bottom
         anchors.left: itWin.left
         anchors.right: itWin.right
         focus: true
@@ -169,11 +240,7 @@ Item
         {
             width: parent.width
             height: itWin.height/15
-            gradient: Gradient
-            {
-                GradientStop {position: 0; color: "tomato"}
-                GradientStop {position: 0.7; color: "black"}
-            }
+            color: "darkblue"
             Text{
                 anchors.centerIn: parent;
                 color: "lightgray";
@@ -288,33 +355,5 @@ Item
                 }
             }
         }
-
     }
-
-    Row
-    {
-        id: rowCommand
-        anchors.bottom: itWin.bottom
-        Button
-        {
-            id: btFind
-            objectName: "btFind"
-            height: itWin.height/10
-            width: itWin.width/2
-            text: "Поиск датчиков"
-            onClicked: sigFindDetect();
-        }
-        Button
-        {
-            id: btIndicator
-            objectName: "btIndicator"
-            height: itWin.height/10
-            width: itWin.width/2
-            text: "Новый индикатор"
-            onClicked: sigNewIndicator("Нет"); // Датчик для нового индикатора не выбран
-        }
-    }
-
-
 }
-
