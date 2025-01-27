@@ -105,6 +105,7 @@ Item
                         text: "Поиск
 датчиков"
 
+                        font.capitalization: Font.Capitalize
                         icon.name: "transducers_search"
                         icon.source: "transducers_search.png"
                         display: Button.TextUnderIcon
@@ -119,6 +120,7 @@ Item
                         width: 100
                         text: "Новый
 индикатор"
+                        font.capitalization: Font.Capitalize
                         icon.name: "indicator_add"
                         icon.source: "indicator_add.png"
                         display: Button.TextUnderIcon
@@ -203,6 +205,7 @@ Item
                 width: 100
                 text: "Добавить
 адрес"
+                font.capitalization: Font.Capitalize
                 icon.name: "address_add"
                 icon.source: "address_add.png"
                 display: Button.TextUnderIcon
@@ -214,6 +217,7 @@ Item
                 width: 100
                 text: "Удалить
 адрес"
+                font.capitalization: Font.Capitalize
                 icon.name: "address_remove"
                 icon.source: "address_remove.png"
                 display: Button.TextUnderIcon
