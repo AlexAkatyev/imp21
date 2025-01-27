@@ -109,7 +109,8 @@ void EmVTDetect::getInfoFromData(QByteArray input)
     QByteArray receiveData = input.right(input.size() - i); // trimm receiving
     if (receiveData.size() >= LEN_DATA)
     {
-      _serialNumber = getNumberFromData(receiveData.at(AT_SN1000), 1000)
+      _serialNumber = getNumberFromData(receiveData.at(AT_YEAR10), 10000)
+          + getNumberFromData(receiveData.at(AT_YEAR1), 1000)
           + getNumberFromData(receiveData.at(AT_SN100), 100)
           + getNumberFromData(receiveData.at(AT_SN10), 10)
           + getNumberFromData(receiveData.at(AT_SN1));
