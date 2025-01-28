@@ -1,9 +1,13 @@
 <RCC>
     <qresource prefix="/">
         <file>imp.qml</file>
-        <file>indicator_add.png</file>
-        <file>transducers_search.png</file>
-        <file>address_add.png</file>
-        <file>address_remove.png</file>
+        <file>icons/add_and_compose.png</file>
+        <file>icons/address_add.png</file>
+        <file>icons/address_remove.png</file>
+        <file>icons/compose.png</file>
+        <file>icons/indicator_add.png</file>
+        <file>icons/settings.png</file>
+        <file>icons/transducers_search.png</file>
+        <file>icons/workspace.png</file>
     </qresource>
 </RCC>

@@ -106,7 +106,7 @@ Item
 
                         font.capitalization: Font.Capitalize
                         icon.name: "transducers_search"
-                        icon.source: "transducers_search.png"
+                        icon.source: "icons/transducers_search.png"
                         display: Button.TextUnderIcon
                         onClicked: sigFindDetect();
                     }
@@ -121,7 +121,7 @@ Item
 индикатор"
                         font.capitalization: Font.Capitalize
                         icon.name: "indicator_add"
-                        icon.source: "indicator_add.png"
+                        icon.source: "icons/indicator_add.png"
                         display: Button.TextUnderIcon
                         onClicked: sigNewIndicator("Нет"); // Датчик для нового индикатора не выбран
                     }
@@ -173,6 +173,59 @@ Item
 
             ToolSeparator {
                 height: 120
+            }
+
+            Button
+            {
+                id: btCompose
+                height: 100
+                width: 100
+                text: "Компоновать
+существующие"
+
+                font.capitalization: Font.Capitalize
+                icon.name: "compose"
+                icon.source: "icons/compose.png"
+                display: Button.TextUnderIcon
+                onClicked: sigFindDetect();
+            }
+
+            Button
+            {
+                id: btAddAndCompose
+                height: 100
+                width: 100
+                text: "Добавить и
+компоновать"
+                font.capitalization: Font.Capitalize
+                icon.name: "add_and_compose"
+                icon.source: "icons/add_and_compose.png"
+                display: Button.TextUnderIcon
+                onClicked: sigNewIndicator("Нет"); // Датчик для нового индикатора не выбран
+            }
+
+            ToolSeparator {
+                height: 120
+            }
+
+            Button
+            {
+                id: btAbout
+                height: 100
+                width: 100
+                text: "Настройки
+поиска"
+
+                font.capitalization: Font.Capitalize
+                background: Rectangle {
+                    color: mouse.hovered ? "red" : "transparent"
+                    border.color: "transparent"
+                }
+
+                icon.name: "transducers_search"
+                icon.source: "icons/settings.png"
+                display: Button.TextUnderIcon
+                onClicked: sigClickedbtAbout();
             }
         }
     }
