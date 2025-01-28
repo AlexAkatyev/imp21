@@ -109,6 +109,12 @@ Imp::Imp(QWidget* parent)
 
     // Поиск датчиков при запуске программы после паузы, чтобы оформилось главное окно
     //TimerBeforeFound->start(); // вернуть при заливке в dev !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+    // Убрать после изменения внешнего вида главного окна !!!!!!!!!!!!!!!!!!!!!!!!
+    _detects = DetectFactory::Instance(this)->TestDetects();
+    reWriteDetectsToTable();
+    pitWin->setProperty("iCommand", 4);
 }
 
 

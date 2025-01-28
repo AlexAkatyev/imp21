@@ -236,6 +236,7 @@ Item
         anchors.top: actionbar.bottom
         anchors.left: itWin.left
         anchors.right: itWin.right
+        anchors.bottom: itWin.bottom
         focus: true
         header: Rectangle
         {
