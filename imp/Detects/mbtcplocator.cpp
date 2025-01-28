@@ -166,6 +166,12 @@ int MBTcpLocator::regData(qint16 reg, int numberD)
 }
 
 
+int MBTcpLocator::regDataWrite(qint16 reg, int numberD)
+{
+  return regData(reg, numberD) - 1;
+}
+
+
 bool MBTcpLocator::ActivityState(int numberD)
 {
   short data = _regs[regData(REG_ACTIVITY_STATE, numberD)];
@@ -326,3 +332,45 @@ QString MBTcpLocator::PortName()
   return result;
 }
 
+
+void MBTcpLocator::ReportReadyWrite(int numberD, bool ready)
+{
+  Logger* logger = Logger::GetInstance();
+  quint16 d = ready ? 0x1 : 0;
+  QVector<quint16> data = {d};
+  QModbusDataUnit writeUnit = QModbusDataUnit(QModbusDataUnit::HoldingRegisters, regDataWrite(REG_CAN_READY_WRITE, numberD), data);
+  if(auto *lastRequest = sendWriteRequest(writeUnit, DEF_ID_DEVICE))
+  {
+      if(!lastRequest->isFinished())
+      {
+          connect(lastRequest, &QModbusReply::finished, this, [this, lastRequest, logger, numberD]()
+          {
+              if (lastRequest->error() == QModbusDevice::ProtocolError)
+              {
+                  logger->WriteLnLog("modbus tcp write: ProtocolError");
+              }
+              else if (lastRequest->error() == QModbusDevice::TimeoutError)
+              {
+                  logger->WriteLnLog("modbus tcp write: TimeoutError");
+              }
+              else if (lastRequest->error() != QModbusDevice::NoError)
+              {
+                  logger->WriteLnLog("modbus tcp write: Any Error");
+              }
+              else if (lastRequest->error() == QModbusDevice::NoError)
+              {
+                  logger->WriteLnLog("modbus tcp write: " + QString::number( regData(REG_CAN_READY_WRITE, numberD)));
+              }
+              lastRequest->deleteLater();
+         });
+     }
+     else
+     {
+         lastRequest->deleteLater();
+     }
+   }
+   else
+   {
+       logger->WriteLnLog("Ошибка записи: " + errorString());
+   }
+}

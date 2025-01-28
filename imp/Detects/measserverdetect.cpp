@@ -44,6 +44,14 @@ MeasServerDetect::MeasServerDetect(MBTcpLocator* locator, int countD, QObject* p
     _flagReady = _counterWDT < limit;
   });
   wdt->start(100);
+
+  // temporary
+  QTimer* reporter = new QTimer(this);
+  connect(reporter, &QTimer::timeout, this, [=]()
+  {
+    ReportReadyWrite(true);
+  });
+  reporter->start(500);
 }
 
 
@@ -90,3 +98,8 @@ void MeasServerDetect::ShowSettings()
   settingsWindow->show();
 }
 
+
+void MeasServerDetect::ReportReadyWrite(bool ready)
+{
+  _locator->ReportReadyWrite(_numberD, ready);
+}

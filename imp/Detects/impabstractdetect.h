@@ -30,6 +30,7 @@ public:
   virtual bool Ready();
   virtual QString Address();
   bool ActiveStatusChanged();
+  virtual void ReportReadyWrite(bool ready);
 
 signals:
   void NewMeasure(float);

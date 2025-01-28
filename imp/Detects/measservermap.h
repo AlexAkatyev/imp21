@@ -15,6 +15,7 @@ const qint16 REG_DETECTS_COUNT    = 0x0010;
 const qint16 REG_LIST_ID          = 0x0100;
 const qint16 REG_CURRENT_MEAS     = 0x0200;
 const qint16 REG_ACTIVITY_STATE   = 0x0203;
+const qint16 REG_CAN_READY_WRITE  = 0x0204;
 const qint16 REG_TYPE_DETECT      = 0x0206;
 const qint16 REG_DATE_MANUF       = REG_TYPE_DETECT + 2;
 const qint16 REG_YEAR_MANUF       = REG_DATE_MANUF + 1;
@@ -46,8 +47,8 @@ const int LEN_UDP_DATA            = 7;
 
 const int UDP_ID                  = 0;
 const int LEN_UDP_ID              = 2;
-const int UDP_PEEK             = UDP_ID + LEN_UDP_ID;
-const int LEN_UDP_PEEK         = 1;
+const int UDP_PEEK                = UDP_ID + LEN_UDP_ID;
+const int LEN_UDP_PEEK            = 1;
 const int UDP_MEAS                = UDP_PEEK + LEN_UDP_PEEK;
 const int LEN_UDP_MEAS            = 4;
 
