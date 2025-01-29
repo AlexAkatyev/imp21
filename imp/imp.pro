@@ -53,6 +53,7 @@ SOURCES += main.cpp\
         imp.cpp \
     about/about.cpp \
     impsettings.cpp \
+    impsettingsdialog.cpp \
     indicator.cpp \
     checkInputNumberIF/checkInputNumberIF.cpp \
   indsettings.cpp \
@@ -89,6 +90,7 @@ HEADERS  += imp.h \
     about/about.h \
     impdef.h \
     impsettings.h \
+    impsettingsdialog.h \
     indicator.h \
     checkInputNumberIF/checkInputNumberIF.h \
     indsettings.h \

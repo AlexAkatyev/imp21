@@ -22,6 +22,7 @@
 #include "Detects/detectfactory.h"
 #include "Logger/logger.h"
 #include "impsettings.h"
+#include "impsettingsdialog.h"
 
 // Пауза после запуска программы перед поиском датчиков
 const int PAUSE_BEFORE_FIND_DETECT = 500;
@@ -429,7 +430,9 @@ void Imp::showHelp()
 void Imp::showAbout()
 {
   static AboutDialog* aboutWindow = new AboutDialog(this, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
+  static ImpSettingsDialog* sDialog = new ImpSettingsDialog(this);
   aboutWindow->show();
+  sDialog->show();
 }
 
 
