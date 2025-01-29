@@ -77,6 +77,15 @@ Item
     signal sigFindDetect();
     signal sigSelectDetectToInit(string SerialNum);
 
+    SearchProgress
+    {
+        id: searchProgress
+        objectName: "searchProgress"
+        visible: false
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+    }
+
     Rectangle
     {
         id: actionbar
@@ -107,7 +116,12 @@ Item
                     display: Button.TextUnderIcon
                     ToolTip.visible: hovered
                     ToolTip.text: "Искать подключенные датчики"
-                    onClicked: sigFindDetect();
+                    onClicked:
+                    {
+                        searchProgress.visible = true;
+                        sigFindDetect();
+                        searchProgress.visible = false;
+                    }
                 }
 
             Button

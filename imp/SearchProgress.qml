@@ -3,7 +3,6 @@ import QtQuick.Controls 2.1
 import QtQml.Models 2.2
 
 Item {
-
     ProgressBar
     {
         id: pbFind
@@ -13,14 +12,12 @@ Item {
         value: 0 // from 0 to 1
         background: Rectangle
         {
-            width: pbFind.width
-            height: pbFind.height
+            anchors.fill: parent
             color: "lightgray"
         }
         contentItem: Item
         {
-            width: parent.width
-            height: parent.height
+            anchors.fill: parent
             Rectangle
             {
                 anchors.verticalCenter: parent.verticalCenter
@@ -48,5 +45,3 @@ Item {
     }
 }
 
-
-}
