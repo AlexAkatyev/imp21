@@ -41,7 +41,7 @@ const int VERSION_PATCH = DEF_VERSION_PATCH;
 const int VERSION_TEST  = DEF_VERSION_TEST;
 
 // Исходные размеры окна
-const int SIZE_WINDOW_WIDTH = 950;
+const int SIZE_WINDOW_WIDTH = 1000;
 const int SIZE_WINDOW_HEIGTH = 500;
 
 const char* HELP_INFO = "build\\html\\index.html";

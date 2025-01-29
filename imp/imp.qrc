@@ -9,5 +9,8 @@
         <file>icons/settings.png</file>
         <file>icons/transducers_search.png</file>
         <file>icons/workspace.png</file>
+        <file>SearchProgress.qml</file>
+        <file>settings.qml</file>
+        <file>icons/info.png</file>
     </qresource>
 </RCC>

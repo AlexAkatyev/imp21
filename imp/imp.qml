@@ -80,155 +80,187 @@ Item
     Rectangle
     {
         id: actionbar
-        height: 155
+        height: 100
         color: "lightgray"
         anchors.left: itWin.left
         anchors.right: itWin.right
 
 
         Row {
-            padding: 20
+            leftPadding: 20
             spacing: 10
 
-            Column {
-
-                Row {
-                    spacing: 10
-
-                    Button
-                    {
-                        id: btFind
-                        objectName: "btFind"
-                        height: 100
-                        width: 100
-                        text: "Поиск
+            Button {
+                    id: btFind
+                    objectName: "btFind"
+                    height: 100
+                    width: 80
+                    hoverEnabled: true
+                    background: Rectangle {
+                        color: btFind.down ? "lightgray" : (btFind.hovered ? "#c3c3c3" : "lightgray")
+                    }
+                    text: "Поиск
 датчиков"
-
-                        font.capitalization: Font.Capitalize
-                        icon.name: "transducers_search"
-                        icon.source: "icons/transducers_search.png"
-                        display: Button.TextUnderIcon
-                        onClicked: sigFindDetect();
-                    }
-
-                    Button
-                    {
-                        id: btIndicator
-                        objectName: "btIndicator"
-                        height: 100
-                        width: 100
-                        text: "Новый
-индикатор"
-                        font.capitalization: Font.Capitalize
-                        icon.name: "indicator_add"
-                        icon.source: "icons/indicator_add.png"
-                        display: Button.TextUnderIcon
-                        onClicked: sigNewIndicator("Нет"); // Датчик для нового индикатора не выбран
-                    }
+                    font.capitalization: Font.Capitalize
+                    icon.name: "transducers_search"
+                    icon.source: "icons/transducers_search.png"
+                    display: Button.TextUnderIcon
+                    ToolTip.visible: hovered
+                    ToolTip.text: "Искать подключенные датчики"
+                    onClicked: sigFindDetect();
                 }
-
-                ProgressBar
-                {
-                    id: pbFind
-                    objectName: "pbFind"
-                    height: 30
-                    width: 210
-                    value: 0 // from 0 to 1
-                    background: Rectangle
-                    {
-                        width: pbFind.width
-                        height: pbFind.height
-                        color: "lightgray"
-                    }
-                    contentItem: Item
-                    {
-                        width: parent.width
-                        height: parent.height
-                        Rectangle
-                        {
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: pbFind.visualPosition * parent.width
-                            height: parent.height * 0.8
-
-                            radius: height/4
-                            color: "green"
-                        }
-                        Text {
-                            id: textComment
-                            objectName: "textComment"
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.left: parent.left
-                            text: " "
-                        }
-                        Text {
-                            id: textPercent
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.right: parent.right
-                            text: String(Math.round(pbFind.value * 100)) + "%  "
-                            visible: ((pbFind.value === 1) | (pbFind.value === 0)) ? false : true
-                        }
-                    }
-                }
-            }
-
-            ToolSeparator {
-                height: 120
-            }
 
             Button
             {
+                id: btAbout
+                height: 100
+                width: 80
+                hoverEnabled: true
+                background: Rectangle {
+                    color: btAbout.down ? "lightgray" : (btAbout.hovered ? "#c3c3c3" : "lightgray")
+                }
+
+                text: "Настройки
+поиска"
+                font.capitalization: Font.Capitalize
+                icon.name: "transducers_search"
+                icon.source: "icons/settings.png"
+                display: Button.TextUnderIcon
+                ToolTip.visible: hovered
+                ToolTip.text: "Выбрать тип датчика и способ поиска"
+                onClicked: sigClickedbtAbout();
+            }
+
+            ToolSeparator {
+                height: 100
+            }
+
+            Button {
+                    id: btIndicator
+                    objectName: "btIndicator"
+                    height: 100
+                    width: 80
+                    hoverEnabled: true
+                    background: Rectangle {
+                        color: btIndicator.down ? "lightgray" : (btIndicator.hovered ? "#c3c3c3" : "lightgray")
+                    }
+                    text: "Новый
+индикатор"
+                    font.capitalization: Font.Capitalize
+                    icon.name: "indicator_add"
+                    icon.source: "icons/indicator_add.png"
+                    display: Button.TextUnderIcon
+                    ToolTip.visible: hovered
+                    ToolTip.text: "Добавить новый индикатор для найденного датчика"
+                    onClicked: sigNewIndicator("Нет"); // Датчик для нового индикатора не выбран
+                }
+
+            Button {
                 id: btCompose
                 height: 100
-                width: 100
+                width: 110
+                hoverEnabled: true
+                background: Rectangle {
+                    color: btCompose.down ? "lightgray" : (btCompose.hovered ? "#c3c3c3" : "lightgray")
+                }
                 text: "Компоновать
 существующие"
-
                 font.capitalization: Font.Capitalize
                 icon.name: "compose"
                 icon.source: "icons/compose.png"
                 display: Button.TextUnderIcon
-                onClicked: sigFindDetect();
+                ToolTip.visible: hovered
+                ToolTip.text: "Разместить открытые индикаторы в пределах всех доступных экранов"
             }
 
             Button
             {
                 id: btAddAndCompose
                 height: 100
-                width: 100
+                width: 110
+                hoverEnabled: true
+                background: Rectangle {
+                    color: btAddAndCompose.down ? "lightgray" : (btAddAndCompose.hovered ? "#c3c3c3" : "lightgray")
+                }
                 text: "Добавить и
 компоновать"
                 font.capitalization: Font.Capitalize
                 icon.name: "add_and_compose"
                 icon.source: "icons/add_and_compose.png"
                 display: Button.TextUnderIcon
-                onClicked: sigNewIndicator("Нет"); // Датчик для нового индикатора не выбран
+                ToolTip.visible: hovered
+                ToolTip.text: "Добавить выбранное количество индикаторов и разместить в пределах одного экрана"
             }
 
             ToolSeparator {
-                height: 120
+                height: 100
             }
 
-            Button
-            {
-                id: btAbout
+            Button {
+                id: btWorkspace
                 height: 100
-                width: 100
-                text: "Настройки
-поиска"
-
-                font.capitalization: Font.Capitalize
+                width: 110
                 background: Rectangle {
-                    color: mouse.hovered ? "red" : "transparent"
-                    border.color: "transparent"
+                    color: btWorkspace.down ? "lightgray" : (btWorkspace.hovered ? "#c3c3c3" : "lightgray")
+                }
+                text: "Добавить
+рабочее место"
+                font.capitalization: Font.Capitalize
+                icon.name: "workspace"
+                icon.source: "icons/workspace.png"
+                display: Button.TextUnderIcon
+            }
+
+            ComboBox {
+                width: 250
                 }
 
-                icon.name: "transducers_search"
-                icon.source: "icons/settings.png"
-                display: Button.TextUnderIcon
-                onClicked: sigClickedbtAbout();
+            ProgressBar
+            {
+                id: pbFind
+                objectName: "pbFind"
+                height: 30
+                width: 210
+                value: 0 // from 0 to 1
+                background: Rectangle
+                {
+                    width: pbFind.width
+                    height: pbFind.height
+                    color: "lightgray"
+                }
+                contentItem: Item
+                {
+                    width: parent.width
+                    height: parent.height
+                    Rectangle
+                    {
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: pbFind.visualPosition * parent.width
+                        height: parent.height * 0.8
+
+                        radius: height/4
+                        color: "green"
+                    }
+                    Text {
+                        id: textComment
+                        objectName: "textComment"
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        text: " "
+                    }
+                    Text {
+                        id: textPercent
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        text: String(Math.round(pbFind.value * 100)) + "%  "
+                        visible: ((pbFind.value === 1) | (pbFind.value === 0)) ? false : true
+                    }
+                }
             }
         }
     }
+
+
 
     ListView
     {
@@ -326,17 +358,18 @@ Item
                     sigNewIndicator(serialNumber)
                 }
                 hoverEnabled: true
-                onEntered: rectIndicate.color = "tomato"
-                onExited: rectIndicate.color = "yellow"
+                onEntered: rectIndicate.color = "gray"
+                onExited: rectIndicate.color = "lightgray"
                 Button
                 {
                     id: btOptions
                     anchors.right: parent.right
-                    anchors.rightMargin: 2
-                    width: itWin.width/10
-                    text: "Настройки"
+                    anchors.rightMargin: 10
+                    width: 40
+                    icon.name: "info"
+                    icon.source: "icons/info.png"
                     onClicked: sigSelectDetectToInit(serialNumber);
-                    ToolTip.text: btOptions.text
+                    ToolTip.text: "Информация о датчике"
                     ToolTip.visible: hovered
                 }
 
@@ -344,7 +377,7 @@ Item
                 {
                     id: rectIndicate
                     anchors.fill: parent
-                    color: "yellow"
+                    color: "lightgray"
                     opacity: 0.2
                     Behavior on color
                     {
