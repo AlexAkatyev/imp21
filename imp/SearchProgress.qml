@@ -3,6 +3,12 @@ import QtQuick.Controls 2.1
 import QtQml.Models 2.2
 
 Item {
+
+    ImpStyle
+    {
+        id: impStyle
+    }
+
     ProgressBar
     {
         id: pbFind
@@ -25,7 +31,7 @@ Item {
                 height: parent.height * 0.8
 
                 radius: height/4
-                color: "green"
+                color: impStyle.chekedColor
             }
             Text {
                 id: textComment

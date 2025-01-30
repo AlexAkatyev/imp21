@@ -8,7 +8,10 @@ Item {
     width: 330
     objectName: "ImpSettings"
 
-    property color chekedColor: "#225f78"
+    ImpStyle
+    {
+        id: impStyle
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -32,7 +35,7 @@ Item {
                         x: cbWireSearch.leftPadding
                         y: parent.height / 2 - height / 2
                         radius: 13
-                        border.color: cbWireSearch.checked ? chekedColor : "gray"
+                        border.color: cbWireSearch.checked ? impStyle.chekedColor: "gray"
                         border.width: 2
 
                         Rectangle {
@@ -41,7 +44,7 @@ Item {
                             x: 5
                             y: 5
                             radius: 7
-                            color: cbWireSearch.down ? "gray" : chekedColor
+                            color: cbWireSearch.down ? "gray" : impStyle.chekedColor
                             visible: cbWireSearch.checked
                         }
                     }
@@ -57,14 +60,14 @@ Item {
                         x: cbSearch.leftPadding
                         y: parent.height / 2 - height / 2
                         radius: 3
-                        border.color: cbSearch.checked ? chekedColor : "gray"
+                        border.color: cbSearch.checked ? impStyle.chekedColor : "gray"
                         border.width: 2
 
                         Rectangle {
                             width: 19
                             height: 19
                             radius: 3
-                            color: cbSearch.down ? "gray" : chekedColor
+                            color: cbSearch.down ? "gray" : impStyle.chekedColor
                             Image {
                                 source: "icons/check.png"
                                 height: 19
@@ -85,7 +88,7 @@ Item {
                         x: cbModBusSearch.leftPadding
                         y: parent.height / 2 - height / 2
                         radius: 13
-                        border.color: cbModBusSearch.checked ? chekedColor : "gray"
+                        border.color: cbModBusSearch.checked ? impStyle.chekedColor : "gray"
                         border.width: 2
 
                         Rectangle {
@@ -94,7 +97,7 @@ Item {
                             x: 5
                             y: 5
                             radius: 7
-                            color: cbModBusSearch.down ? "gray" : chekedColor
+                            color: cbModBusSearch.down ? "gray" : impStyle.chekedColor
                             visible: cbModBusSearch.checked
                         }
                     }
