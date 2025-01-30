@@ -133,7 +133,6 @@ Item
                 background: Rectangle {
                     color: btAbout.down ? "lightgray" : (btAbout.hovered ? "#c3c3c3" : "lightgray")
                 }
-
                 text: "Настройки
 поиска"
                 font.capitalization: Font.Capitalize
@@ -225,9 +224,47 @@ Item
                 display: Button.TextUnderIcon
             }
 
-            ComboBox {
-                width: 250
+            Column {
+                topPadding: 25
+
+                ComboBox {
+                    width: 250
+                    }
+            }
+
+
+            ToolSeparator {
+                height: 100
+            }
+
+            Button
+            {
+                id: btHelp
+                height: 100
+                width: 100
+                background: Rectangle {
+                    color: btHelp.down ? "lightgray" : (btHelp.hovered ? "#c3c3c3" : "lightgray")
                 }
+                Image {
+                    source: "icons/micro.png"
+                    x:35
+                    y:15
+                    height: 30
+                    width: 30
+                }
+                Text {
+                    text: "Руководство\nпользователя"
+                    font: btHelp.font
+                    horizontalAlignment: Text.AlignHCenter
+                    x: 5
+                    y: 48
+                }
+                font.capitalization: Font.Capitalize
+                onClicked: sigClickedbtHelp();
+            }
+
+
+
 
             ProgressBar
             {
@@ -288,7 +325,7 @@ Item
         {
             width: parent.width
             height: itWin.height/15
-            color: "darkblue"
+            color: "#225f78"
             Text{
                 anchors.centerIn: parent;
                 color: "lightgray";
