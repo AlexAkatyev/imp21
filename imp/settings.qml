@@ -6,11 +6,12 @@ import QtQuick.Layouts 1.3
 Item {
     height: 450
     width: 330
-    objectName: "Настройки"
+    objectName: "ImpSettings"
+
+    property color chekedColor: "#225f78"
 
     Rectangle {
-        height: 450
-        width: 330
+        anchors.fill: parent
         color: "#F0F0F0"
 
         Column {
@@ -31,7 +32,7 @@ Item {
                         x: cbWireSearch.leftPadding
                         y: parent.height / 2 - height / 2
                         radius: 13
-                        border.color: cbWireSearch.checked ? "#225f78" : "gray"
+                        border.color: cbWireSearch.checked ? chekedColor : "gray"
                         border.width: 2
 
                         Rectangle {
@@ -40,7 +41,7 @@ Item {
                             x: 5
                             y: 5
                             radius: 7
-                            color: cbWireSearch.down ? "gray" : "#225f78"
+                            color: cbWireSearch.down ? "gray" : chekedColor
                             visible: cbWireSearch.checked
                         }
                     }
@@ -56,14 +57,14 @@ Item {
                         x: cbSearch.leftPadding
                         y: parent.height / 2 - height / 2
                         radius: 3
-                        border.color: cbSearch.checked ? "#225f78" : "gray"
+                        border.color: cbSearch.checked ? chekedColor : "gray"
                         border.width: 2
 
                         Rectangle {
                             width: 19
                             height: 19
                             radius: 3
-                            color: cbSearch.down ? "gray" : "#225f78"
+                            color: cbSearch.down ? "gray" : chekedColor
                             Image {
                                 source: "icons/check.png"
                                 height: 19
@@ -84,7 +85,7 @@ Item {
                         x: cbModBusSearch.leftPadding
                         y: parent.height / 2 - height / 2
                         radius: 13
-                        border.color: cbModBusSearch.checked ? "#225f78" : "gray"
+                        border.color: cbModBusSearch.checked ? chekedColor : "gray"
                         border.width: 2
 
                         Rectangle {
@@ -93,7 +94,7 @@ Item {
                             x: 5
                             y: 5
                             radius: 7
-                            color: cbModBusSearch.down ? "gray" : "#225f78"
+                            color: cbModBusSearch.down ? "gray" : chekedColor
                             visible: cbModBusSearch.checked
                         }
                     }
