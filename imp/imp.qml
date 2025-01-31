@@ -77,6 +77,11 @@ Item
     signal sigFindDetect();
     signal sigSelectDetectToInit(string SerialNum);
 
+    ImpStyle
+    {
+        id: impStyle
+    }
+
     SearchProgress
     {
         id: searchProgress

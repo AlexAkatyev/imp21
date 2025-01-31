@@ -1,6 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.1
-import QtQuick.Controls.Material 2.0
+import QtQuick.Controls.Material 2.12
 import QtQml.Models 2.2
 import QtQuick.Layouts 1.3
 
@@ -29,7 +29,7 @@ Item {
                 background: Rectangle {
                     color: tbnSearch.hovered ? "lightgray" : "#f0f0f0"
                     width: parent.width
-                    visible: tbnSearch.not.checked
+                    visible: !tbnSearch.checked
                 }
 
                     Rectangle {
