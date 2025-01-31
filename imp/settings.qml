@@ -32,13 +32,10 @@ Item {
                     visible: !tbnSearch.checked
                 }
 
-                    Rectangle {
+                Rectangle {
                     color: tbnSearch.checked ? "#f0f0f0" : "#fafafa"
                     width: parent.width
                 }
-
-
-
             }
 
             TabButton {
@@ -83,7 +80,8 @@ Item {
                         }
                     }
 
-                    Row {
+                    Row
+                    {
                         spacing: 10
 
                         Button
@@ -99,6 +97,10 @@ Item {
                                 color: btAddressAdd.down ? "#F0F0F0" : (btAddressAdd.hovered ? "lightgray" : "#F0F0F0")
                                 border.color: "gray"
                             }
+                            onClicked:
+                            {
+                                lmAddress.append({serverAddress : "127.0.0.1"});
+                            }
                         }
 
                         Button
@@ -110,22 +112,50 @@ Item {
                             font.capitalization: Font.Capitalize
                             icon.name: "address_remove"
                             icon.source: "icons/address_remove.png"
-                            background: Rectangle {
+                            background: Rectangle
+                            {
                                 color: btAddressRemove.down ? "#F0F0F0" : (btAddressRemove.hovered ? "lightgray" : "#F0F0F0")
                                 border.color: "gray"
+                            }
+                            onClicked:
+                            {
+                                var index = lvAddresses.currentIndex;
+                                if (index > -1)
+                                {
+                                    lmAddress.remove(index);
+                                }
                             }
                         }
                     }
 
-                    TextArea {
+
+                    ListView
+                    {
+                        id: lvAddresses
                         height: 240
                         width: 310
-                        background: Rectangle {
-                        border.color: "gray"
+                        model: ListModel
+                        { // Здесь будет содержаться список адресов
+                            id: lmAddress
+                            objectName: "lmAddress"
+                        }
+                        delegate: TextField
+                        {
+                            width: parent.width
+                            height: 50
+                            property var view: ListView.view
+                            property int itemIndex: index
+                            text: serverAddress
+                            color:  ListView.isCurrentItem ? impStyle.chekedColor : impStyle.unChekedColor
+                            onPressed:
+                            {
+                                view.currentIndex = itemIndex;
+                            }
                         }
                     }
                 }
             }
+
 
             Item {
                 id: tbnWorkspaceTab
