@@ -12,10 +12,8 @@
         <file>SearchProgress.qml</file>
         <file>settings.qml</file>
         <file>icons/info.png</file>
-        <file>icons/micro2.png</file>
         <file>icons/micro.png</file>
         <file>icons/help.png</file>
-        <file>icons/check.png</file>
         <file>ImpStyle.qml</file>
     </qresource>
 </RCC>
