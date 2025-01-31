@@ -95,7 +95,7 @@ Item
     {
         id: actionbar
         height: 100
-        color: "lightgray"
+        color: impStyle.actionbarColor
         anchors.left: itWin.left
         anchors.right: itWin.right
 
@@ -111,10 +111,9 @@ Item
                     width: 80
                     hoverEnabled: true
                     background: Rectangle {
-                        color: btFind.down ? "lightgray" : (btFind.hovered ? "#c3c3c3" : "lightgray")
+                        color: btFind.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                     }
-                    text: "Поиск
-датчиков"
+                    text: "Поиск\nдатчиков"
                     font.capitalization: Font.Capitalize
                     icon.name: "transducers_search"
                     icon.source: "icons/transducers_search.png"
@@ -129,26 +128,6 @@ Item
                     }
                 }
 
-            Button
-            {
-                id: btAbout
-                height: 100
-                width: 80
-                hoverEnabled: true
-                background: Rectangle {
-                    color: btAbout.down ? "lightgray" : (btAbout.hovered ? "#c3c3c3" : "lightgray")
-                }
-                text: "Настройки
-поиска"
-                font.capitalization: Font.Capitalize
-                icon.name: "transducers_search"
-                icon.source: "icons/settings.png"
-                display: Button.TextUnderIcon
-                ToolTip.visible: hovered
-                ToolTip.text: "Выбрать тип датчика и способ поиска"
-                onClicked: sigClickedbtAbout();
-            }
-
             ToolSeparator {
                 height: 100
             }
@@ -160,10 +139,9 @@ Item
                     width: 80
                     hoverEnabled: true
                     background: Rectangle {
-                        color: btIndicator.down ? "lightgray" : (btIndicator.hovered ? "#c3c3c3" : "lightgray")
+                        color: btIndicator.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                     }
-                    text: "Новый
-индикатор"
+                    text: "Новый\nиндикатор"
                     font.capitalization: Font.Capitalize
                     icon.name: "indicator_add"
                     icon.source: "icons/indicator_add.png"
@@ -179,10 +157,9 @@ Item
                 width: 110
                 hoverEnabled: true
                 background: Rectangle {
-                    color: btCompose.down ? "lightgray" : (btCompose.hovered ? "#c3c3c3" : "lightgray")
+                    color: btCompose.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                 }
-                text: "Компоновать
-существующие"
+                text: "Компоновать\nсуществующие"
                 font.capitalization: Font.Capitalize
                 icon.name: "compose"
                 icon.source: "icons/compose.png"
@@ -195,13 +172,12 @@ Item
             {
                 id: btAddAndCompose
                 height: 100
-                width: 110
+                width: 100
                 hoverEnabled: true
                 background: Rectangle {
-                    color: btAddAndCompose.down ? "lightgray" : (btAddAndCompose.hovered ? "#c3c3c3" : "lightgray")
+                    color: btAddAndCompose.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                 }
-                text: "Добавить и
-компоновать"
+                text: "Добавить и\nкомпоновать"
                 font.capitalization: Font.Capitalize
                 icon.name: "add_and_compose"
                 icon.source: "icons/add_and_compose.png"
@@ -219,10 +195,9 @@ Item
                 height: 100
                 width: 110
                 background: Rectangle {
-                    color: btWorkspace.down ? "lightgray" : (btWorkspace.hovered ? "#c3c3c3" : "lightgray")
+                    color: btWorkspace.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                 }
-                text: "Добавить
-рабочее место"
+                text: "Добавить\nрабочее место"
                 font.capitalization: Font.Capitalize
                 icon.name: "workspace"
                 icon.source: "icons/workspace.png"
@@ -237,6 +212,24 @@ Item
                     }
             }
 
+            Button
+            {
+                id: btAbout
+                height: 100
+                width: 110
+                hoverEnabled: true
+                background: Rectangle {
+                    color: btAbout.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
+                }
+                text: "Настройки\nрабочего места"
+                font.capitalization: Font.Capitalize
+                icon.name: "transducers_search"
+                icon.source: "icons/settings.png"
+                display: Button.TextUnderIcon
+                ToolTip.visible: hovered
+                ToolTip.text: "Выбрать тип датчика и способ поиска"
+                onClicked: sigClickedbtAbout();
+            }
 
             ToolSeparator {
                 height: 100
@@ -248,14 +241,14 @@ Item
                 height: 100
                 width: 100
                 background: Rectangle {
-                    color: btHelp.down ? "lightgray" : (btHelp.hovered ? "#c3c3c3" : "lightgray")
+                    color: btHelp.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                 }
                 Image {
-                    source: "icons/micro.png"
-                    x:35
-                    y:15
-                    height: 30
-                    width: 30
+                    source: "icons/imp_logo.png"
+                    x:30
+                    y:10
+                    height: 40
+                    width: 40
                 }
                 Text {
                     text: "Руководство\nпользователя"
@@ -282,7 +275,7 @@ Item
                 {
                     width: pbFind.width
                     height: pbFind.height
-                    color: "lightgray"
+                    color: impStyle.actionbarColor
                 }
                 contentItem: Item
                 {
@@ -330,10 +323,10 @@ Item
         {
             width: parent.width
             height: itWin.height/15
-            color: "#225f78"
+            color: impStyle.chekedColor
             Text{
                 anchors.centerIn: parent;
-                color: "lightgray";
+                color: impStyle.windowColor;
                 text: "Обнаруженные датчики";
                 font.bold: true;
                 font.pointSize: 15
@@ -414,8 +407,8 @@ Item
                     sigNewIndicator(serialNumber)
                 }
                 hoverEnabled: true
-                onEntered: rectIndicate.color = "gray"
-                onExited: rectIndicate.color = "lightgray"
+                onEntered: rectIndicate.color = impStyle.chekedColor
+                onExited: rectIndicate.color = impStyle.windowColor
                 Button
                 {
                     id: btOptions
@@ -433,7 +426,7 @@ Item
                 {
                     id: rectIndicate
                     anchors.fill: parent
-                    color: "lightgray"
+                    color: impStyle.windowColor
                     opacity: 0.2
                     Behavior on color
                     {

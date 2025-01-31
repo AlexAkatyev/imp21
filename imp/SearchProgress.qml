@@ -3,6 +3,8 @@ import QtQuick.Controls 2.1
 import QtQml.Models 2.2
 
 Item {
+    height: 200
+    width: 300
 
     ImpStyle
     {

@@ -15,5 +15,6 @@
         <file>icons/micro.png</file>
         <file>icons/help.png</file>
         <file>ImpStyle.qml</file>
+        <file>icons/imp_logo.png</file>
     </qresource>
 </RCC>

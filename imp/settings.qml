@@ -16,7 +16,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "#f0f0f0"
+        color: impStyle.windowColor
 
         TabBar {
             id: tbSearchSettings
@@ -27,20 +27,18 @@ Item {
                 id: tbnSearch
                 text: "Поиск"
                 background: Rectangle {
-                    color: tbnSearch.hovered ? "lightgray" : "#f0f0f0"
                     width: parent.width
-                    visible: !tbnSearch.checked
-                }
-
-                Rectangle {
-                    color: tbnSearch.checked ? "#f0f0f0" : "#fafafa"
-                    width: parent.width
+                    color: tbnSearch.checked ? impStyle.windowColor : impStyle.unChekedTabButtonColor
                 }
             }
 
             TabButton {
                 id: tbnWorkspace
                 text: "Рабочее место"
+                background: Rectangle {
+                    width: parent.width
+                    color: tbnWorkspace.checked ? impStyle.windowColor : impStyle.unChekedTabButtonColor
+                }
             }
         }
 
@@ -94,8 +92,8 @@ Item {
                             icon.name: "address_add"
                             icon.source: "icons/address_add.png"
                             background: Rectangle {
-                                color: btAddressAdd.down ? "#F0F0F0" : (btAddressAdd.hovered ? "lightgray" : "#F0F0F0")
-                                border.color: "gray"
+                                color: btAddressAdd.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                border.color: impStyle.borderColor
                             }
                             onClicked:
                             {
@@ -114,8 +112,8 @@ Item {
                             icon.source: "icons/address_remove.png"
                             background: Rectangle
                             {
-                                color: btAddressRemove.down ? "#F0F0F0" : (btAddressRemove.hovered ? "lightgray" : "#F0F0F0")
-                                border.color: "gray"
+                                color: btAddressRemove.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                border.color: impStyle.borderColor
                             }
                             onClicked:
                             {
@@ -134,6 +132,7 @@ Item {
                         id: lvAddresses
                         height: 240
                         width: 310
+                        Material.accent: impStyle.chekedColor
                         model: ListModel
                         { // Здесь будет содержаться список адресов
                             id: lmAddress
