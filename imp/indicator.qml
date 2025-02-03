@@ -1,5 +1,6 @@
 ﻿import QtQuick 2.5
 import QtQuick.Controls 2.12
+import QtQuick.Controls.Material 2.12
 import QtMultimedia 5.5
 import QtQuick.Layouts 1.12
 import QtQml 2.12
@@ -427,6 +428,12 @@ Item
         return d >= l && d <= h;
     }
 
+    ImpStyle
+    {
+        id: impStyle
+    }
+
+
     // Источник входных данных
     InputIndicator
     {
@@ -476,6 +483,7 @@ Item
     Item {
         id: itMeasure
         anchors.fill: parent
+
         Button {
             id: btMenu
             anchors.left: parent.left
@@ -867,6 +875,7 @@ Item
     Item {
         id: itMenu
         anchors.fill: parent
+        Material.accent: impStyle.chekedColor
         visible: false
         TabBar
         {
@@ -944,6 +953,8 @@ Item
             // Страница ИЗМЕРЕНИЕ
             Item {
                 id: itFormula
+
+
                 Column {
                     id: colLeft
                     anchors.verticalCenter: parent.verticalCenter
@@ -951,15 +962,22 @@ Item
                     spacing: 5
 
                     Row {
-                        spacing: colLeft.spacing
+                        spacing: 10
                         Text { // row 1
-                            text: "\nНазвание:    "
+                            text: "\nНазвание:"
                         }
                         TextField {
+                            padding: 10
                             id: tfName
                             objectName: "tfName"
                             text: "Индикатор ?"
                             font.pixelSize: 12
+                            background: Rectangle {
+                                width: 200
+                                height: 30
+                                color: impStyle.unChekedTabButtonColor
+                                border.color: impStyle.borderColor
+                            }
                             onTextEdited: sigNameEntered()
                         }
                     }
@@ -991,7 +1009,7 @@ Item
                             id: tfFactor1
                             objectName: "tfFactor1"
                             text: "1"
-                            width: itFormula.width / 8
+                            width: 40
                             horizontalAlignment: "AlignHCenter"
                             font.pixelSize: tfName.font.pixelSize
                             ToolTip.text: "Множитель датчика 1"
@@ -1004,7 +1022,7 @@ Item
                             id: cbListDetect1
                             objectName: "cbListDetect1"
                             indicator.scale: 0.6
-                            width: itFormula.width / 2
+                            width: 200
                             font.pixelSize: tfName.font.pixelSize
                             ToolTip.text: "Датчик 1"
                             ToolTip.visible: hovered
@@ -1025,7 +1043,7 @@ Item
                             id: tfIncert1
                             objectName: "tfIncert1"
                             text: "0"
-                            width: 2 * tfFactor1.width
+                            width: 40
                             horizontalAlignment: "AlignHCenter"
                             font.pixelSize: tfName.font.pixelSize
                             ToolTip.text: "Предустанов датчика 1"
@@ -1052,7 +1070,7 @@ Item
                             id: tfFactor2
                             objectName: "tfFactor2"
                             text: "1"
-                            width: tfFactor1.width
+                            width: 40
                             horizontalAlignment: "AlignHCenter"
                             font.pixelSize: tfName.font.pixelSize
                             ToolTip.text: "Множитель датчика 2"
@@ -1176,7 +1194,7 @@ Item
                             }
                             enabled: automaticSave.checked
                         }
-                        Button // row 5
+                        /*Button // row 5
                         {
                             id: btSaveOption
                             text: automaticSave.checked ? "Выбрать файл выгрузки" : "  Сохранить измерения  "
@@ -1188,7 +1206,7 @@ Item
                                 else
                                     saveMeasData();
                             }
-                        }
+                        }*/
                     }
                 }
 
