@@ -1095,12 +1095,22 @@ Item
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.horizontalCenter: parent.horizontalCenter
                     spacing: 5
+                    CheckBox
+                    {
+                        id: cbComplexFormula
+                        text: "Использовать сложную формулу"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
                     Grid {
+                        id: easyFormula
                         rows: 4
                         columns: 5
                         spacing: colLeft.spacing
                         horizontalItemAlignment: Grid.AlignHCenter
                         verticalItemAlignment: Grid.AlignVCenter
+                        visible: !cbComplexFormula.checked
+                        height: 200
                         // row 1
                         Text {
                             text: " "
@@ -1224,6 +1234,33 @@ Item
                             ToolTip.visible: hovered
                         }
                     }
+                    Flickable
+                    {
+                        height: easyFormula.height
+                        width: 300
+                        visible: cbComplexFormula.checked
+                        clip: true
+                        flickableDirection: Flickable.VerticalFlick
+                        ScrollBar.vertical: ScrollBar {}
+                        ScrollBar.horizontal: null
+                        TextArea.flickable: TextArea
+                        {
+                            id: complexFormula
+                            height: easyFormula.height
+                            width: parent.width
+                            visible: cbComplexFormula.checked
+                            horizontalAlignment: Text.AlignLeft
+                            wrapMode: TextArea.WrapAtWordBoundaryOrAnywhere
+                            onTextChanged: { complexFormula.cursorPosition = complexFormula.length }
+                            background: Rectangle
+                            {
+                                implicitWidth: complexFormula.width
+                                implicitHeight: complexFormula.height
+                                border.color: complexFormula.enabled ? "#21be2b" : "transparent"
+                            }
+                        }
+                    }
+
                 }
             }
             // Страница кнопки ДОПУСК
