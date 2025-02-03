@@ -17,5 +17,11 @@ ImpSettingsDialog::ImpSettingsDialog(QWidget* parent)
   pvbx->addWidget(pQuickUi); // Вставляем QML виджет в лайоут окна
   pvbx->setMargin(0); // Толщина рамки
   setLayout(pvbx); //  Установка лайоута в окно
-  setGeometry(100, 100, 600, 600);
+  int height = pQuickUi->property("height").toInt();
+  int width = pQuickUi->property("width").toInt();
+  int ax = parent->x() + (parent->width() - width) / 2;
+  int ay = parent->y() + (parent->height() - height) / 2;
+  setGeometry(ax, ay, width, height);
+  setMinimumSize(width, height);
+  setMaximumSize(width, height);
 }
