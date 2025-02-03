@@ -888,6 +888,7 @@ Item
             {
                 model: ["ВЫХОД",
                         "ИЗМЕРЕНИЕ",
+                        "ФОРМУЛА",
                         "ДОПУСК",
                         "ДИСПЛЕЙ",
                         "СОРТИРОВКА",
@@ -904,25 +905,26 @@ Item
             {
                 switch (prevTabIndex)
                 {
-                case 1: sigChangeFormula();
+                case 1:
+                case 2: sigChangeFormula();
                         statChart.strMessUnit = inputIndicator.messUnit;
                         statChart.txFormula = getFormula();
                         break;
-                case 2: sigChangeLimit();
+                case 3: sigChangeLimit();
                         statChart.dbHiLimit = tfHiLimit.text;
                         statChart.dbLoLimit = tfLoLimit.text;
                         sigChangeIndication();
                         break;
-                case 3: sigGetDivisionValue();
+                case 4: sigGetDivisionValue();
                         statChart.iGaugeUnit = Math.round(tfUnitPoint.text);
                         setTextBeforeSet();
                         setIndicatorAccuracy();
                         break;
-                case 4: sigChangeLimit();
+                case 5: sigChangeLimit();
                         statChart.dbHiLimit = tfHiLimit.text;
                         statChart.dbLoLimit = tfLoLimit.text;
                         break;
-                case 5: receiptStatPeriod(tfStatPeriod.text);
+                case 6: receiptStatPeriod(tfStatPeriod.text);
                         receiptSumPoint(tfSumPoint.text);
                         statChart.blRun = false;
                         break;
@@ -982,6 +984,114 @@ Item
                         }
                     }
 
+                    Grid {
+                        rows: 5
+                        columns: 2
+                        spacing: 0
+                        Text { // row 1
+                            text: "\nДелитель:"
+                        }
+                        TextField {
+                            id: tfDivider
+                            objectName: "tfDivider"
+                            text: "1"
+                            font.pixelSize: tfName.font.pixelSize
+                            onTextEdited: sigDividerEntered()
+                        }
+                        Text { // row 2
+                            text: "\nУсреднение, мс"
+                        }
+                        TextField {
+                            id: tfPeriod
+                            objectName: "tfPeriod"
+                            font.pixelSize: tfName.font.pixelSize
+                            validator: IntValidator{bottom: 0; top: 100000;}
+                            text: "0"
+                            inputMethodHints: Qt.ImhDigitsOnly
+                            onTextChanged:
+                            {
+                                if (text > 100000)
+                                    text = 100000;
+                            }
+                        }
+                        Text { // row 3
+                            text: "\nРежим max - min:"
+                        }
+                        CheckBox {
+                            id: cbMode
+                            checked: false
+                            onCheckedChanged:
+                            {
+                                if (checked)
+                                {
+                                    blockRBChangeMode = true;
+                                    deviationMode = true;
+                                }
+                                else
+                                {
+                                    blockRBChangeMode = true;
+                                    deviationMode = false;
+                                }
+                            }
+                        }
+                        CheckBox { // row 4
+                            id: automaticSave
+                            objectName: "automaticSave"
+                            text: "Автоматическое\nсохранение, мин"
+                            checked: false
+                            font.pixelSize: tfName.font.pixelSize
+                            onReleased: {
+                                if (checked) {
+                                    timerSave.start();
+                                    btSaveOption.text = "Выбрать файл выгрузки"
+                                }
+                                else {
+                                    timerSave.stop();
+                                    btSaveOption.text = "  Сохранить измерения  "
+                                }
+                            }
+                        }
+                        TextField {
+                            id: tfAutoSave
+                            objectName: "tfAutoSave"
+                            font.pixelSize: tfName.font.pixelSize
+                            validator: IntValidator{bottom: 1; top: 999;}
+                            text: "10"
+                            inputMethodHints: Qt.ImhDigitsOnly
+                            onTextChanged:
+                            {
+                                if (text < 1)
+                                    text = 1;
+                                timerSave.interval = text * 60 * 1000;
+                            }
+                            enabled: automaticSave.checked
+                        }
+                        /*Button // row 5
+                        {
+                            id: btSaveOption
+                            text: automaticSave.checked ? "Выбрать файл выгрузки" : "  Сохранить измерения  "
+                            font.pixelSize: tfName.font.pixelSize
+                            enabled: automaticSave.checked || lmMeasData.count > 0
+                            onReleased: {
+                                if (automaticSave.checked)
+                                    sigPeekFile();
+                                else
+                                    saveMeasData();
+                            }
+                        }*/
+                    }
+                }
+
+            }
+            // Страница ФОРМУЛА
+            Item
+            {
+                id: formula
+                Column
+                {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    spacing: 5
                     Grid {
                         rows: 4
                         columns: 5
@@ -1111,105 +1221,7 @@ Item
                             ToolTip.visible: hovered
                         }
                     }
-
-                    Grid {
-                        rows: 5
-                        columns: 2
-                        spacing: 0
-                        Text { // row 1
-                            text: "\nДелитель:"
-                        }
-                        TextField {
-                            id: tfDivider
-                            objectName: "tfDivider"
-                            text: "1"
-                            font.pixelSize: tfName.font.pixelSize
-                            onTextEdited: sigDividerEntered()
-                        }
-                        Text { // row 2
-                            text: "\nУсреднение, мс"
-                        }
-                        TextField {
-                            id: tfPeriod
-                            objectName: "tfPeriod"
-                            font.pixelSize: tfName.font.pixelSize
-                            validator: IntValidator{bottom: 0; top: 100000;}
-                            text: "0"
-                            inputMethodHints: Qt.ImhDigitsOnly
-                            onTextChanged:
-                            {
-                                if (text > 100000)
-                                    text = 100000;
-                            }
-                        }
-                        Text { // row 3
-                            text: "\nРежим max - min:"
-                        }
-                        CheckBox {
-                            id: cbMode
-                            checked: false
-                            onCheckedChanged:
-                            {
-                                if (checked)
-                                {
-                                    blockRBChangeMode = true;
-                                    deviationMode = true;
-                                }
-                                else
-                                {
-                                    blockRBChangeMode = true;
-                                    deviationMode = false;
-                                }
-                            }
-                        }
-                        CheckBox { // row 4
-                            id: automaticSave
-                            objectName: "automaticSave"
-                            text: "Автоматическое\nсохранение, мин"
-                            checked: false
-                            font.pixelSize: tfName.font.pixelSize
-                            onReleased: {
-                                if (checked) {
-                                    timerSave.start();
-                                    btSaveOption.text = "Выбрать файл выгрузки"
-                                }
-                                else {
-                                    timerSave.stop();
-                                    btSaveOption.text = "  Сохранить измерения  "
-                                }
-                            }
-                        }
-                        TextField {
-                            id: tfAutoSave
-                            objectName: "tfAutoSave"
-                            font.pixelSize: tfName.font.pixelSize
-                            validator: IntValidator{bottom: 1; top: 999;}
-                            text: "10"
-                            inputMethodHints: Qt.ImhDigitsOnly
-                            onTextChanged:
-                            {
-                                if (text < 1)
-                                    text = 1;
-                                timerSave.interval = text * 60 * 1000;
-                            }
-                            enabled: automaticSave.checked
-                        }
-                        /*Button // row 5
-                        {
-                            id: btSaveOption
-                            text: automaticSave.checked ? "Выбрать файл выгрузки" : "  Сохранить измерения  "
-                            font.pixelSize: tfName.font.pixelSize
-                            enabled: automaticSave.checked || lmMeasData.count > 0
-                            onReleased: {
-                                if (automaticSave.checked)
-                                    sigPeekFile();
-                                else
-                                    saveMeasData();
-                            }
-                        }*/
-                    }
                 }
-
             }
             // Страница кнопки ДОПУСК
             Item {
