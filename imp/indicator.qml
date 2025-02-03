@@ -886,19 +886,22 @@ Item
 
             Repeater
             {
-                model: ["ВЫХОД",
-                        "ИЗМЕРЕНИЕ",
-                        "ФОРМУЛА",
-                        "ДОПУСК",
-                        "ДИСПЛЕЙ",
-                        "СОРТИРОВКА",
-                        "СТАТИСТИКА"]
+                model: [{text:"ВЫХОД", image:"/make-up.png"},
+                        {text:"ИЗМЕРЕНИЕ", image:"/make-up.png"},
+                        {text:"ФОРМУЛА", image:"/make-up.png"},
+                        {text:"ДОПУСК", image:"/make-up.png"},
+                        {text:"ДИСПЛЕЙ", image:"/make-up.png"},
+                        {text:"СОРТИРОВКА", image:"/make-up.png"},
+                        {text:"СТАТИСТИКА", image:"/make-up.png"}]
                 TabButton
                 {
-                    text: modelData
-                    font.pixelSize: 10
+                    Image
+                    {
+                        anchors.fill: parent
+                        source: modelData.image
+                    }
                     ToolTip.visible: hovered
-                    ToolTip.text: text
+                    ToolTip.text: modelData.text
                 }
             }
             onCurrentIndexChanged:
