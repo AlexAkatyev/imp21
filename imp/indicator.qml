@@ -488,7 +488,8 @@ Item
             id: btMenu
             anchors.left: parent.left
             anchors.bottom: parent.bottom
-            text: "Меню"
+            icon.name: "menu"
+            icon.source: "icons/menu.png"
             width: parent.width / 5
             onReleased:
             {
@@ -502,7 +503,8 @@ Item
             anchors.left: btMenu.right
             anchors.bottom: parent.bottom
             visible: itMainGauge.visible
-            text: "<"
+            icon.name: "left"
+            icon.source: "icons/left.png"
             width: btMenu.width
             onReleased: inputIndicator.beforeSet = inputIndicator.beforeSet - Math.pow(10, -inputIndicator.accuracy);
         }
@@ -525,7 +527,8 @@ Item
             anchors.left: btSetNull.right
             anchors.bottom: parent.bottom
             visible: itMainGauge.visible
-            text: ">"
+            icon.name: "right"
+            icon.source: "icons/right.png"
             width: btMenu.width
             onReleased: inputIndicator.beforeSet = inputIndicator.beforeSet + Math.pow(10, -inputIndicator.accuracy);
         }
@@ -534,7 +537,8 @@ Item
             anchors.left: btRight.right
             anchors.bottom: parent.bottom
             visible: itMainGauge.visible && !itMin.visible
-            text: "Data"
+            icon.name: "save"
+            icon.source: "icons/save.png"
             width: btMenu.width
             onReleased:
             {
@@ -886,18 +890,20 @@ Item
 
             Repeater
             {
-                model: [{text:"ВЫХОД", image:"/make-up.png"},
-                        {text:"ИЗМЕРЕНИЕ", image:"/make-up.png"},
-                        {text:"ФОРМУЛА", image:"/make-up.png"},
-                        {text:"ДОПУСК", image:"/make-up.png"},
-                        {text:"ДИСПЛЕЙ", image:"/make-up.png"},
-                        {text:"СОРТИРОВКА", image:"/make-up.png"},
-                        {text:"СТАТИСТИКА", image:"/make-up.png"}]
+                model: [{text:"ВЫХОД", image:"./icons/exit.png"},
+                        {text:"ИЗМЕРЕНИЕ", image:"./icons/measurement.png"},
+                        {text:"ФОРМУЛА", image:"./icons/formula.png"},
+                        {text:"ДОПУСК", image:"./icons/tolerance.png"},
+                        {text:"ДИСПЛЕЙ", image:"./icons/display.png"},
+                        {text:"СОРТИРОВКА", image:"./icons/sort.png"},
+                        {text:"СТАТИСТИКА", image:"./icons/statistics.png"}]
                 TabButton
                 {
                     Image
                     {
-                        anchors.fill: parent
+                        anchors.centerIn: parent
+                        height: 30
+                        width: 30
                         source: modelData.image
                     }
                     ToolTip.visible: hovered
@@ -1166,7 +1172,7 @@ Item
                             id: tfIncert1
                             objectName: "tfIncert1"
                             text: "0"
-                            width: 40
+                            width: 100
                             horizontalAlignment: "AlignHCenter"
                             font.pixelSize: tfName.font.pixelSize
                             ToolTip.text: "Предустанов датчика 1"
