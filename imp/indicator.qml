@@ -497,6 +497,8 @@ Item
                 itMenu.visible = true;
                 tbMenu.currentIndex = currentIndexMenuNumber === 0 ? 1 : currentIndexMenuNumber;
             }
+            ToolTip.text: "Меню"
+            ToolTip.visible: hovered
         }
         Button {
             id: btLeft
@@ -545,6 +547,8 @@ Item
                 releaseData();
                 sigReleaseData();
             }
+            ToolTip.text: "Запись"
+            ToolTip.visible: hovered
         }
         Button {
             id: btStartPause
