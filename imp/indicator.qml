@@ -1244,29 +1244,34 @@ Item
                             ToolTip.visible: hovered
                         }
                     }
-                    Flickable
+                    Rectangle
                     {
                         height: easyFormula.height
-                        width: 300
+                        width: 320
                         visible: cbComplexFormula.checked
-                        clip: true
-                        flickableDirection: Flickable.VerticalFlick
-                        ScrollBar.vertical: ScrollBar {}
-                        ScrollBar.horizontal: null
-                        TextArea.flickable: TextArea
+                        border.color: "#225f78"
+                        Flickable
                         {
-                            id: complexFormula
-                            height: easyFormula.height
-                            width: parent.width
-                            visible: cbComplexFormula.checked
-                            horizontalAlignment: Text.AlignLeft
-                            wrapMode: TextArea.WrapAtWordBoundaryOrAnywhere
-                            onTextChanged: { complexFormula.cursorPosition = complexFormula.length }
-                            background: Rectangle
+                            id: flItem
+                            anchors.fill: parent
+                            anchors.bottomMargin: 3
+                            anchors.leftMargin: anchors.bottomMargin
+                            anchors.topMargin: anchors.bottomMargin
+                            anchors.rightMargin: anchors.bottomMargin
+                            visible: parent.visible
+                            clip: true
+                            flickableDirection: Flickable.VerticalFlick
+                            ScrollBar.vertical: ScrollBar {}
+                            ScrollBar.horizontal: null
+                            TextArea.flickable: TextArea
                             {
-                                implicitWidth: complexFormula.width
-                                implicitHeight: complexFormula.height
-                                border.color: complexFormula.enabled ? "#21be2b" : "transparent"
+                                id: complexFormula
+                                height: flItem.height
+                                width: flItem.width
+                                visible: parent.visible
+                                horizontalAlignment: Text.AlignLeft
+                                wrapMode: TextArea.WrapAtWordBoundaryOrAnywhere
+                                onTextChanged: { complexFormula.cursorPosition = complexFormula.length }
                             }
                         }
                     }
