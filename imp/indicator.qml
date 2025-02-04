@@ -423,10 +423,18 @@ Item
             return 0;
     }
 
+
     function inRange(l, h, d)
     {
         return d >= l && d <= h;
     }
+
+
+    function analiseComplexFormula()
+    {
+
+    }
+
 
     ImpStyle
     {
@@ -1120,7 +1128,7 @@ Item
                         horizontalItemAlignment: Grid.AlignHCenter
                         verticalItemAlignment: Grid.AlignVCenter
                         visible: !cbComplexFormula.checked
-                        height: 200
+                        height: 300
                         // row 1
                         Text {
                             text: " "
@@ -1246,8 +1254,9 @@ Item
                     }
                     Rectangle
                     {
-                        height: easyFormula.height
-                        width: 320
+                        id: complexFormulaItem
+                        height: easyFormula.height * 4 / 5
+                        width: formula.width * 8 / 10
                         visible: cbComplexFormula.checked
                         border.color: "#225f78"
                         Flickable
@@ -1271,7 +1280,34 @@ Item
                                 visible: parent.visible
                                 horizontalAlignment: Text.AlignLeft
                                 wrapMode: TextArea.WrapAtWordBoundaryOrAnywhere
-                                onTextChanged: { complexFormula.cursorPosition = complexFormula.length }
+                                onTextChanged:
+                                {
+                                    complexFormula.cursorPosition = complexFormula.length;
+                                    analiseComplexFormula();
+                                }
+                            }
+                        }
+                    }
+                    Text
+                    {
+                        id: formulaMessage
+                        visible: complexFormulaItem.visible
+                        text: "Формула не задана"
+                        height: easyFormula.height - complexFormulaItem.height
+                        width: complexFormulaItem.width
+                        color: "red"
+                        property int status: 0
+                        onStatusChanged:
+                        {
+                            if (status === 0)
+                            {
+                                text = "Формула не задана";
+                                color = "red"
+                            }
+                            else if (status === 1)
+                            {
+                                text = "Формула задана верно";
+                                color = "black"
                             }
                         }
                     }
