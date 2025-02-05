@@ -156,6 +156,7 @@ private slots:
     void updateResult(void);
     // Определение, какой датчик не работает
     void watchDogControl(void); // Чтение результатов измерения датчиков для контроля работоспособноси
+    void createComplexFormula(QString inputText);
 
     // Для работы с виджетом QML
     void setComboListDetect(void); // отработка сигнала об изменении списка датчиков от главного окна

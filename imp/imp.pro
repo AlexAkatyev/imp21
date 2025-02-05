@@ -50,6 +50,7 @@ SOURCES += main.cpp\
   Logger/logger.cpp \
   UtilLib/modbus.cpp \
     UtilLib/utillib.cpp \
+    formulatree/formulanode.cpp \
         imp.cpp \
     about/about.cpp \
     impsettings.cpp \
@@ -88,6 +89,7 @@ HEADERS  += imp.h \
     UtilLib/modbus.h \
     UtilLib/utillib.h \
     about/about.h \
+    formulatree/formulanode.h \
     impdef.h \
     impsettings.h \
     impsettingsdialog.h \

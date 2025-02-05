@@ -102,6 +102,8 @@ Item
     signal sigSetZeroShift();
     // нажата клавиша Data
     signal sigReleaseData();
+    // передать текст формулы
+    signal analyseComplexFormula(string inputText);
 
     function toPixels(percentage) {
         return percentage * scaleBase / 100;
@@ -427,12 +429,6 @@ Item
     function inRange(l, h, d)
     {
         return d >= l && d <= h;
-    }
-
-
-    function analiseComplexFormula()
-    {
-
     }
 
 
@@ -1283,7 +1279,7 @@ Item
                                 onTextChanged:
                                 {
                                     complexFormula.cursorPosition = complexFormula.length;
-                                    analiseComplexFormula();
+                                    analyseComplexFormula(text);
                                 }
                             }
                         }
@@ -1291,6 +1287,7 @@ Item
                     Text
                     {
                         id: formulaMessage
+                        objectName: "formulaMessage"
                         visible: complexFormulaItem.visible
                         text: "Формула не задана"
                         height: easyFormula.height - complexFormulaItem.height
@@ -1299,15 +1296,15 @@ Item
                         property int status: 0
                         onStatusChanged:
                         {
-                            if (status === 0)
-                            {
-                                text = "Формула не задана";
-                                color = "red"
-                            }
-                            else if (status === 1)
+                            if (status === 1)
                             {
                                 text = "Формула задана верно";
                                 color = "black"
+                            }
+                            else
+                            {
+                                text = "Формула задана не верно";
+                                color = "red"
                             }
                         }
                     }
