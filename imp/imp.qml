@@ -344,17 +344,25 @@ Item
             width: itWin.width
             Row
             {
-                spacing: 2
+                topPadding: 5
+                leftPadding: 10
+                spacing: 10
+
                 Text
                 {
                     id: textNumber
-                    font.pointSize: 20
+                    font.pointSize: 30
                     text: serialNumber
                 }
+
                 Column
                 {
+                    topPadding: 5
+                    spacing: 5
+
                     Row
                     {
+
                         Text
                         {
                             id: textName
@@ -371,28 +379,28 @@ Item
                     Text
                     {
                         id: textType
-                        font.pointSize: 8
+                        font.pointSize: 10
                         text: typeDetect
                     }
                     Row
                     {
-                        spacing: 6
+                        spacing: 10
                         Text
                         {
                             id: textDataManuf
-                            font.pointSize: 8
+                            font.pointSize: 10
                             text: "Изг.: " + dataManuf
                         }
                         Text
                         {
                             id: textPort
-                            font.pointSize: 8
+                            font.pointSize: 10
                             text: "Порт: " + port
                         }
                         Text
                         {
                             id:textModbusAddress
-                            font.pointSize: 8
+                            font.pointSize: 10
                             text: "Адрес Modbus: " + modbusAddress
                             visible: modbusAddress !== ""
                         }
@@ -413,6 +421,7 @@ Item
                 {
                     id: btOptions
                     anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
                     anchors.rightMargin: 10
                     width: 40
                     icon.name: "info"
