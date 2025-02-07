@@ -6,7 +6,7 @@ import QtQuick.Layouts 1.3
 
 Item {
     height: 500
-    width: 340
+    width: 355
     objectName: "ImpSettings"
 
     ImpStyle
@@ -54,104 +54,128 @@ Item {
                     topPadding: 50
                     padding: 10
 
-                    Column {
-                        spacing: -10
+                    Frame
+                    {
+                        id: checkFrame
+                        Column {
+                            spacing: -10
 
-                        RadioButton {
-                            id: cbWireSearch
-                            text: "Искать проводные датчики"
-                            checked: true
-                            Material.accent: impStyle.chekedColor
+                            RadioButton {
+                                id: cbWireSearch
+                                text: "Искать проводные датчики"
+                                checked: true
+                                Material.accent: impStyle.chekedColor
 
-                        }
+                            }
 
-                        CheckBox {
-                            id: cbSearch
-                            text: "Искать датчики по протоколу RS-485"
-                            Material.accent: impStyle.chekedColor
-                        }
+                            CheckBox {
+                                id: cbSearch
+                                text: "Искать датчики по протоколу RS-485"
+                                Material.accent: impStyle.chekedColor
+                            }
 
-                        RadioButton {
-                            id: cbModBusSearch
-                            text: "Искать датчики через сервер Modbus TCP"
-                            Material.accent: impStyle.chekedColor
+                            RadioButton {
+                                id: cbModBusSearch
+                                text: "Искать датчики через сервер Modbus TCP"
+                                Material.accent: impStyle.chekedColor
+                            }
                         }
                     }
 
-                    Row
+                    Frame
                     {
-                        spacing: 10
-
-                        Button
+                        width: checkFrame.width
+                        Column
                         {
-                            id: btAddressAdd
-                            height: 50
-                            width: 150
-                            text: "Добавить адрес"
-                            font.capitalization: Font.Capitalize
-                            icon.name: "address_add"
-                            icon.source: "icons/address_add.png"
-                            background: Rectangle {
-                                color: btAddressAdd.hovered ? impStyle.hoveredColor : impStyle.windowColor
-                                border.color: impStyle.borderColor
-                            }
-                            onClicked:
-                            {
-                                lmAddress.append({serverAddress : "127.0.0.1"});
-                            }
-                        }
 
-                        Button
-                        {
-                            id: btAddressRemove
-                            height: 50
-                            width: 150
-                            text: "Удалить адрес"
-                            font.capitalization: Font.Capitalize
-                            icon.name: "address_remove"
-                            icon.source: "icons/address_remove.png"
-                            background: Rectangle
+                            Row
                             {
-                                color: btAddressRemove.hovered ? impStyle.hoveredColor : impStyle.windowColor
-                                border.color: impStyle.borderColor
-                            }
-                            onClicked:
-                            {
-                                var index = lvAddresses.currentIndex;
-                                if (index > -1)
+                                spacing: 10
+
+                                Button
                                 {
-                                    lmAddress.remove(index);
+                                    id: btAddressAdd
+                                    height: 50
+                                    width: 150
+                                    text: "Добавить адрес"
+                                    font.capitalization: Font.Capitalize
+                                    icon.name: "address_add"
+                                    icon.source: "icons/address_add.png"
+                                    background: Rectangle {
+                                        color: btAddressAdd.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                        border.color: impStyle.borderColor
+                                    }
+                                    onClicked:
+                                    {
+                                        lmAddress.append({serverAddress : "127.0.0.1"});
+                                    }
+                                }
+
+                                Button
+                                {
+                                    id: btAddressRemove
+                                    height: 50
+                                    width: 150
+                                    text: "Удалить адрес"
+                                    font.capitalization: Font.Capitalize
+                                    icon.name: "address_remove"
+                                    icon.source: "icons/address_remove.png"
+                                    background: Rectangle
+                                    {
+                                        color: btAddressRemove.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                        border.color: impStyle.borderColor
+                                    }
+                                    onClicked:
+                                    {
+                                        var index = lvAddresses.currentIndex;
+                                        if (index > -1)
+                                        {
+                                            lmAddress.remove(index);
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    }
 
 
-                    ListView
-                    {
-                        id: lvAddresses
-                        height: 240
-                        width: 310
-                        Material.accent: impStyle.chekedColor
-                        model: ListModel
-                        { // Здесь будет содержаться список адресов
-                            id: lmAddress
-                            objectName: "lmAddress"
-                        }
-                        delegate: TextField
-                        {
-                            width: parent.width
-                            height: 50
-                            property var view: ListView.view
-                            property int itemIndex: index
-                            text: serverAddress
-                            color:  ListView.isCurrentItem ? impStyle.chekedColor : impStyle.unChekedColor
-                            onPressed:
+                            ListView
                             {
-                                view.currentIndex = itemIndex;
+                                id: lvAddresses
+                                height: 200
+                                width: 310
+                                Material.accent: impStyle.chekedColor
+                                focus: true
+
+                                header: Text
+                                {
+                                    text: "Адреса:"
+                                }
+
+                                model: ListModel
+                                { // Здесь будет содержаться список адресов
+                                    id: lmAddress
+                                    objectName: "lmAddress"
+                                }
+                                delegate: TextField
+                                {
+                                    width: parent.width
+                                    height: 50
+                                    property var view: ListView.view
+                                    property int itemIndex: index
+                                    text: serverAddress
+                                    color:  ListView.isCurrentItem ? impStyle.chekedColor : impStyle.unChekedColor
+                                    onPressed:
+                                    {
+                                        view.currentIndex = itemIndex;
+                                    }
+                                }
                             }
+
+
                         }
+
                     }
+
+
                 }
             }
 
