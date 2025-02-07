@@ -192,7 +192,7 @@ Item
                 (pos < inputIndicator.lowLimit))
                 & inputIndicator.dopusk
                ? impStyle.warningColor
-               : impStyle.chekedColor
+               : impStyle.baseTextColor
     }
 
 
@@ -200,7 +200,7 @@ Item
     Rectangle
     {
         anchors.fill: parent
-        color: getColorStatus() === 0 ? impStyle.actionbarColor : impStyle.chekedColor
+        color: getColorStatus() === 0 ? impStyle.actionbarColor : "lightcoral"
         radius: width/2
     }
     // Маркеры на циферблате
@@ -215,7 +215,7 @@ Item
                         (output < inputIndicator.lowLimit/inputIndicator.unitPoint))
                         & inputIndicator.dopusk
                        ? impStyle.warningColor
-                       : impStyle.chekedColor
+                       : impStyle.baseTextColor
             centerX: outerRadius
             centerY: outerRadius
             radiusDial: outerRadius
