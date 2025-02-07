@@ -933,6 +933,7 @@ Item
             TabBar
             {
                 id: tbMenu // здесь хранятся все настройки индикатора
+                height: 50
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -948,12 +949,20 @@ Item
                             {text:"СТАТИСТИКА", image:"./icons/statistics.png"}]
                     TabButton
                     {
+                        id: tbInd
+                        height: 50
+                        anchors.bottom: parent.bottom
                         Image
                         {
                             anchors.centerIn: parent
                             height: 30
                             width: 30
                             source: modelData.image
+                        }
+                        background: Rectangle {
+                            height: parent.height
+                            width: parent.width
+                            color: tbInd.checked ? impStyle.windowColor : impStyle.unChekedTabButtonColor
                         }
                         ToolTip.visible: hovered
                         ToolTip.text: modelData.text
@@ -1025,16 +1034,19 @@ Item
                         Row {
                             spacing: 10
                             Text { // row 1
+                                id: tName
                                 text: "\nНазвание:"
+                                font.pixelSize: 15
                             }
                             TextField {
-                                padding: 10
                                 id: tfName
                                 objectName: "tfName"
                                 text: "Индикатор ?"
-                                font.pixelSize: 12
+                                font.pixelSize: 18
+                                padding: 10
                                 background: Rectangle {
-                                    width: 200
+                                    anchors.left: tName.right
+                                    width: 185
                                     height: 30
                                     color: impStyle.unChekedTabButtonColor
                                     border.color: impStyle.borderColor
@@ -1046,9 +1058,10 @@ Item
                         Grid {
                             rows: 5
                             columns: 2
-                            spacing: 0
+                            spacing: 10
                             Text { // row 1
                                 text: "\nДелитель:"
+                                font.pixelSize: tName.font.pixelSize
                             }
                             TextField {
                                 id: tfDivider
@@ -1056,9 +1069,17 @@ Item
                                 text: "1"
                                 font.pixelSize: tfName.font.pixelSize
                                 onTextEdited: sigDividerEntered()
+                                padding: 10
+                                background: Rectangle {
+                                    width: 100
+                                    height: 30
+                                    color: impStyle.unChekedTabButtonColor
+                                    border.color: impStyle.borderColor
+                                }
                             }
                             Text { // row 2
-                                text: "\nУсреднение, мс"
+                                text: "\nУсреднение, мс:"
+                                font.pixelSize: tName.font.pixelSize
                             }
                             TextField {
                                 id: tfPeriod
@@ -1072,9 +1093,17 @@ Item
                                     if (text > 100000)
                                         text = 100000;
                                 }
+                                padding: 10
+                                background: Rectangle {
+                                    width: 100
+                                    height: 30
+                                    color: impStyle.unChekedTabButtonColor
+                                    border.color: impStyle.borderColor
+                                }
                             }
                             Text { // row 3
                                 text: "\nРежим max - min:"
+                                font.pixelSize: tName.font.pixelSize
                             }
                             CheckBox {
                                 id: cbMode
@@ -1098,7 +1127,7 @@ Item
                                 objectName: "automaticSave"
                                 text: "Автоматическое\nсохранение, мин"
                                 checked: false
-                                font.pixelSize: tfName.font.pixelSize
+                                font.pixelSize: tName.font.pixelSize
                                 onReleased: {
                                     if (checked) {
                                         timerSave.start();
@@ -1113,10 +1142,17 @@ Item
                             TextField {
                                 id: tfAutoSave
                                 objectName: "tfAutoSave"
+                                text: "10"
                                 font.pixelSize: tfName.font.pixelSize
                                 validator: IntValidator{bottom: 1; top: 999;}
-                                text: "10"
                                 inputMethodHints: Qt.ImhDigitsOnly
+                                background: Rectangle {
+                                    anchors.centerIn: parent
+                                    width: 50
+                                    height: 30
+                                    color: impStyle.unChekedTabButtonColor
+                                    border.color: impStyle.borderColor
+                                }
                                 onTextChanged:
                                 {
                                     if (text < 1)
@@ -1296,7 +1332,7 @@ Item
                             height: easyFormula.height * 4 / 5
                             width: formula.width * 8 / 10
                             visible: cbComplexFormula.checked
-                            border.color: "#225f78"
+                            border.color: impStyle.borderColor
                             Flickable
                             {
                                 id: flItem
@@ -1334,19 +1370,19 @@ Item
                             text: "Формула не задана"
                             height: easyFormula.height - complexFormulaItem.height
                             width: complexFormulaItem.width
-                            color: "red"
+                            color: impStyle.warningColor
                             property int status: 0
                             onStatusChanged:
                             {
                                 if (status === 1)
                                 {
                                     text = "Формула задана верно";
-                                    color = "black"
+                                    color = impStyle.baseTextColor
                                 }
                                 else
                                 {
                                     text = "Формула задана не верно";
-                                    color = "red"
+                                    color = impStyle.warningColor
                                 }
                             }
                         }
