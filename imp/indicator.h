@@ -8,6 +8,7 @@ class Imp;
 class IndSettings;
 class QQuickWidget;
 class ImpAbstractDetect;
+class FormulaNode;
 
 // Максимальная длина истории измерений для усреднения
 #define LEN_MAD 2000
@@ -110,6 +111,7 @@ private:
     float _divider;
     std::vector<float> _zeroShifts;
     TransToUnit _transGauge;
+    FormulaNode* _complexFormula;
 
     // Диапазон измерения датчиков
     int iRange1; // датчик 1
