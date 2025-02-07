@@ -818,8 +818,8 @@ Item
                         id: impGauge
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
-                        width: parent.width < parent.height ? parent.width : parent.height
-                        height: parent.width < parent.height ? parent.width : parent.height
+                        width: parent.width < parent.height ? parent.width - 10 : parent.height - 10
+                        height: parent.width < parent.height ? parent.width - 10 : parent.height - 10
                     }
                     // Окраска циферблата при выходе за допуски
                     Rectangle
