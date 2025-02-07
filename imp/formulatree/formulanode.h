@@ -3,15 +3,12 @@
 
 #include <QObject>
 
+class ImpAbstractDetect;
+
 class FormulaNode : public QObject
 {
   Q_OBJECT
 public:
-  explicit FormulaNode(QObject *parent = nullptr);
-
-  double Get();
-
-private:
   enum Operator
   {
     ADD
@@ -19,9 +16,26 @@ private:
     , MUL
     , DIV
   };
+  explicit FormulaNode(QObject *parent = nullptr);
+
+  void SetL(float);
+  void SetL(FormulaNode*);
+  void SetL(ImpAbstractDetect*);
+  void SetR(float);
+  void SetR(FormulaNode*);
+  void SetR(ImpAbstractDetect*);
+  void SetOp(Operator);
+
+  float Get();
+
+private:
+  Operator _op;
   FormulaNode* _lh;
   FormulaNode* _rh;
-  Operator _op;
+  float _lValue;
+  float _rValue;
+  ImpAbstractDetect* _lDetect;
+  ImpAbstractDetect* _rDetect;
 };
 
 #endif // FORMULANODE_H
