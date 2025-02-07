@@ -1044,12 +1044,6 @@ Item
                                 text: "Индикатор ?"
                                 font.pixelSize: 18
                                 padding: 10
-                                background: Rectangle {
-                                    width: 185
-                                    height: 30
-                                    color: impStyle.unChekedTabButtonColor
-                                    border.color: impStyle.borderColor
-                                }
                                 onTextEdited: sigNameEntered()
                             }
                         }
@@ -1069,12 +1063,6 @@ Item
                                 font.pixelSize: tfName.font.pixelSize
                                 onTextEdited: sigDividerEntered()
                                 padding: 10
-                                background: Rectangle {
-                                    width: 100
-                                    height: 30
-                                    color: impStyle.unChekedTabButtonColor
-                                    border.color: impStyle.borderColor
-                                }
                             }
                             Text { // row 2
                                 text: "\nУсреднение, мс:"
@@ -1093,12 +1081,6 @@ Item
                                         text = 100000;
                                 }
                                 padding: 10
-                                background: Rectangle {
-                                    width: 100
-                                    height: 30
-                                    color: impStyle.unChekedTabButtonColor
-                                    border.color: impStyle.borderColor
-                                }
                             }
                             Text { // row 3
                                 text: "\nРежим max - min:"
@@ -1145,13 +1127,6 @@ Item
                                 font.pixelSize: tfName.font.pixelSize
                                 validator: IntValidator{bottom: 1; top: 999;}
                                 inputMethodHints: Qt.ImhDigitsOnly
-                                background: Rectangle {
-                                    anchors.centerIn: parent
-                                    width: 50
-                                    height: 30
-                                    color: impStyle.unChekedTabButtonColor
-                                    border.color: impStyle.borderColor
-                                }
                                 onTextChanged:
                                 {
                                     if (text < 1)
