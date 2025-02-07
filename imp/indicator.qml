@@ -1045,7 +1045,6 @@ Item
                                 font.pixelSize: 18
                                 padding: 10
                                 background: Rectangle {
-                                    anchors.left: tName.right
                                     width: 185
                                     height: 30
                                     color: impStyle.unChekedTabButtonColor
@@ -1131,11 +1130,11 @@ Item
                                 onReleased: {
                                     if (checked) {
                                         timerSave.start();
-                                        btSaveOption.text = "Выбрать файл выгрузки"
+                                        //btSaveOption.text = "Выбрать файл выгрузки"
                                     }
                                     else {
                                         timerSave.stop();
-                                        btSaveOption.text = "  Сохранить измерения  "
+                                        //btSaveOption.text = "  Сохранить измерения  "
                                     }
                                 }
                             }
