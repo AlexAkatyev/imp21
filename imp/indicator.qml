@@ -1031,29 +1031,29 @@ Item
                         anchors.horizontalCenter: parent.horizontalCenter
                         spacing: 5
 
-                        Row {
+                        Grid {
+                            rows: 6
+                            columns: 2
                             spacing: 10
-                            Text { // row 1
+                            horizontalItemAlignment: Grid.AlignHCenter
+                            verticalItemAlignment: Grid.AlignVCenter
+
+                            Text { // row 0
                                 id: tName
-                                text: "\nНазвание:"
+                                text: "Название:"
                                 font.pixelSize: 15
                             }
                             TextField {
                                 id: tfName
                                 objectName: "tfName"
                                 text: "Индикатор ?"
-                                font.pixelSize: 18
+                                font.pixelSize: tName.font.pixelSize
                                 padding: 10
                                 onTextEdited: sigNameEntered()
+                                width: 120
                             }
-                        }
-
-                        Grid {
-                            rows: 5
-                            columns: 2
-                            spacing: 10
                             Text { // row 1
-                                text: "\nДелитель:"
+                                text: "Делитель:"
                                 font.pixelSize: tName.font.pixelSize
                             }
                             TextField {
@@ -1063,9 +1063,10 @@ Item
                                 font.pixelSize: tfName.font.pixelSize
                                 onTextEdited: sigDividerEntered()
                                 padding: 10
+                                width: tfName.width
                             }
                             Text { // row 2
-                                text: "\nУсреднение, мс:"
+                                text: "Усреднение, мс:"
                                 font.pixelSize: tName.font.pixelSize
                             }
                             TextField {
@@ -1081,9 +1082,10 @@ Item
                                         text = 100000;
                                 }
                                 padding: 10
+                                width: tfName.width
                             }
                             Text { // row 3
-                                text: "\nРежим max - min:"
+                                text: "Режим max - min:"
                                 font.pixelSize: tName.font.pixelSize
                             }
                             CheckBox {
@@ -1134,6 +1136,7 @@ Item
                                     timerSave.interval = text * 60 * 1000;
                                 }
                                 enabled: automaticSave.checked
+                                width: tfName.width
                             }
                             /*Button // row 5
                             {
