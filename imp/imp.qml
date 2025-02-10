@@ -208,7 +208,13 @@ Item
                 topPadding: 25
 
                 ComboBox {
+                    id: cbWorkspace
+                    height: 50
                     width: 250
+                    background: Rectangle {
+                        color: cbWorkspace.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                        border.color: impStyle.borderColor
+                    }
                     }
             }
 
@@ -426,6 +432,10 @@ Item
                     width: 40
                     icon.name: "info"
                     icon.source: "icons/info.png"
+                    background: Rectangle {
+                        color: btOptions.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                        border.color: impStyle.borderColor
+                    }
                     onClicked: sigSelectDetectToInit(serialNumber);
                     ToolTip.text: "Информация о датчике"
                     ToolTip.visible: hovered

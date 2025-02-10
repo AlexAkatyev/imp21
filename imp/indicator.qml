@@ -1039,22 +1039,21 @@ Item
                             verticalItemAlignment: Grid.AlignVCenter
 
                             Text { // row 0
-                                id: tName
                                 text: "Название:"
-                                font.pixelSize: 15
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             TextField {
                                 id: tfName
                                 objectName: "tfName"
                                 text: "Индикатор ?"
-                                font.pixelSize: tName.font.pixelSize
+                                font.pixelSize: 15
                                 padding: 10
                                 onTextEdited: sigNameEntered()
                                 width: 120
                             }
                             Text { // row 1
                                 text: "Делитель:"
-                                font.pixelSize: tName.font.pixelSize
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             TextField {
                                 id: tfDivider
@@ -1067,7 +1066,7 @@ Item
                             }
                             Text { // row 2
                                 text: "Усреднение, мс:"
-                                font.pixelSize: tName.font.pixelSize
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             TextField {
                                 id: tfPeriod
@@ -1086,7 +1085,7 @@ Item
                             }
                             Text { // row 3
                                 text: "Режим max - min:"
-                                font.pixelSize: tName.font.pixelSize
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             CheckBox {
                                 id: cbMode
@@ -1110,7 +1109,7 @@ Item
                                 objectName: "automaticSave"
                                 text: "Автоматическое\nсохранение, мин"
                                 checked: false
-                                font.pixelSize: tName.font.pixelSize
+                                font.pixelSize: tfName.font.pixelSize
                                 onReleased: {
                                     if (checked) {
                                         timerSave.start();
@@ -1126,6 +1125,7 @@ Item
                                 id: tfAutoSave
                                 objectName: "tfAutoSave"
                                 text: "10"
+                                padding: 10
                                 font.pixelSize: tfName.font.pixelSize
                                 validator: IntValidator{bottom: 1; top: 999;}
                                 inputMethodHints: Qt.ImhDigitsOnly
@@ -1163,12 +1163,13 @@ Item
                     {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
-                        spacing: 5
+                        spacing: 30
                         CheckBox
                         {
                             id: cbComplexFormula
                             text: "Использовать сложную формулу"
                             anchors.horizontalCenter: parent.horizontalCenter
+                            font.pixelSize: tfName.font.pixelSize
                         }
 
                         Grid {
@@ -1189,6 +1190,7 @@ Item
                             }
                             Text {
                                 text: "Формула индикатора"
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             Text {
                                 text: " "
@@ -1214,7 +1216,12 @@ Item
                                 id: cbListDetect1
                                 objectName: "cbListDetect1"
                                 indicator.scale: 0.6
+                                height: 50
                                 width: 200
+                                background: Rectangle {
+                                    color: cbListDetect1.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                    border.color: impStyle.borderColor
+                                }
                                 font.pixelSize: tfName.font.pixelSize
                                 ToolTip.text: "Датчик 1"
                                 ToolTip.visible: hovered
@@ -1276,7 +1283,12 @@ Item
                                 objectName: "cbListDetect2"
                                 indicator.scale: 0.6
                                 font.pixelSize: tfName.font.pixelSize
+                                height: 50
                                 width: cbListDetect1.width
+                                background: Rectangle {
+                                    color: cbListDetect2.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                    border.color: impStyle.borderColor
+                                }
                                 ToolTip.text: "Датчик 2"
                                 ToolTip.visible: hovered
                                 popup.font.pixelSize: cbListDetect2.font.pixelSize
@@ -1345,6 +1357,7 @@ Item
                             objectName: "formulaMessage"
                             visible: complexFormulaItem.visible
                             text: "Формула не задана"
+                            font.pixelSize: tfName.font.pixelSize
                             height: easyFormula.height - complexFormulaItem.height
                             width: complexFormulaItem.width
                             color: impStyle.warningColor
@@ -1375,6 +1388,7 @@ Item
                         CheckBox {
                             id: dopusk
                             text: "Контроль допуска"
+                            font.pixelSize: tfName.font.pixelSize
                             checked: inputIndicator.dopusk
                             onCheckedChanged: inputIndicator.dopusk = checked
                         }
@@ -1385,12 +1399,14 @@ Item
                             enabled: inputIndicator.dopusk
                             Text {
                                 text: highLevelFormula + "   "
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             TextField {
                                 id: tfHiLimit
                                 objectName: "tfHiLimit"
-                                width: itDopusk.width/3
-                                font.pixelSize: 12
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
                                 onTextChanged:
                                 {
                                     tfHiLevelF.text = text;
@@ -1400,12 +1416,14 @@ Item
                             }
                             Text {
                                 text: lowLevelFormula + "   "
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             TextField {
                                 id: tfLoLimit
                                 objectName: "tfLoLimit"
-                                width: tfHiLimit.width
-                                font.pixelSize: tfHiLimit.font.pixelSize
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
                                 onTextChanged:
                                 {
                                     tfLoLevelF.text = text;
@@ -1415,20 +1433,30 @@ Item
                             }
                             Text {
                                 text: "\nПриемочная граница    "
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             TextField {
                                 id: tfPriemka
                                 objectName: "tfPriemka"
                                 text: inputIndicator.priemka
-                                width: tfHiLimit.width
-                                font.pixelSize: tfHiLimit.font.pixelSize
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
                             }
                             Text {
                                 text: "\nЗвуковое оповещение   "
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             ComboBox {
-                                model: ["Выключено", "Короткое", "Длинное"]
-                                width: tfHiLimit.width
+                                id: cbSound
+                                model: ["Выкл.", "Короткое", "Длинное"]
+                                font.pixelSize: tfName.font.pixelSize
+                                height: 50
+                                width: tfName.width
+                                background: Rectangle {
+                                    color: cbSound.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                    border.color: impStyle.borderColor
+                                }
                                 onCurrentIndexChanged:
                                 {
                                     switch (currentIndex)
@@ -1456,48 +1484,62 @@ Item
                     Column{
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
+                        spacing: 20
+
+                        CheckBox {
+                            id: cbStrelka
+                            text: "Цифровое и стрелочное отображение показаний"
+                            font.pixelSize: tfName.font.pixelSize
+                            checked: true
+                            onCheckedChanged: cbZifra.checked = !checked
+                        }
+                        CheckBox {
+                            id: cbZifra
+                            text: "Цифровое отображение показаний"
+                            font.pixelSize: tfName.font.pixelSize
+                            topPadding: -15
+                            checked: false
+                            onCheckedChanged: cbStrelka.checked = !checked
+                        }
+
                         Grid {
                             columns: 2
-                            rows: 3
-                            spacing: 5
-                            CheckBox {
-                                id: cbStrelka
-                                text: "Цифровое и стрелочное\nотображение показаний"
-                                font.pixelSize: 12
-                                checked: true
-                                onCheckedChanged: cbZifra.checked = !checked
-                            }
-                            CheckBox {
-                                id: cbZifra
-                                text: "Цифровое\nотображение показаний"
-                                font.pixelSize: cbStrelka.font.pixelSize
-                                checked: false
-                                onCheckedChanged: cbStrelka.checked = !checked
-                            }
+                            rows: 2
+                            spacing: 20
+
                             Text {
                                 text: "\n  Цена деления"
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             TextField{
                                 id: tfUnitPoint
                                 objectName: "tfUnitPoint"
-                                width: 4 * itGauge.width / 10
-                                font.pixelSize: 14
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
                                 inputMethodHints: Qt.ImhDigitsOnly
                             }
                             Text {
                                 text: "\n  Дискретность"
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             ComboBox {
                                 id: tfNumberCharPoint
                                 objectName: "tfNumberCharPoint"
                                 model: getNumberCharPointModel("mkm")
                                 currentIndex: 1
-                                width: tfUnitPoint.width
-                                font.pixelSize: 14
+                                font.pixelSize: tfName.font.pixelSize
+                                height: 50
+                                width: tfName.width
+                                background: Rectangle {
+                                    color: tfNumberCharPoint.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                    border.color: impStyle.borderColor
+                                }
                             }
                         }
                         GroupBox {
                             title: "Единицы измерения"
+                            font.pixelSize: tfName.font.pixelSize
                             RowLayout {
                                 anchors.fill: parent
                                 spacing: 0;
@@ -1524,6 +1566,7 @@ Item
                                 RadioButton {
                                     id: tgrb0
                                     text: "мкм";
+                                    font.pixelSize: tfName.font.pixelSize
                                     onCheckedChanged:
                                     {
                                         inputIndicator.transGauge = 0;
@@ -1534,6 +1577,7 @@ Item
                                 RadioButton {
                                     id: tgrb1
                                     text: "мм"
+                                    font.pixelSize: tfName.font.pixelSize
                                     onCheckedChanged:
                                     {
                                         inputIndicator.transGauge = 1;
@@ -1544,6 +1588,7 @@ Item
                                 RadioButton {
                                     id: tgrb2
                                     text: "дюймы"
+                                    font.pixelSize: tfName.font.pixelSize
                                     onCheckedChanged:
                                     {
                                         inputIndicator.transGauge = 2;
@@ -1554,6 +1599,7 @@ Item
                                 RadioButton {
                                     id: tgrb3
                                     text: "угл. секунды"
+                                    font.pixelSize: tfName.font.pixelSize
                                     onCheckedChanged:
                                     {
                                         inputIndicator.transGauge = 3;
@@ -1566,6 +1612,11 @@ Item
                         Button {
                             id: btSetDefault
                             text: "Установить настройки по умолчанию"
+                            font.capitalization: Font.Capitalize
+                            background: Rectangle {
+                                color: btSetDefault.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                border.color: impStyle.borderColor
+                            }
                             onReleased: {
                                 tfUnitPoint.text = 5;
                                 tgrb0.checked = true; // mkm
@@ -1595,6 +1646,7 @@ Item
                         // row 1
                         Text {
                             text: "\nРежим сортировки"
+                            font.pixelSize: tfName.font.pixelSize
                         }
                         CheckBox {
                             id: cbSortFormula
@@ -1608,11 +1660,15 @@ Item
                         // row 2
                         Text {
                             text: highLevelFormula
+                            font.pixelSize: tfName.font.pixelSize
                         }
                         TextField {
                             id: tfHiLevelF
                             objectName: "tfHiLevelF"
                             text: tfHiLimit.text
+                            font.pixelSize: tfName.font.pixelSize
+                            width: tfName.width
+                            padding: 10
                             onTextChanged: {
                                 tfHiLimit.text = text;
                                 inputIndicator.highLimit = text;
@@ -1622,11 +1678,16 @@ Item
                         // row 3
                         Text {
                             text: lowLevelFormula
+                            font.pixelSize: tfName.font.pixelSize
+
                         }
                         TextField {
                             id: tfLoLevelF
                             objectName: "tfLoLevelF"
                             text: tfLoLimit.text
+                            font.pixelSize: tfName.font.pixelSize
+                            width: tfName.width
+                            padding: 10
                             onTextChanged: {
                                 tfLoLimit.text = text;
                                 inputIndicator.lowLimit = text;
@@ -1636,22 +1697,31 @@ Item
                         // row 4
                         Text {
                             text: "\nКоличество групп"
+                            font.pixelSize: tfName.font.pixelSize
                         }
                         TextField {
                             id: countGroupsF
                             objectName: "countGroupsF"
                             inputMethodHints: Qt.ImhDigitsOnly
+                            font.pixelSize: tfName.font.pixelSize
+                            width: tfName.width
+                            padding: 10
                             onTextChanged: setInterval()
                         }
                         // row 5
                         Text {
                             text: "\nИнтервал"
+                            font.pixelSize: tfName.font.pixelSize
                         }
                         Row {
                             Button {
                                 id: btLeftInterval
                                 text: "<"
-                                scale: 0.7
+                                height: 50
+                                background: Rectangle {
+                                    color: btLeftInterval.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                    border.color: impStyle.borderColor
+                                }
                                 onReleased: {
                                     var groups = countGroupsF.text;
                                     if (groups > 1)
@@ -1664,12 +1734,17 @@ Item
                                 objectName: "intervalF"
                                 anchors.verticalCenter: btLeftInterval.verticalCenter
                                 text: getInterval(tfHiLevelF.text, tfLoLevelF.text, countGroupsF.text)
-                                font.pixelSize: 16
-                                width: btLeftInterval.width
+                                font.pixelSize: tfName.font.pixelSize
+                                width: 70
                             }
                             Button {
+                                id: btRightInterval
                                 text: ">"
-                                scale: btLeftInterval.scale
+                                height: 50
+                                background: Rectangle {
+                                    color: btRightInterval.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                    border.color: impStyle.borderColor
+                                }
                                 onReleased: {
                                     var groups = countGroupsF.text - 1;
                                     if (groups < 99)
@@ -1689,9 +1764,9 @@ Item
                         CheckBox {
                             id: cbStatistic
                             text: "Режим отображения графика"
+                            font.pixelSize: tfName.font.pixelSize
                             enabled: false
                             checked: false
-                            font.pixelSize: 12
                             onCheckedChanged: {
                                 if (checked)
                                     cbSortFormula.checked = false;
@@ -1700,7 +1775,7 @@ Item
                         CheckBox {
                             id: cbHand
                             text: "Ручная фиксация измерений"
-                            font.pixelSize: cbStatistic.font.pixelSize
+                            font.pixelSize: tfName.font.pixelSize
                             onCheckedChanged: {
                                 if (checked)
                                     cbAutomatic.checked = false;
@@ -1710,7 +1785,7 @@ Item
                         CheckBox {
                             id: cbAutomatic
                             text: "Автоматическая фиксация измерений"
-                            font.pixelSize: cbStatistic.font.pixelSize
+                            font.pixelSize: tfName.font.pixelSize
                             onCheckedChanged: {
                                 if (checked)
                                     cbHand.checked = false;
@@ -1724,30 +1799,34 @@ Item
                             Text
                             {
                                 text: "\nШирина окна графика, с"
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             TextField
                             {
                                 id: tfSumPoint
                                 objectName: "tfSumPoint"
                                 enabled: cbAutomatic.checked | cbHand.checked
-                                width: itStatistic.width/4
-                                font.pixelSize: cbStatistic.font.pixelSize
                                 validator: IntValidator{bottom: 10; top: 1000;}
                                 text: "100"
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
                                 onTextChanged: statChart.maxSizeMess = text
                             }
                             Text
                             {
                                 text: "\nКоличество точек"
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             TextField
                             {
                                 id: tfPointCount
-                                width: tfSumPoint.width
                                 enabled: cbAutomatic.checked
-                                font.pixelSize: cbStatistic.font.pixelSize
                                 validator: IntValidator{bottom: 10; top: 1000000;}
                                 text: "1000"
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
                                 onTextEdited: {
                                     if (cbAutomatic.checked)
                                     {
@@ -1759,16 +1838,18 @@ Item
                             Text
                             {
                                 text: "\nИнтервал измерений, мс"
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             TextField
                             {
                                 id: tfStatPeriod
                                 objectName: "tfStatPeriod"
-                                width: tfSumPoint.width
                                 enabled: cbAutomatic.checked
-                                font.pixelSize: tfSumPoint.font.pixelSize
                                 validator: IntValidator{bottom: 100; top: 10000;}
                                 text: "100"
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
                                 onTextEdited: {
                                     if (cbAutomatic.checked)
                                     {
@@ -1780,15 +1861,17 @@ Item
                             Text
                             {
                                 text: "\nПродолжительность измерений, с  "
+                                font.pixelSize: tfName.font.pixelSize
                             }
                             TextField
                             {
                                 id: tfMeasLen
-                                width: tfSumPoint.width
                                 enabled: cbAutomatic.checked
-                                font.pixelSize: tfSumPoint.font.pixelSize
                                 validator: IntValidator{bottom: 10; top: 90000;}
                                 text: "100"
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
                                 onTextEdited: {
                                     if (cbAutomatic.checked)
                                     {
