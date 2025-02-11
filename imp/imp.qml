@@ -114,7 +114,7 @@ Item
                         color: btFind.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                     }
                     text: "Поиск\nдатчиков"
-                    font.capitalization: Font.Capitalize
+                    font.capitalization: Font.MixedCase
                     icon.name: "transducers_search"
                     icon.source: "icons/transducers_search.png"
                     display: Button.TextUnderIcon
@@ -142,7 +142,7 @@ Item
                         color: btIndicator.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                     }
                     text: "Новый\nиндикатор"
-                    font.capitalization: Font.Capitalize
+                    font.capitalization: Font.MixedCase
                     icon.name: "indicator_add"
                     icon.source: "icons/indicator_add.png"
                     display: Button.TextUnderIcon
@@ -160,7 +160,7 @@ Item
                     color: btCompose.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                 }
                 text: "Компоновать\nсуществующие"
-                font.capitalization: Font.Capitalize
+                font.capitalization: Font.MixedCase
                 icon.name: "compose"
                 icon.source: "icons/compose.png"
                 display: Button.TextUnderIcon
@@ -178,7 +178,7 @@ Item
                     color: btAddAndCompose.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                 }
                 text: "Добавить и\nкомпоновать"
-                font.capitalization: Font.Capitalize
+                font.capitalization: Font.MixedCase
                 icon.name: "add_and_compose"
                 icon.source: "icons/add_and_compose.png"
                 display: Button.TextUnderIcon
@@ -198,7 +198,7 @@ Item
                     color: btWorkspace.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                 }
                 text: "Добавить\nрабочее место"
-                font.capitalization: Font.Capitalize
+                font.capitalization: Font.MixedCase
                 icon.name: "workspace"
                 icon.source: "icons/workspace.png"
                 display: Button.TextUnderIcon
@@ -228,44 +228,16 @@ Item
                     color: btAbout.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                 }
                 text: "Настройки\nрабочего места"
-                font.capitalization: Font.Capitalize
+                font.capitalization: Font.MixedCase
                 icon.name: "transducers_search"
-                icon.source: "icons/settings.png"
+                icon.source: "icons/workspace_settings.png"
                 display: Button.TextUnderIcon
                 ToolTip.visible: hovered
                 ToolTip.text: "Выбрать тип датчика и способ поиска"
                 onClicked: sigClickedbtAbout();
             }
 
-            ToolSeparator {
-                height: 100
-            }
 
-            Button
-            {
-                id: btHelp
-                height: 100
-                width: 100
-                background: Rectangle {
-                    color: btHelp.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
-                }
-                Image {
-                    source: "icons/imp_logo.png"
-                    x:30
-                    y:10
-                    height: 40
-                    width: 40
-                }
-                Text {
-                    text: "Руководство\nпользователя"
-                    font: btHelp.font
-                    horizontalAlignment: Text.AlignHCenter
-                    x: 5
-                    y: 48
-                }
-                font.capitalization: Font.Capitalize
-                onClicked: sigClickedbtHelp();
-            }
 
 
 
@@ -311,6 +283,33 @@ Item
                         visible: ((pbFind.value === 1) | (pbFind.value === 0)) ? false : true
                     }
                 }
+            }
+        }
+
+        Row {
+            rightPadding: 20
+            spacing: 10
+            anchors.right: parent.right
+
+            ToolSeparator {
+                height: 100
+
+            }
+
+            Button
+            {
+                id: btHelp
+                height: 100
+                width: 100
+                background: Rectangle {
+                    color: btHelp.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
+                }
+                text: "Руководство\nпользователя"
+                font.capitalization: Font.MixedCase
+                icon.name: "help"
+                icon.source: "icons/help.png"
+                display: Button.TextUnderIcon
+                onClicked: sigClickedbtHelp();
             }
         }
     }

@@ -98,7 +98,7 @@ Item {
                                     height: 50
                                     width: 150
                                     text: "Добавить адрес"
-                                    font.capitalization: Font.Capitalize
+                                    font.capitalization: Font.MixedCase
                                     icon.name: "address_add"
                                     icon.source: "icons/address_add.png"
                                     background: Rectangle {
@@ -117,7 +117,7 @@ Item {
                                     height: 50
                                     width: 150
                                     text: "Удалить адрес"
-                                    font.capitalization: Font.Capitalize
+                                    font.capitalization: Font.MixedCase
                                     icon.name: "address_remove"
                                     icon.source: "icons/address_remove.png"
                                     background: Rectangle

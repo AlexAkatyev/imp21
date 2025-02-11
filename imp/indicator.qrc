@@ -28,5 +28,7 @@
         <file>icons/left.png</file>
         <file>icons/right.png</file>
         <file>icons/save.png</file>
+        <file>icons/general_settings.png</file>
+        <file>icons/workspace_settings.png</file>
     </qresource>
 </RCC>

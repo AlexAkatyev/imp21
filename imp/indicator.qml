@@ -941,7 +941,7 @@ Item
                 Repeater
                 {
                     model: [{text:"ВЫХОД", image:"./icons/exit.png"},
-                            {text:"ИЗМЕРЕНИЕ", image:"./icons/measurement.png"},
+                            {text:"ОБЩИЕ НАСТРОЙКИ", image:"./icons/general_settings.png"},
                             {text:"ФОРМУЛА", image:"./icons/formula.png"},
                             {text:"ДОПУСК", image:"./icons/tolerance.png"},
                             {text:"ДИСПЛЕЙ", image:"./icons/display.png"},
@@ -1035,7 +1035,6 @@ Item
                             rows: 6
                             columns: 2
                             spacing: 10
-                            horizontalItemAlignment: Grid.AlignHCenter
                             verticalItemAlignment: Grid.AlignVCenter
 
                             Text { // row 0
@@ -1089,6 +1088,7 @@ Item
                             }
                             CheckBox {
                                 id: cbMode
+                                padding: 0
                                 checked: false
                                 onCheckedChanged:
                                 {
@@ -1104,53 +1104,79 @@ Item
                                     }
                                 }
                             }
-                            CheckBox { // row 4
-                                id: automaticSave
-                                objectName: "automaticSave"
-                                text: "Автоматическое\nсохранение, мин"
-                                checked: false
-                                font.pixelSize: tfName.font.pixelSize
-                                onReleased: {
-                                    if (checked) {
-                                        timerSave.start();
-                                        //btSaveOption.text = "Выбрать файл выгрузки"
-                                    }
-                                    else {
-                                        timerSave.stop();
-                                        //btSaveOption.text = "  Сохранить измерения  "
+
+
+                        }
+
+                        GroupBox {
+                            title: "Автоматическое сохранение"
+                            anchors.left: itMeasure.left
+                            anchors.right: itMeasure.right
+
+                            Grid {
+                                rows: 2
+                                columns: 2
+                                spacing: 10
+                                verticalItemAlignment: Grid.AlignVCenter
+
+                                Text { // row 4
+                                    text: "Включить"
+                                    font.pixelSize: tfName.font.pixelSize
+                                }
+                                CheckBox {
+                                    id: automaticSave
+                                    objectName: "automaticSave"
+                                    padding: 0
+                                    checked: false
+                                    font.pixelSize: tfName.font.pixelSize
+                                    onReleased: {
+                                        if (checked) {
+                                            timerSave.start();
+                                            //btSaveOption.text = "Выбрать файл выгрузки"
+                                        }
+                                        else {
+                                            timerSave.stop();
+                                            //btSaveOption.text = "  Сохранить измерения  "
+                                        }
                                     }
                                 }
-                            }
-                            TextField {
-                                id: tfAutoSave
-                                objectName: "tfAutoSave"
-                                text: "10"
-                                padding: 10
-                                font.pixelSize: tfName.font.pixelSize
-                                validator: IntValidator{bottom: 1; top: 999;}
-                                inputMethodHints: Qt.ImhDigitsOnly
-                                onTextChanged:
+
+                                Text { // row 4
+                                    text: "Частота сохранения, мин"
+                                    font.pixelSize: tfName.font.pixelSize
+                                }
+                                TextField {
+                                    id: tfAutoSave
+                                    objectName: "tfAutoSave"
+                                    text: "10"
+                                    padding: 10
+                                    font.pixelSize: tfName.font.pixelSize
+                                    validator: IntValidator{bottom: 1; top: 999;}
+                                    inputMethodHints: Qt.ImhDigitsOnly
+                                    onTextChanged:
+                                    {
+                                        if (text < 1)
+                                            text = 1;
+                                        timerSave.interval = text * 60 * 1000;
+                                    }
+                                    enabled: automaticSave.checked
+                                    width: tfName.width
+                                }
+                                /*Button // row 5
                                 {
-                                    if (text < 1)
-                                        text = 1;
-                                    timerSave.interval = text * 60 * 1000;
-                                }
-                                enabled: automaticSave.checked
-                                width: tfName.width
+                                    id: btSaveOption
+                                    text: automaticSave.checked ? "Выбрать файл выгрузки" : "  Сохранить измерения  "
+                                    font.pixelSize: tfName.font.pixelSize
+                                    enabled: automaticSave.checked || lmMeasData.count > 0
+                                    onReleased: {
+                                        if (automaticSave.checked)
+                                            sigPeekFile();
+                                        else
+                                            saveMeasData();
+                                    }
+                                }*/
                             }
-                            /*Button // row 5
-                            {
-                                id: btSaveOption
-                                text: automaticSave.checked ? "Выбрать файл выгрузки" : "  Сохранить измерения  "
-                                font.pixelSize: tfName.font.pixelSize
-                                enabled: automaticSave.checked || lmMeasData.count > 0
-                                onReleased: {
-                                    if (automaticSave.checked)
-                                        sigPeekFile();
-                                    else
-                                        saveMeasData();
-                                }
-                            }*/
+
                         }
                     }
 
@@ -1387,6 +1413,7 @@ Item
                         anchors.horizontalCenter: parent.horizontalCenter
                         CheckBox {
                             id: dopusk
+                            padding: 0
                             text: "Контроль допуска"
                             font.pixelSize: tfName.font.pixelSize
                             checked: inputIndicator.dopusk
@@ -1611,8 +1638,8 @@ Item
                         }
                         Button {
                             id: btSetDefault
-                            text: "Установить настройки по умолчанию"
-                            font.capitalization: Font.Capitalize
+                            text: "Сбросить настройки"
+                            font.capitalization: Font.MixedCase
                             background: Rectangle {
                                 color: btSetDefault.hovered ? impStyle.hoveredColor : impStyle.windowColor
                                 border.color: impStyle.borderColor
@@ -1651,6 +1678,7 @@ Item
                         CheckBox {
                             id: cbSortFormula
                             objectName: "cbSortFormula"
+                            padding: 5
                             checked: false
                             onCheckedChanged: {
                                 if (checked)
@@ -1709,11 +1737,25 @@ Item
                             onTextChanged: setInterval()
                         }
                         // row 5
+
                         Text {
                             text: "\nИнтервал"
                             font.pixelSize: tfName.font.pixelSize
                         }
-                        Row {
+
+
+                        SpinBox {
+                            id: sbInterval
+                            value: 100
+                            padding: 0
+                            width: tfName.width
+                            editable: true
+                            background: Rectangle {
+                                border.color: impStyle.borderColor
+                            }
+                        }
+
+                        /*Row {
                             Button {
                                 id: btLeftInterval
                                 text: "<"
@@ -1752,7 +1794,7 @@ Item
                                     countGroupsF.text = groups;
                                 }
                             }
-                        }
+                        }*/
                     }
                 }
                 // Страница кнопки СТАТИСТИКА
