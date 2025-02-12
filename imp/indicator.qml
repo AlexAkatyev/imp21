@@ -509,6 +509,8 @@ Item
             background: Rectangle {
                 color: btMenu.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                 radius: 5
+                width: Math.min(btMenu.width)-5
+                anchors.centerIn: parent
             }
             onReleased:
             {
@@ -530,6 +532,8 @@ Item
             background: Rectangle {
                 color: btLeft.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                 radius: 5
+                width: Math.min(btMenu.width)-5
+                anchors.centerIn: parent
             }
             onReleased: inputIndicator.beforeSet = inputIndicator.beforeSet - Math.pow(10, -inputIndicator.accuracy);
         }
@@ -545,6 +549,8 @@ Item
             background: Rectangle {
                 color: btSetNull.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                 radius: 5
+                width: Math.min(btMenu.width)-5
+                anchors.centerIn: parent
             }
             onReleased:
             {
@@ -563,6 +569,8 @@ Item
             background: Rectangle {
                 color: btRight.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                 radius: 5
+                width: Math.min(btMenu.width)-5
+                anchors.centerIn: parent
             }
             onReleased: inputIndicator.beforeSet = inputIndicator.beforeSet + Math.pow(10, -inputIndicator.accuracy);
         }
@@ -577,6 +585,8 @@ Item
             background: Rectangle {
                 color: btData.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
                 radius: 5
+                width: Math.min(btMenu.width)-5
+                anchors.centerIn: parent
             }
             onReleased:
             {
@@ -1016,7 +1026,7 @@ Item
                 currentIndex: tbMenu.currentIndex
                 Item {
                 }
-                // Страница ИЗМЕРЕНИЕ
+                // Страница ОБЩИЕ НАСТРОЙКИ
                 Item {
                     id: itFormula
 
@@ -1104,8 +1114,12 @@ Item
 
                         }
 
+                        Text {
+                            text: "Автоматическое сохранение"
+                            font.pixelSize: tfName.font.pixelSize
+                        }
+
                         GroupBox {
-                            title: "Автоматическое сохранение"
                             anchors.left: itMeasure.left
                             anchors.right: itMeasure.right
 
@@ -1113,6 +1127,7 @@ Item
                                 rows: 2
                                 columns: 2
                                 spacing: 10
+
                                 verticalItemAlignment: Grid.AlignVCenter
 
                                 Text { // row 4
@@ -1513,6 +1528,7 @@ Item
                             id: cbStrelka
                             text: "Цифровое и стрелочное отображение показаний"
                             font.pixelSize: tfName.font.pixelSize
+                            padding: 0
                             checked: true
                             onCheckedChanged: cbZifra.checked = !checked
                         }
@@ -1520,6 +1536,7 @@ Item
                             id: cbZifra
                             text: "Цифровое отображение показаний"
                             font.pixelSize: tfName.font.pixelSize
+                            padding: 0
                             topPadding: -15
                             checked: false
                             onCheckedChanged: cbStrelka.checked = !checked
@@ -1529,9 +1546,10 @@ Item
                             columns: 2
                             rows: 2
                             spacing: 20
+                            verticalItemAlignment: Grid.AlignVCenter
 
                             Text {
-                                text: "\n  Цена деления"
+                                text: "Цена деления"
                                 font.pixelSize: tfName.font.pixelSize
                             }
                             TextField{
@@ -1543,7 +1561,7 @@ Item
                                 inputMethodHints: Qt.ImhDigitsOnly
                             }
                             Text {
-                                text: "\n  Дискретность"
+                                text: "Дискретность"
                                 font.pixelSize: tfName.font.pixelSize
                             }
                             ComboBox {
@@ -1560,8 +1578,13 @@ Item
                                 }
                             }
                         }
+
+                        Text {
+                            text: "Единицы измерения"
+                            font.pixelSize: tfName.font.pixelSize
+                        }
+
                         GroupBox {
-                            title: "Единицы измерения"
                             font.pixelSize: tfName.font.pixelSize
                             RowLayout {
                                 anchors.fill: parent

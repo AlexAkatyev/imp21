@@ -82,11 +82,54 @@ Item {
                         }
                     }
 
+                    Text {
+                        text: "Адреса"
+                        font.pixelSize: 15
+                    }
+
                     Frame
                     {
                         width: checkFrame.width
                         Column
                         {
+                            Flickable {
+                                id: scroll
+                                clip: true
+                                ScrollBar.vertical:  ScrollBar {
+                                    parent: scroll.parent
+                                    anchors.top: scroll.top
+                                    anchors.left: scroll.right
+                                    anchors.bottom: scroll.bottom
+                                }
+                            }
+
+                            ListView
+                            {
+                                id: lvAddresses
+                                height: 180
+                                width: 310
+                                Material.accent: impStyle.chekedColor
+                                focus: true
+
+                                model: ListModel
+                                { // Здесь будет содержаться список адресов
+                                    id: lmAddress
+                                    objectName: "lmAddress"
+                                }
+                                delegate: TextField
+                                {
+                                    width: parent.width
+                                    height: 50
+                                    property var view: ListView.view
+                                    property int itemIndex: index
+                                    text: serverAddress
+                                    color:  ListView.isCurrentItem ? impStyle.chekedColor : impStyle.unChekedColor
+                                    onPressed:
+                                    {
+                                        view.currentIndex = itemIndex;
+                                    }
+                                }
+                            }
 
                             Row
                             {
@@ -132,40 +175,6 @@ Item {
                                         {
                                             lmAddress.remove(index);
                                         }
-                                    }
-                                }
-                            }
-
-
-                            ListView
-                            {
-                                id: lvAddresses
-                                height: 200
-                                width: 310
-                                Material.accent: impStyle.chekedColor
-                                focus: true
-
-                                header: Text
-                                {
-                                    text: "Адреса:"
-                                }
-
-                                model: ListModel
-                                { // Здесь будет содержаться список адресов
-                                    id: lmAddress
-                                    objectName: "lmAddress"
-                                }
-                                delegate: TextField
-                                {
-                                    width: parent.width
-                                    height: 50
-                                    property var view: ListView.view
-                                    property int itemIndex: index
-                                    text: serverAddress
-                                    color:  ListView.isCurrentItem ? impStyle.chekedColor : impStyle.unChekedColor
-                                    onPressed:
-                                    {
-                                        view.currentIndex = itemIndex;
                                     }
                                 }
                             }
