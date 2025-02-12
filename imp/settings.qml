@@ -92,16 +92,6 @@ Item {
                         width: checkFrame.width
                         Column
                         {
-                            Flickable {
-                                id: scroll
-                                clip: true
-                                ScrollBar.vertical:  ScrollBar {
-                                    parent: scroll.parent
-                                    anchors.top: scroll.top
-                                    anchors.left: scroll.right
-                                    anchors.bottom: scroll.bottom
-                                }
-                            }
 
                             ListView
                             {
@@ -110,6 +100,13 @@ Item {
                                 width: 310
                                 Material.accent: impStyle.chekedColor
                                 focus: true
+                                boundsBehavior: Flickable.StopAtBounds
+                                        ScrollBar.vertical: ScrollBar
+                                        {
+                                            id: scroll
+                                            policy: ScrollBar.AlwaysOn
+                                            active: ScrollBar.AlwaysOn
+                                        }
 
                                 model: ListModel
                                 { // Здесь будет содержаться список адресов
@@ -118,7 +115,7 @@ Item {
                                 }
                                 delegate: TextField
                                 {
-                                    width: parent.width
+                                    width: parent.width - scroll.width
                                     height: 50
                                     property var view: ListView.view
                                     property int itemIndex: index
