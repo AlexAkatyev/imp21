@@ -245,8 +245,9 @@ Item
 
     function setInterval()
     {
-        intervalF.text = getInterval(tfHiLevelF.text, tfLoLevelF.text, countGroupsF.text);
+        intervalF.text = getInterval(tfHiLevelF.text, tfLoLevelF.text, countGroupsF.value);
     }
+
 
     function getSortGroup(m, hlevel, llevel, numbers)
     {
@@ -659,7 +660,7 @@ Item
                     text: "Количество групп"
                 }
                 Text {
-                    text: countGroupsF.text
+                    text: intervalF.text
                 }
                 // ----------------------------------
                 Text {
@@ -1746,33 +1747,40 @@ Item
                             text: "Количество групп"
                             font.pixelSize: tfName.font.pixelSize
                         }
-                        TextField {
+                        SpinBox {
                             id: countGroupsF
                             objectName: "countGroupsF"
-                            inputMethodHints: Qt.ImhDigitsOnly
-                            font.pixelSize: tfName.font.pixelSize
+                            from: 1
+                            to: 100
+                            padding: 0
                             width: tfName.width
-                            padding: 10
-                            onTextChanged: setInterval()
+                            editable: true
+                            background: Rectangle
+                            {
+                                border.color: impStyle.borderColor
+                            }
+                            onValueChanged:
+                            {
+                                setInterval();
+                            }
                         }
-                        // row 5
 
+                        // row 5
                         Text {
                             text: "Интервал"
                             font.pixelSize: tfName.font.pixelSize
                         }
-
-
-                        SpinBox {
-                            id: sbInterval
-                            value: 100
-                            padding: 0
+                        TextField {
+                            id: intervalF
+                            objectName: "intervalF"
+                            inputMethodHints: Qt.ImhDigitsOnly
+                            font.pixelSize: tfName.font.pixelSize
                             width: tfName.width
-                            editable: true
-                            background: Rectangle {
-                                border.color: impStyle.borderColor
-                            }
+                            padding: 10
+                            enabled: false
                         }
+
+
 
                         /*Row {
                             Button {
