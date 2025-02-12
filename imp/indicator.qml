@@ -497,10 +497,6 @@ Item
             height: 50
             width: parent.width
             anchors.bottom: parent.bottom
-            /*Rectangle {
-                anchors.fill: parent
-                color: "red"
-            }*/
         }
 
         Button {
