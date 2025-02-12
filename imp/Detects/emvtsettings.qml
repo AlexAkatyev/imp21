@@ -9,10 +9,10 @@ Item
     height: 500
     width: 355
 
-    /*ImpStyle
+    ImpStyle
     {
         id: impStyle
-    }*/
+    }
 
     Rectangle {
         anchors.fill: parent

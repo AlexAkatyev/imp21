@@ -35,7 +35,7 @@ EmVTSettings::EmVTSettings(ImpAbstractDetect* parent, int imageCode)
 
   // Присвоение имени окну
   this->setWindowTitle("Датчик " + _detect->UserName());
-  QUrl source("qrc:emvtsettings.qml");
+  QUrl source("qrc:/emvtsettings.qml");
   _quickUi->setSource(source);
 
   QVBoxLayout* pvbx = new QVBoxLayout();

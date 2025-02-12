@@ -34,7 +34,7 @@ BepVTSettings::BepVTSettings(VT21Detect* parent)
 
   // Присвоение имени окну
   this->setWindowTitle("Датчик " + _detect->UserName());
-  QUrl source("qrc:bepvtsettings.qml");
+  QUrl source("qrc:/bepvtsettings.qml");
   _quickUi->setSource(source);
 
   QVBoxLayout* pvbx = new QVBoxLayout();

@@ -30,5 +30,6 @@
         <file>icons/save.png</file>
         <file>icons/general_settings.png</file>
         <file>icons/workspace_settings.png</file>
+        <file>ImpStyle.qml</file>
     </qresource>
 </RCC>
