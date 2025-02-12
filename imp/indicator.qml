@@ -60,8 +60,8 @@ Item
     }
     property real sendData: 0.0
 
-    property string highLevelFormula: "\nВерхнее предельное отклонение"
-    property string lowLevelFormula: "\nНижнее предельное отклонение"
+    property string highLevelFormula: "Верхнее предельное отклонение"
+    property string lowLevelFormula: "Нижнее предельное отклонение"
 
     property bool dopuskTest: inputIndicator.dopusk
     onDopuskTestChanged: dopusk.checked = inputIndicator.dopusk
@@ -1435,6 +1435,7 @@ Item
                             columns: 2
                             spacing: 2
                             enabled: inputIndicator.dopusk
+                            verticalItemAlignment: Grid.AlignVCenter
                             Text {
                                 text: highLevelFormula + "   "
                                 font.pixelSize: tfName.font.pixelSize
@@ -1470,7 +1471,7 @@ Item
                                 }
                             }
                             Text {
-                                text: "\nПриемочная граница    "
+                                text: "Приемочная граница    "
                                 font.pixelSize: tfName.font.pixelSize
                             }
                             TextField {
@@ -1482,7 +1483,7 @@ Item
                                 padding: 10
                             }
                             Text {
-                                text: "\nЗвуковое оповещение   "
+                                text: "Звуковое оповещение   "
                                 font.pixelSize: tfName.font.pixelSize
                             }
                             ComboBox {
@@ -1689,9 +1690,10 @@ Item
                         columns: 2
                         rows: 5
                         spacing: 15
+                        verticalItemAlignment: Grid.AlignVCenter
                         // row 1
                         Text {
-                            text: "\nРежим сортировки"
+                            text: "Режим сортировки"
                             font.pixelSize: tfName.font.pixelSize
                         }
                         CheckBox {
@@ -1743,7 +1745,7 @@ Item
                         }
                         // row 4
                         Text {
-                            text: "\nКоличество групп"
+                            text: "Количество групп"
                             font.pixelSize: tfName.font.pixelSize
                         }
                         TextField {
@@ -1758,7 +1760,7 @@ Item
                         // row 5
 
                         Text {
-                            text: "\nИнтервал"
+                            text: "Интервал"
                             font.pixelSize: tfName.font.pixelSize
                         }
 
