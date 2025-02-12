@@ -1120,8 +1120,6 @@ Item
                         }
 
                         GroupBox {
-                            anchors.left: itMeasure.left
-                            anchors.right: itMeasure.right
 
                             Grid {
                                 rows: 2
