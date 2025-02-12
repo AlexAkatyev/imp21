@@ -322,6 +322,11 @@ bool BepVTDetect::defTypeDetect(const QByteArray& mas)
       {
       case 0:
         typeDetect.append(" с ADG419");
+        if (kod2 == 44)
+        {
+          typeDetect.append(" точный");
+          _currency = 2;
+        }
         break;
       case 1:
         typeDetect.append(" с ADG419 и RS-232");
@@ -332,11 +337,20 @@ bool BepVTDetect::defTypeDetect(const QByteArray& mas)
         }
         break;
       default:
+        if (kod2 == 44)
+        {
+          typeDetect.append(" точный");
+          _currency = 2;
+        }
         break;
       }
       break;
     case 4:
       typeDetect.append("Датчик с манометрическим преобразованием");
+      break;
+    case 5:
+      typeDetect.append("Индикаторная головка цифровая ЕМ08");
+      _currency = 2;
       break;
     default:
       typeDetect.append("Тип датчика не определен");
