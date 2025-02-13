@@ -125,11 +125,25 @@ Item {
                                     view.currentIndex = itemIndex;
                                 }
                             }
+                            onCountChanged:
+                            {
+                                visible = count != 0;
+                                imNoAddress.visible = !visible;
+                            }
+                            visible: count != 0
+                        }
+
+                        Image
+                        {
+                            id: imNoAddress
+                            source: "icons/no_adress_added.png"
+                            height: lvAddresses.height
+                            width: lvAddresses.width
+                            visible: lvAddresses.count == 0
                         }
                     }
-                    Row
+                    Item
                     {
-                        spacing: 10
                         width: checkFrame.width
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.bottom: parent.bottom
