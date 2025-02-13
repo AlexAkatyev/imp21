@@ -12,9 +12,9 @@
         <file>SearchProgress.qml</file>
         <file>settings.qml</file>
         <file>icons/info.png</file>
-        <file>icons/micro.png</file>
         <file>icons/help.png</file>
         <file>ImpStyle.qml</file>
         <file>icons/imp_logo.png</file>
+        <file>icons/no_adress_added.png</file>
     </qresource>
 </RCC>

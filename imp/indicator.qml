@@ -947,7 +947,7 @@ Item
 
                 Repeater
                 {
-                    model: [{text:"ВЫХОД", image:"./icons/exit.png"},
+                    model: [{text:"ИНДИКАТОР", image:"./icons/indicator.png"},
                             {text:"ОБЩИЕ НАСТРОЙКИ", image:"./icons/general_settings.png"},
                             {text:"ФОРМУЛА", image:"./icons/formula.png"},
                             {text:"ДОПУСК", image:"./icons/tolerance.png"},

@@ -7,7 +7,7 @@ import QtQuick.Layouts 1.3
 Item
 {
     height: 500
-    width: 355
+    width: 400
 
     ImpStyle
     {
