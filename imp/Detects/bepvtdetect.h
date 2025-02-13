@@ -36,4 +36,12 @@ private:
   QTimer* _measTimer;
 };
 
+
+class TestBepVTDetect: public BepVTDetect
+{
+  Q_OBJECT
+public:
+  explicit TestBepVTDetect(QSerialPortInfo portInfo, QObject *parent = nullptr);
+};
+
 #endif // BEPVTDETECT_H
