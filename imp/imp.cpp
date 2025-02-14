@@ -108,15 +108,18 @@ Imp::Imp(QWidget* parent)
     _timerUpdaterActiveStatus->setInterval(INTERVAL_UPDATE);
     connect(_timerUpdaterActiveStatus, &QTimer::timeout, this, &Imp::changeActiveStatusToTable);
 
-    // Поиск датчиков при запуске программы после паузы, чтобы оформилось главное окно
-    //TimerBeforeFound->start(); // вернуть при заливке в dev !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    _flagRunIndicators = false; // to do git revert
-
-
-    // Убрать после изменения внешнего вида главного окна !!!!!!!!!!!!!!!!!!!!!!!!
-    _detects = DetectFactory::Instance(this)->TestDetects();
-    reWriteDetectsToTable();
-    pitWin->setProperty("iCommand", 4);
+    if (ImpSettings::Instance(this)->Value(ImpKeys::DEBUG_GUI_MODE).toBool())
+    {
+      _flagRunIndicators = false;
+      _detects = DetectFactory::Instance(this)->TestDetects();
+      reWriteDetectsToTable();
+      pitWin->setProperty("iCommand", 4);
+    }
+    else
+    {
+      // Поиск датчиков при запуске программы после паузы, чтобы оформилось главное окно
+      TimerBeforeFound->start();
+    }
 }
 
 
