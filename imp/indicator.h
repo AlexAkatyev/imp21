@@ -20,6 +20,7 @@ public:
               int identificator,       // Номер индикатора
               ImpAbstractDetect* baseDetect = nullptr);    // Ссылка на датчик
     int Id();
+    static std::vector<int> getDefaultSize();
 
 signals:
     void sigCloseIndicator(int); // Закрытие окна индикатора, передается номер индикатора - для родительского окна

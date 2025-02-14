@@ -23,6 +23,9 @@
 #include "Logger/logger.h"
 #include "impsettings.h"
 #include "impsettingsdialog.h"
+#include <QApplication>
+#include <QScreen>
+#include <QWindow>
 
 // Пауза после запуска программы перед поиском датчиков
 const int PAUSE_BEFORE_FIND_DETECT = 500;
@@ -79,6 +82,8 @@ Imp::Imp(QWidget* parent)
     ptextComment = pQuickUi->rootObject()->findChild<QObject*>("textComment");
     pbtFind = pQuickUi->rootObject()->findChild<QObject*>("btFind");
     pbtIndicator = pQuickUi->rootObject()->findChild<QObject*>("btIndicator");
+    pbtFillScreenWithIndicators = pQuickUi->rootObject()->findChild<QObject*>("btFillScreenWithIndicators");    
+    pbtMoveOpenWindowsInOrder = pQuickUi->rootObject()->findChild<QObject*>("btMoveOpenWindowsInOrder");
 
     // Отработка команды: Помощь/Справка
     connect(pQuickUi->rootObject(), SIGNAL(sigClickedbtHelp()), this, SLOT(showHelp()));
@@ -94,6 +99,12 @@ Imp::Imp(QWidget* parent)
 
     // Отработка команды: Поиск датчиков
     connect(pQuickUi->rootObject(), SIGNAL(sigFindDetect()), this, SLOT(findDetect()));
+
+    //Отработка команды: Заполнить экран окнами индикаторов
+    connect(pQuickUi->rootObject(), SIGNAL(sigFillScreenWithIndicators(QString)), this, SLOT(fillScreenWithIndicators(QString)));
+
+    //Отработка команды: Разместить отрытые окна по порядку
+    connect(pQuickUi->rootObject(), SIGNAL(sigMoveOpenWindowsInOrder(QString)), this, SLOT(moveOpenWindowsInOrder(QString)));
 
     // Поиск датчиков при запуске программы через паузу
     TimerBeforeFound = new QTimer(this);
@@ -214,8 +225,9 @@ void Imp::findDetect()
     if(_flagRunIndicators)
     { // при запуске программы открытие старых индикаторов
         for (int j = 0; j < MAX_INDICATOR; j++)
-            if (_useIndicators.contains(j) == true)
-                createIndicator(j);
+            if (_useIndicators.contains(j) == true){
+                _indicatorsMap[j] =  createIndicator(j);
+            }
         _flagRunIndicators = false; // старые индикаторы больше не запускать
     }
     emit sigFindDetect();
@@ -366,10 +378,40 @@ void Imp::createNewIndicator(QString strNDS)
             if (_useIndicators.contains(j) == false)
                 break;
         _useIndicators.insert(j);
-        createIndicator(j, baseDetect);
+        _indicatorsMap[j] =  createIndicator(j, baseDetect);
     }
 }
 
+void Imp::fillScreenWithIndicators(QString strNDS)
+{
+  qApp->processEvents();
+  int id = strNDS.toInt();
+
+  ImpAbstractDetect* baseDetect = nullptr;
+  if (id)
+  {
+    for (auto detect : _detects)
+    {
+      if (id == detect->Id())
+      {
+        baseDetect = detect;
+        break;
+      }
+    }
+  }
+
+  if (!_flagRunIndicators) // Первый поиск датчиков и запуск старых индикаторов завершен
+  {
+      int j;
+      //Поиск свободного идентификатора
+      for (j = 0; j < MAX_INDICATOR; j++){
+          if (_useIndicators.contains(j) == false){
+              break;
+          }
+      }
+      createScreenIndicators(j, baseDetect);
+  }
+}
 
 // Удаление индикатора из множества
 void Imp::deleteIndicator(int idInd)
@@ -387,9 +429,48 @@ void Imp::deleteIndicator(int idInd)
       }
     }
 }
+    _indicatorsMap.erase(_indicatorsMap.find(idInd));
+}
 
+void Imp::createScreenIndicators(int index, ImpAbstractDetect* baseDetect)
+{
+    qApp->processEvents();
+    Indicator* ind;
 
-void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect)
+    QSize activScreenSize = QApplication::activeWindow()->screen()->availableSize();
+
+    std::vector<int> sizeWindowIndicator = ind->getDefaultSize();
+    int sizeWidthIndicator = sizeWindowIndicator.at(0);
+    int sizeHeigthIndicator = sizeWindowIndicator.at(1);
+    int numberWindowsInColumn = (int)(activScreenSize.width())/sizeWidthIndicator;
+    int numberWindowsInRow = (int)(activScreenSize.height())/sizeHeigthIndicator;
+
+    int allIndex = index + numberWindowsInRow * numberWindowsInColumn;
+
+    int startActiveSreenX = QApplication::activeWindow()->screen()->geometry().x();
+    int startActiveSreenY = QApplication::activeWindow()->screen()->geometry().y();
+
+    for(int row = 0; row < numberWindowsInRow; row++){
+        for(int column = 0; column < numberWindowsInColumn; column++){
+            ind = new Indicator(this,
+                                index, // Номер индикатора
+                                baseDetect); // ссылка на датчик
+
+            ind->setGeometry(startActiveSreenX+sizeWidthIndicator*column,
+                             startActiveSreenY+25+(row*sizeHeigthIndicator*1.1),
+                             0,
+                             0);
+
+            if(index<=allIndex){
+                index++;
+            }
+            // Закрытие индикаторов при завершении работы приложения
+            connect(this, &Imp::sigCloseIndicatorWindows, ind, &Indicator::CloseMyIndicator);
+        }
+    }
+}
+
+Indicator* Imp::createIndicator(int index, ImpAbstractDetect* baseDetect)
 {
   qApp->processEvents();
     Indicator* ind;
@@ -417,8 +498,48 @@ void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect)
     });
     // Закрытие индикатора при закрытии главного окна
     connect(this, &Imp::sigCloseIndicatorWindows, ind, &Indicator::CloseMyIndicator);
+    return ind;
 }
 
+void Imp::moveOpenWindowsInOrder(QString strNDS)
+{
+    qApp->processEvents();
+    //int id = strNDS.toInt();
+    int numberScreens = QApplication::screens().count();
+
+    QSize activScreenSize = QApplication::activeWindow()->screen()->availableSize();
+
+    int startActiveSreenX = QApplication::activeWindow()->screen()->geometry().x();
+    int startActiveSreenY = QApplication::activeWindow()->screen()->geometry().y();
+
+    int newStartColumn = startActiveSreenX;
+    int newStartRow = startActiveSreenY;
+    for (auto indicator : _indicatorsMap) {
+        Indicator* ind = indicator.second;
+
+        QRect windowIndicator = ind->geometry();    //окно индикатора
+        QSize size = windowIndicator.size();
+        int windowIndicatorWidth = size.width();    //ширина; x
+        int windowIndicatorHeight = size.height();  //высота; y
+
+        //сохранить самое большое значение окна индикатора по y
+        if (startActiveSreenY + windowIndicatorHeight > newStartRow) {
+            newStartRow = windowIndicatorHeight + 27;
+        }
+
+        // при большом значении по x перенести следующие индикаторы на 2 строчку
+        if (activScreenSize.width() + newStartColumn <= startActiveSreenX + windowIndicatorWidth) {
+            startActiveSreenX = newStartColumn;
+            startActiveSreenY = newStartRow;
+        }
+
+        ind->setGeometry(startActiveSreenX,
+                        startActiveSreenY + 26,
+                        windowIndicatorWidth,
+                        windowIndicatorHeight);
+        startActiveSreenX += windowIndicatorWidth;
+    }
+}
 
 void Imp::showHelp()
 {

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QSet>
+#include <map>
 
 class Indicator;
 class QQuickWidget;
@@ -37,6 +38,10 @@ private slots:
     void createNewSettings(QString);
     // Создание нового индикатора, можно задать имя датчика
     void createNewIndicator(QString);
+    //Создание множества окон индикаторов для заполнения всего экрана
+    void fillScreenWithIndicators(QString);
+    //Расстановка окон индикаторов попорядку
+    void moveOpenWindowsInOrder(QString);
     // Удаление индикатора из множества
     void deleteIndicator(int);
     // Отработка команды: Помощь/О программе
@@ -54,6 +59,8 @@ private:
     QObject* ptextComment; // статус поиска датчиков
     QObject* pbtFind; // кнопка поиска датчиков
     QObject* pbtIndicator; // кнопка открытия нового индикатора
+    QObject* pbtFillScreenWithIndicators; //кнопка заполнения экрана множевством индикаторов
+    QObject* pbtMoveOpenWindowsInOrder; //кнопка расстановки открытых окон индикаторов
 
     // переопределение события изменения окна
     void resizeEvent(QResizeEvent*);
@@ -67,10 +74,12 @@ private:
     bool LoadSettingsGeneral(); // Загрузка параметров из файла установок
     void SaveSettingsGeneral(); // Сохранение параметров установок в файл
     QSet<int> _useIndicators; // Множество используемых индикаторов
+    std::map<int, Indicator*> _indicatorsMap;
     std::vector<Indicator*> _indicators;
     bool _flagRunIndicators; // Флаг необходимости запускать индикаторы после запуска программы
 
-    void createIndicator(int index, ImpAbstractDetect* baseDetect = nullptr);
+    Indicator* createIndicator(int index, ImpAbstractDetect* baseDetect = nullptr);
+    void createScreenIndicators(int index, ImpAbstractDetect* baseDetect = nullptr);
 
     // Количество найденых датчиков
     int _uiCounter; // для отображения прогресса поиска датчиков

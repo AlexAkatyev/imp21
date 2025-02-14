@@ -74,6 +74,8 @@ Item
     signal sigClickedbtAbout();
     signal sigClickedbtHelp();
     signal sigNewIndicator(string SerialNum); // Серийный номер индикатора, или "Нет"
+    signal sigFillScreenWithIndicators(string SerialNum);
+    signal sigMoveOpenWindowsInOrder(string SerialNum);
     signal sigFindDetect();
     signal sigSelectDetectToInit(string SerialNum);
 
@@ -456,6 +458,31 @@ Item
                     }
                 }
             }
+        }
+
+    }
+
+    Row
+    {
+        id: rowCommand
+        anchors.bottom: itWin.bottom
+        Button
+        {
+            id: btFind
+            objectName: "btFind"
+            height: itWin.height/10
+            width: itWin.width/2
+            text: "Поиск датчиков"
+            onClicked: sigFindDetect();
+        }
+        Button
+        {
+            id: btIndicator
+            objectName: "btIndicator"
+            height: itWin.height/10
+            width: itWin.width/2
+            text: "Новый индикатор"
+            onClicked: sigNewIndicator("Нет"); // Датчик для нового индикатора не выбран
         }
     }
 }
