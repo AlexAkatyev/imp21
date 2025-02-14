@@ -7,7 +7,7 @@ import QtQuick.Layouts 1.3
 Item
 {
     id: itInfo
-    height: 500
+    height: 450
     width: 400
 
     signal saveUserName();
@@ -196,24 +196,28 @@ Item
             visible: false
             Text {
                 id: headerTochka
-                x: 9*parent.width/100
-                y: 0
+                anchors.top: parent.top
+                anchors.topMargin: tbnSet.height * 1.2
+                anchors.left: parent.left
+                anchors.leftMargin: 18 * parent.width / 100
                 text: "Калибровочная\n      точка"
                 font.pixelSize: 11
             }
             Text {
-                x: parent.width/2
-                y: parent.height/80
+                anchors.left: parent.left
+                anchors.leftMargin: parent.width/2
+                anchors.bottom: headerTochka.bottom
                 text: "Отсчеты датчика"
             }
             Item { // калибровочная таблица
                 id: calibrTable
                 anchors.top: headerTochka.bottom
+                anchors.topMargin: 10
                 anchors.left: parent.left
                 anchors.leftMargin: parent.width/20
                 anchors.right: parent.right
                 anchors.rightMargin: parent.width/20
-                anchors.bottom: txtCurrent.top
+                //anchors.bottom: txtCurrent.top
                 Text {
                     id: txN10
                     anchors.left: parent.left
@@ -705,17 +709,17 @@ Item
                 id: txHC
                 anchors.left: parent.left
                 anchors.leftMargin: parent.width/20
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: parent.height/20
+                anchors.top: parent.top
+                anchors.topMargin: tbnSet.height * 1.2 + 380
                 text: "Текущие отсчеты"
             }
             Text {
                 id: txtCurrent
                 objectName: "txtCurrent"
                 anchors.left: txHC.right
-                anchors.leftMargin: parent.width/20
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: txHC.anchors.bottomMargin
+                anchors.leftMargin: 30
+                anchors.top: txHC.top
+                text: "!!!!"
                 font.pixelSize: 14
             }
         }
