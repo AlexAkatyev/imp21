@@ -137,8 +137,9 @@ Item {
                         {
                             id: imNoAddress
                             source: "icons/no_adress_added.png"
-                            height: lvAddresses.height
-                            width: lvAddresses.width
+                            anchors.centerIn: parent
+                            height: 180
+                            width: imNoAddress.height
                             visible: lvAddresses.count == 0
                         }
                     }

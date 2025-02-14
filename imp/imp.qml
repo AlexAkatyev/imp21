@@ -345,10 +345,11 @@ Item
         delegate: Item
         { // Описание представления обнаруженного датчика
             id: itDetect
-            height: 60
+            height: 80
             width: itWin.width
             Row
             {
+                anchors.verticalCenter: parent.verticalCenter
                 topPadding: 5
                 leftPadding: 10
                 spacing: 10
