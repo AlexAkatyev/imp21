@@ -17,5 +17,20 @@
         <file>ext_csv_filetype_icon_176252.png</file>
         <file>ext_xlsx_icon_176245.png</file>
         <file>Ionic-Ionicons-Stop-512.png</file>
+        <file>icons/display.png</file>
+        <file>icons/exit.png</file>
+        <file>icons/formula.png</file>
+        <file>icons/measurement.png</file>
+        <file>icons/menu.png</file>
+        <file>icons/sort.png</file>
+        <file>icons/statistics.png</file>
+        <file>icons/tolerance.png</file>
+        <file>icons/left.png</file>
+        <file>icons/right.png</file>
+        <file>icons/save.png</file>
+        <file>icons/general_settings.png</file>
+        <file>icons/workspace_settings.png</file>
+        <file>ImpStyle.qml</file>
+        <file>icons/indicator.png</file>
     </qresource>
 </RCC>

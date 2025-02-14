@@ -9,8 +9,8 @@
 #include "impabstractdetect.h"
 
 // Исходные размеры окна установок
-const int SIZE_SETTINGS_WINDOW_X = 320;
-const int SIZE_SETTINGS_WINDOW_Y = 480;
+const int SIZE_SETTINGS_WINDOW_X = 400;
+const int SIZE_SETTINGS_WINDOW_Y = 450;
 
 //Кодировщик шрифта - код для записи строк в датчик
 #define CODE_LOCALLY "Windows-1251"
@@ -30,12 +30,13 @@ EmVTSettings::EmVTSettings(ImpAbstractDetect* parent, int imageCode)
   QPoint center = QDesktopWidget().availableGeometry().center(); //получаем координаты центра экрана
   center.setX(center.x() - (SIZE_SETTINGS_WINDOW_X/2));
   center.setY(center.y() - (SIZE_SETTINGS_WINDOW_Y/2));
-  resize(SIZE_SETTINGS_WINDOW_X, SIZE_SETTINGS_WINDOW_Y);
+  setMinimumSize(SIZE_SETTINGS_WINDOW_X, SIZE_SETTINGS_WINDOW_Y);
+  setMaximumSize(SIZE_SETTINGS_WINDOW_X, SIZE_SETTINGS_WINDOW_Y);
   move(center);
 
   // Присвоение имени окну
   this->setWindowTitle("Датчик " + _detect->UserName());
-  QUrl source("qrc:emvtsettings.qml");
+  QUrl source("qrc:/emvtsettings.qml");
   _quickUi->setSource(source);
 
   QVBoxLayout* pvbx = new QVBoxLayout();

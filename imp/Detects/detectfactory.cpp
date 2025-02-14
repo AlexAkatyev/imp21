@@ -276,3 +276,17 @@ void DetectFactory::readRequest(MBTcpLocator* s, int startAddress, quint16 numbe
   }
 }
 
+
+std::vector<ImpAbstractDetect*> DetectFactory::TestDetects()
+{
+  std::vector<ImpAbstractDetect*> testDetects;
+  EmVTDetect* d1 = new EmVTDetect(QSerialPortInfo("COM50"), parent());
+  EmVTDetect* d2 = new EmVTDetect(QSerialPortInfo("COM51"), parent());
+  EmVTDetect* d3 = new EmVTDetect(QSerialPortInfo("COM52"), parent());
+  TestBepVTDetect* d4 = new TestBepVTDetect(QSerialPortInfo("COM53"), parent());
+  testDetects.push_back(d1);
+  testDetects.push_back(d2);
+  testDetects.push_back(d3);
+  testDetects.push_back(d4);
+  return testDetects;
+}

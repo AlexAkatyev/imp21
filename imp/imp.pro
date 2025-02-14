@@ -50,9 +50,11 @@ SOURCES += main.cpp\
   Logger/logger.cpp \
   UtilLib/modbus.cpp \
     UtilLib/utillib.cpp \
+    formulatree/formulanode.cpp \
         imp.cpp \
     about/about.cpp \
     impsettings.cpp \
+    impsettingsdialog.cpp \
     indicator.cpp \
     checkInputNumberIF/checkInputNumberIF.cpp \
   indsettings.cpp \
@@ -87,8 +89,10 @@ HEADERS  += imp.h \
     UtilLib/modbus.h \
     UtilLib/utillib.h \
     about/about.h \
+    formulatree/formulanode.h \
     impdef.h \
     impsettings.h \
+    impsettingsdialog.h \
     indicator.h \
     checkInputNumberIF/checkInputNumberIF.h \
     indsettings.h \

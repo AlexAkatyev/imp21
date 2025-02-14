@@ -573,3 +573,43 @@ int BepVTDetect::bufferSize(SizeBufMode mode)
   return VTDetect::bufferSize(mode);
 }
 
+
+
+TestBepVTDetect::TestBepVTDetect(QSerialPortInfo portInfo, QObject *parent)
+  : BepVTDetect(portInfo, parent)
+{
+  _userName = "test bep detect";
+  _unitMeasure = "_no_";
+  _serialNumber = 25000;
+  _typeDetect = "тестовый датчик. нет аппаратуры";
+  _dateManuf.setDate(2021, 9, 1);
+  _countPeriod = 1000;
+  _zeroInterval = 50;
+  _preSetInterval = 150;
+  _currency = 2;
+
+  int lenPoint = _currency == 2 ? LEN_POIN2 : LEN_POINT;
+  int lenCalibr = _currency == 2 ? LEN_CALIB2 : LEN_CALIBR;
+  QByteArray data;
+  int d1 = 0;
+  int dd1 = 1000;
+  int d2 = 0;
+  int dd2 = 10000;
+  for (int i = 0; i < SUM_POINT; ++i)
+  {
+    data.append((char)(d1 >> 24));
+    data.append((char)(d1 >> 16));
+    data.append((char)(d1 >> 8));
+    data.append((char)(d1));
+    data.append((char)(d2 >> 24));
+    data.append((char)(d2 >> 16));
+    data.append((char)(d2 >> 8));
+    data.append((char)(d2));
+    d1 += dd1;
+    d2 += dd2;
+  }
+  fillCalibrateDataTable(data,
+                         lenPoint,
+                         LEN_MEASSURE_POINT);
+}
+

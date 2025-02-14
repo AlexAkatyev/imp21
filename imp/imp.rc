@@ -1,4 +1,4 @@
-IDI_ICON1               ICON    DISCARDABLE     "impclient.ico"
+IDI_ICON1               ICON    DISCARDABLE     "imp_logo.ico"
 
 #include "versionNo.h"
 1 VERSIONINFO

@@ -22,6 +22,7 @@
 #include "Detects/detectfactory.h"
 #include "Logger/logger.h"
 #include "impsettings.h"
+#include "impsettingsdialog.h"
 
 // Пауза после запуска программы перед поиском датчиков
 const int PAUSE_BEFORE_FIND_DETECT = 500;
@@ -41,8 +42,8 @@ const int VERSION_PATCH = DEF_VERSION_PATCH;
 const int VERSION_TEST  = DEF_VERSION_TEST;
 
 // Исходные размеры окна
-const int SIZE_WINDOW_WIDTH = 320;
-const int SIZE_WINDOW_HEIGTH = 480;
+const int SIZE_WINDOW_WIDTH = 1155;
+const int SIZE_WINDOW_HEIGTH = 500;
 
 const char* HELP_INFO = "build\\html\\index.html";
 
@@ -107,8 +108,18 @@ Imp::Imp(QWidget* parent)
     _timerUpdaterActiveStatus->setInterval(INTERVAL_UPDATE);
     connect(_timerUpdaterActiveStatus, &QTimer::timeout, this, &Imp::changeActiveStatusToTable);
 
-    // Поиск датчиков при запуске программы после паузы, чтобы оформилось главное окно
-    TimerBeforeFound->start();
+    if (ImpSettings::Instance(this)->Value(ImpKeys::DEBUG_GUI_MODE).toBool())
+    {
+      _flagRunIndicators = false;
+      _detects = DetectFactory::Instance(this)->TestDetects();
+      reWriteDetectsToTable();
+      pitWin->setProperty("iCommand", 4);
+    }
+    else
+    {
+      // Поиск датчиков при запуске программы после паузы, чтобы оформилось главное окно
+      TimerBeforeFound->start();
+    }
 }
 
 
@@ -423,7 +434,9 @@ void Imp::showHelp()
 void Imp::showAbout()
 {
   static AboutDialog* aboutWindow = new AboutDialog(this, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
+  static ImpSettingsDialog* sDialog = new ImpSettingsDialog(this);
   aboutWindow->show();
+  sDialog->show();
 }
 
 

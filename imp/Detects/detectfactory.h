@@ -18,6 +18,7 @@ public:
   int FindingTime();
   void StartFindOfDetects();
   std::vector<ImpAbstractDetect*> VTDetects();
+  std::vector<ImpAbstractDetect*> TestDetects();
 
 signals:
   void readyOfDetects();

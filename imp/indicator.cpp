@@ -38,8 +38,8 @@ const int SIZE_INDICATOR_WINDOW_X = 374;
 const int SIZE_INDICATOR_WINDOW_Y = 458;
 //const int SIZE_INDICATOR_WINDOW_Y2 = (SIZE_INDICATOR_WINDOW_Y/2);
 
-const int MINIMAL_HEIGHT = 458;
-const int MINIMAL_WIDTH = 374;
+const int MINIMAL_HEIGHT = 500;
+const int MINIMAL_WIDTH = 400;
 
 // Периодичность считывания показаний датчиков
 const int WATCH_DOG_INTERVAL = 100;
@@ -129,6 +129,8 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   connect(_quickUi->rootObject(), SIGNAL(sigSendMeasurementMessage()), this, SLOT(sendWmAppMessage()));
   // изменения в единице измерения
   connect(_inputIndicator, SIGNAL(sigChangeTransGauge()), this, SLOT(changedTransGauge()));
+  // изменения в сложной формуле
+  connect(_quickUi->rootObject(), SIGNAL(analyseComplexFormula(QString)), this, SLOT(createComplexFormula(QString)));
 
   // получение информиции о имеющихся датчиках от главного окна
   connect(_parent, SIGNAL(sigFindDetect()), this, SLOT(setComboListDetect()));
@@ -1004,4 +1006,32 @@ float Indicator::getMeasForTransform(float mr)
 void Indicator::changedTransGauge()
 {
   _transGauge = static_cast<TransToUnit>(_inputIndicator->property("transGauge").toInt());
+}
+
+
+void Indicator::createComplexFormula(QString inputText)
+{
+  const int STATUS_FORMULA_EMPTY = 0;
+  const int STATUS_FORMULA_OK = 1;
+  const int STATUS_FORMULA_ERROR = 2;
+  int status = inputText.isEmpty() ? STATUS_FORMULA_EMPTY : STATUS_FORMULA_OK;
+
+  QString statusMessage;
+  if (status == STATUS_FORMULA_EMPTY)
+  {
+    statusMessage = "Формула не задана";
+  }
+  else
+  {
+    statusMessage = "Формула задана верно";
+  }
+
+  if (status)
+  {
+
+  }
+
+  QObject* fMessage = _quickUi->rootObject()->findChild<QObject*>("formulaMessage");
+  fMessage->setProperty("status", status);
+  fMessage->setProperty("text", QVariant(statusMessage));
 }

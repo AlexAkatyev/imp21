@@ -1,5 +1,6 @@
 ﻿import QtQuick 2.5
 import QtQuick.Controls 2.12
+import QtQuick.Controls.Material 2.12
 import QtMultimedia 5.5
 import QtQuick.Layouts 1.12
 import QtQml 2.12
@@ -59,8 +60,8 @@ Item
     }
     property real sendData: 0.0
 
-    property string highLevelFormula: "\nВерхнее предельное отклонение"
-    property string lowLevelFormula: "\nНижнее предельное отклонение"
+    property string highLevelFormula: "Верхнее предельное отклонение"
+    property string lowLevelFormula: "Нижнее предельное отклонение"
 
     property bool dopuskTest: inputIndicator.dopusk
     onDopuskTestChanged: dopusk.checked = inputIndicator.dopusk
@@ -101,6 +102,8 @@ Item
     signal sigSetZeroShift();
     // нажата клавиша Data
     signal sigReleaseData();
+    // передать текст формулы
+    signal analyseComplexFormula(string inputText);
 
     function toPixels(percentage) {
         return percentage * scaleBase / 100;
@@ -224,7 +227,7 @@ Item
 
     function getBuzzerPlay()
     {
-        return (impGauge.getColorMessText() !== "black") ? (audioEnable & inputIndicator.dopusk) : false;
+        return (impGauge.getColorMessText() !== impStyle.baseTextColor) ? (audioEnable & inputIndicator.dopusk) : false;
     }
 
     function getLongPlay()
@@ -242,8 +245,9 @@ Item
 
     function setInterval()
     {
-        intervalF.text = getInterval(tfHiLevelF.text, tfLoLevelF.text, countGroupsF.text);
+        intervalF.text = getInterval(tfHiLevelF.text, tfLoLevelF.text, countGroupsF.value);
     }
+
 
     function getSortGroup(m, hlevel, llevel, numbers)
     {
@@ -422,10 +426,18 @@ Item
             return 0;
     }
 
+
     function inRange(l, h, d)
     {
         return d >= l && d <= h;
     }
+
+
+    ImpStyle
+    {
+        id: impStyle
+    }
+
 
     // Источник входных данных
     InputIndicator
@@ -476,26 +488,54 @@ Item
     Item {
         id: itMeasure
         anchors.fill: parent
+
+        Rectangle {
+            anchors.fill: parent
+            color: impStyle.windowColor
+        }
+
+        Row {
+            height: 50
+            width: parent.width
+            anchors.bottom: parent.bottom
+        }
+
         Button {
             id: btMenu
             anchors.left: parent.left
             anchors.bottom: parent.bottom
-            text: "Меню"
+            icon.name: "menu"
+            icon.source: "icons/menu.png"
             width: parent.width / 5
+            background: Rectangle {
+                color: btMenu.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
+                radius: 5
+                width: Math.min(btMenu.width)-5
+                anchors.centerIn: parent
+            }
             onReleased:
             {
                 itMeasure.visible = false;
                 itMenu.visible = true;
                 tbMenu.currentIndex = currentIndexMenuNumber === 0 ? 1 : currentIndexMenuNumber;
             }
+            ToolTip.text: "Меню"
+            ToolTip.visible: hovered
         }
         Button {
             id: btLeft
             anchors.left: btMenu.right
             anchors.bottom: parent.bottom
             visible: itMainGauge.visible
-            text: "<"
+            icon.name: "left"
+            icon.source: "icons/left.png"
             width: btMenu.width
+            background: Rectangle {
+                color: btLeft.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
+                radius: 5
+                width: Math.min(btMenu.width)-5
+                anchors.centerIn: parent
+            }
             onReleased: inputIndicator.beforeSet = inputIndicator.beforeSet - Math.pow(10, -inputIndicator.accuracy);
         }
         Button {
@@ -504,8 +544,15 @@ Item
             anchors.bottom: parent.bottom
             visible: itMainGauge.visible
             text: setZero ? "«Ø»" : "«0»"
-            width: parent.width / 5
+            height: btMenu.height
+            width: btMenu.width
             enabled: setZero | inputIndicator.enableSetZero;
+            background: Rectangle {
+                color: btSetNull.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
+                radius: 5
+                width: Math.min(btMenu.width)-5
+                anchors.centerIn: parent
+            }
             onReleased:
             {
                 setZero = !setZero;
@@ -517,8 +564,15 @@ Item
             anchors.left: btSetNull.right
             anchors.bottom: parent.bottom
             visible: itMainGauge.visible
-            text: ">"
+            icon.name: "right"
+            icon.source: "icons/right.png"
             width: btMenu.width
+            background: Rectangle {
+                color: btRight.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
+                radius: 5
+                width: Math.min(btMenu.width)-5
+                anchors.centerIn: parent
+            }
             onReleased: inputIndicator.beforeSet = inputIndicator.beforeSet + Math.pow(10, -inputIndicator.accuracy);
         }
         Button {
@@ -526,13 +580,22 @@ Item
             anchors.left: btRight.right
             anchors.bottom: parent.bottom
             visible: itMainGauge.visible && !itMin.visible
-            text: "Data"
+            icon.name: "save"
+            icon.source: "icons/save.png"
             width: btMenu.width
+            background: Rectangle {
+                color: btData.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
+                radius: 5
+                width: Math.min(btMenu.width)-5
+                anchors.centerIn: parent
+            }
             onReleased:
             {
                 releaseData();
                 sigReleaseData();
             }
+            ToolTip.text: "Запись"
+            ToolTip.visible: hovered
         }
         Button {
             id: btStartPause
@@ -563,7 +626,7 @@ Item
                 anchors.bottomMargin: 5
                 anchors.topMargin: 5
                 radius: 4
-                color: "tomato"
+                color: impStyle.warningColor
                 opacity: stateMeasure ? 0.5 : 0
             }
         }
@@ -597,7 +660,7 @@ Item
                     text: "Количество групп"
                 }
                 Text {
-                    text: countGroupsF.text
+                    text: intervalF.text
                 }
                 // ----------------------------------
                 Text {
@@ -736,14 +799,14 @@ Item
                     anchors.right: parent.right
                     anchors.rightMargin: 4
                     text: setTextBeforeSet()
-                    color: "red"
+                    color: impStyle.warningColor
                 }
                 Text {
                     id: txNameBeforeSet
                     anchors.top: parent.top
                     anchors.right: txBeforeSet.left
                     text: "Предустанов : "
-                    color: "red"
+                    color: impStyle.warningColor
                 }
             }
             Item { // непосредственно стрелка
@@ -762,8 +825,8 @@ Item
                         id: impGauge
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
-                        width: parent.width < parent.height ? parent.width : parent.height
-                        height: parent.width < parent.height ? parent.width : parent.height
+                        width: parent.width < parent.height ? parent.width - 10 : parent.height - 10
+                        height: parent.width < parent.height ? parent.width - 10 : parent.height - 10
                     }
                     // Окраска циферблата при выходе за допуски
                     Rectangle
@@ -773,7 +836,7 @@ Item
                         width: impGauge.width
                         height: impGauge.height
                         radius: width/2
-                        color: "red"
+                        color: impStyle.warningColor
                         opacity: ((inputIndicator.mess > inputIndicator.highLimit) |
                                   (inputIndicator.mess < inputIndicator.lowLimit)) ? 0.1 : 0
                         OpacityAnimator {
@@ -867,760 +930,1023 @@ Item
     Item {
         id: itMenu
         anchors.fill: parent
+        Material.accent: impStyle.chekedColor
         visible: false
-        TabBar
-        {
-            id: tbMenu // здесь хранятся все настройки индикатора
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
 
-            Repeater
+        Rectangle {
+            anchors.fill: parent
+            color: impStyle.windowColor
+
+            TabBar
             {
-                model: ["ВЫХОД",
-                        "ИЗМЕРЕНИЕ",
-                        "ДОПУСК",
-                        "ДИСПЛЕЙ",
-                        "СОРТИРОВКА",
-                        "СТАТИСТИКА"]
-                TabButton
+                id: tbMenu // здесь хранятся все настройки индикатора
+                height: 50
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+
+                Repeater
                 {
-                    text: modelData
-                    font.pixelSize: 10
-                    ToolTip.visible: hovered
-                    ToolTip.text: text
-                }
-            }
-            onCurrentIndexChanged:
-            {
-                switch (prevTabIndex)
-                {
-                case 1: sigChangeFormula();
-                        statChart.strMessUnit = inputIndicator.messUnit;
-                        statChart.txFormula = getFormula();
-                        break;
-                case 2: sigChangeLimit();
-                        statChart.dbHiLimit = tfHiLimit.text;
-                        statChart.dbLoLimit = tfLoLimit.text;
-                        sigChangeIndication();
-                        break;
-                case 3: sigGetDivisionValue();
-                        statChart.iGaugeUnit = Math.round(tfUnitPoint.text);
-                        setTextBeforeSet();
-                        setIndicatorAccuracy();
-                        break;
-                case 4: sigChangeLimit();
-                        statChart.dbHiLimit = tfHiLimit.text;
-                        statChart.dbLoLimit = tfLoLimit.text;
-                        break;
-                case 5: receiptStatPeriod(tfStatPeriod.text);
-                        receiptSumPoint(tfSumPoint.text);
-                        statChart.blRun = false;
-                        break;
-                default:
-                }
-
-                currentIndexMenuNumber = prevTabIndex;
-                prevTabIndex = currentIndex;
-
-                if (currentIndex === 0)
-                {
-                    itMenu.visible = false;
-                    itMeasure.visible = true;
-                }
-            }
-        }
-
-        StackLayout
-        {
-            id: slTabs
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: tbMenu.top
-            currentIndex: tbMenu.currentIndex
-            Item {
-            }
-            // Страница ИЗМЕРЕНИЕ
-            Item {
-                id: itFormula
-                Column {
-                    id: colLeft
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    spacing: 5
-
-                    Row {
-                        spacing: colLeft.spacing
-                        Text { // row 1
-                            text: "\nНазвание:    "
-                        }
-                        TextField {
-                            id: tfName
-                            objectName: "tfName"
-                            text: "Индикатор ?"
-                            font.pixelSize: 12
-                            onTextEdited: sigNameEntered()
-                        }
-                    }
-
-                    Grid {
-                        rows: 4
-                        columns: 5
-                        spacing: colLeft.spacing
-                        horizontalItemAlignment: Grid.AlignHCenter
-                        verticalItemAlignment: Grid.AlignVCenter
-                        // row 1
-                        Text {
-                            text: " "
-                        }
-                        Text {
-                            text: " "
-                        }
-                        Text {
-                            text: "Формула индикатора"
-                        }
-                        Text {
-                            text: " "
-                        }
-                        Text {
-                            text: " "
-                        }
-                        // row 2
-                        TextField {
-                            id: tfFactor1
-                            objectName: "tfFactor1"
-                            text: "1"
-                            width: itFormula.width / 8
-                            horizontalAlignment: "AlignHCenter"
-                            font.pixelSize: tfName.font.pixelSize
-                            ToolTip.text: "Множитель датчика 1"
-                            ToolTip.visible: hovered
-                        }
-                        Text {
-                            text: "*"
-                        }
-                        ComboBox{
-                            id: cbListDetect1
-                            objectName: "cbListDetect1"
-                            indicator.scale: 0.6
-                            width: itFormula.width / 2
-                            font.pixelSize: tfName.font.pixelSize
-                            ToolTip.text: "Датчик 1"
-                            ToolTip.visible: hovered
-                            popup.font.pixelSize: cbListDetect1.font.pixelSize
-                            Rectangle // подсветка датчика при выходе за калибровочный диапазон
-                            {
-                                anchors.fill: parent
-                                anchors.topMargin: parent.height/8
-                                anchors.bottomMargin: parent.height/8
-                                color: "cyan"
-                                opacity: inputIndicator.blOverRange1 ? 0.3 : 0.0
-                            }
-                        }
-                        Text {
-                            text: "+"
-                        }
-                        TextField {
-                            id: tfIncert1
-                            objectName: "tfIncert1"
-                            text: "0"
-                            width: 2 * tfFactor1.width
-                            horizontalAlignment: "AlignHCenter"
-                            font.pixelSize: tfName.font.pixelSize
-                            ToolTip.text: "Предустанов датчика 1"
-                            ToolTip.visible: hovered
-                        }
-                        // row 3
-                        Text {
-                            text: " "
-                        }
-                        Text {
-                            text: " "
-                        }
-                        Text {
-                            text: "+"
-                        }
-                        Text {
-                            text: " "
-                        }
-                        Text {
-                            text: " "
-                        }
-                        // row 4
-                        TextField {
-                            id: tfFactor2
-                            objectName: "tfFactor2"
-                            text: "1"
-                            width: tfFactor1.width
-                            horizontalAlignment: "AlignHCenter"
-                            font.pixelSize: tfName.font.pixelSize
-                            ToolTip.text: "Множитель датчика 2"
-                            ToolTip.visible: hovered
-                        }
-                        Text {
-                            text: "*"
-                        }
-                        ComboBox{
-                            id: cbListDetect2
-                            objectName: "cbListDetect2"
-                            indicator.scale: 0.6
-                            font.pixelSize: tfName.font.pixelSize
-                            width: cbListDetect1.width
-                            ToolTip.text: "Датчик 2"
-                            ToolTip.visible: hovered
-                            popup.font.pixelSize: cbListDetect2.font.pixelSize
-                            Rectangle // подсветка датчика при выходе за калибровочный диапазон
-                            {
-                                anchors.fill: parent
-                                anchors.topMargin: parent.height/8
-                                anchors.bottomMargin: parent.height/8
-                                color: "cyan"
-                                opacity: inputIndicator.blOverRange2 ? 0.3 : 0.0
-                            }
-                        }
-                        Text {
-                            text: "+"
-                        }
-                        TextField {
-                            id: tfIncert2
-                            objectName: "tfIncert2"
-                            text: "0"
-                            width: tfIncert1.width
-                            horizontalAlignment: "AlignHCenter"
-                            font.pixelSize: tfName.font.pixelSize
-                            ToolTip.text: "Предустанов датчика 2"
-                            ToolTip.visible: hovered
-                        }
-                    }
-
-                    Grid {
-                        rows: 5
-                        columns: 2
-                        spacing: 0
-                        Text { // row 1
-                            text: "\nДелитель:"
-                        }
-                        TextField {
-                            id: tfDivider
-                            objectName: "tfDivider"
-                            text: "1"
-                            font.pixelSize: tfName.font.pixelSize
-                            onTextEdited: sigDividerEntered()
-                        }
-                        Text { // row 2
-                            text: "\nУсреднение, мс"
-                        }
-                        TextField {
-                            id: tfPeriod
-                            objectName: "tfPeriod"
-                            font.pixelSize: tfName.font.pixelSize
-                            validator: IntValidator{bottom: 0; top: 100000;}
-                            text: "0"
-                            inputMethodHints: Qt.ImhDigitsOnly
-                            onTextChanged:
-                            {
-                                if (text > 100000)
-                                    text = 100000;
-                            }
-                        }
-                        Text { // row 3
-                            text: "\nРежим max - min:"
-                        }
-                        CheckBox {
-                            id: cbMode
-                            checked: false
-                            onCheckedChanged:
-                            {
-                                if (checked)
-                                {
-                                    blockRBChangeMode = true;
-                                    deviationMode = true;
-                                }
-                                else
-                                {
-                                    blockRBChangeMode = true;
-                                    deviationMode = false;
-                                }
-                            }
-                        }
-                        CheckBox { // row 4
-                            id: automaticSave
-                            objectName: "automaticSave"
-                            text: "Автоматическое\nсохранение, мин"
-                            checked: false
-                            font.pixelSize: tfName.font.pixelSize
-                            onReleased: {
-                                if (checked) {
-                                    timerSave.start();
-                                    btSaveOption.text = "Выбрать файл выгрузки"
-                                }
-                                else {
-                                    timerSave.stop();
-                                    btSaveOption.text = "  Сохранить измерения  "
-                                }
-                            }
-                        }
-                        TextField {
-                            id: tfAutoSave
-                            objectName: "tfAutoSave"
-                            font.pixelSize: tfName.font.pixelSize
-                            validator: IntValidator{bottom: 1; top: 999;}
-                            text: "10"
-                            inputMethodHints: Qt.ImhDigitsOnly
-                            onTextChanged:
-                            {
-                                if (text < 1)
-                                    text = 1;
-                                timerSave.interval = text * 60 * 1000;
-                            }
-                            enabled: automaticSave.checked
-                        }
-                        Button // row 5
+                    model: [{text:"ИНДИКАТОР", image:"./icons/indicator.png"},
+                            {text:"ОБЩИЕ НАСТРОЙКИ", image:"./icons/general_settings.png"},
+                            {text:"ФОРМУЛА", image:"./icons/formula.png"},
+                            {text:"ДОПУСК", image:"./icons/tolerance.png"},
+                            {text:"ДИСПЛЕЙ", image:"./icons/display.png"},
+                            {text:"СОРТИРОВКА", image:"./icons/sort.png"},
+                            {text:"СТАТИСТИКА", image:"./icons/statistics.png"}]
+                    TabButton
+                    {
+                        id: tbInd
+                        height: 50
+                        anchors.bottom: parent.bottom
+                        Image
                         {
-                            id: btSaveOption
-                            text: automaticSave.checked ? "Выбрать файл выгрузки" : "  Сохранить измерения  "
-                            font.pixelSize: tfName.font.pixelSize
-                            enabled: automaticSave.checked || lmMeasData.count > 0
-                            onReleased: {
-                                if (automaticSave.checked)
-                                    sigPeekFile();
-                                else
-                                    saveMeasData();
-                            }
+                            anchors.centerIn: parent
+                            height: 30
+                            width: 30
+                            source: modelData.image
                         }
+                        background: Rectangle {
+                            height: parent.height
+                            width: parent.width
+                            color: tbInd.checked ? impStyle.windowColor : impStyle.unChekedTabButtonColor
+                        }
+                        ToolTip.visible: hovered
+                        ToolTip.text: modelData.text
+
                     }
                 }
-
-            }
-            // Страница кнопки ДОПУСК
-            Item {
-                id: itDopusk
-                Column {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    CheckBox {
-                        id: dopusk
-                        text: "Контроль допуска"
-                        checked: inputIndicator.dopusk
-                        onCheckedChanged: inputIndicator.dopusk = checked
+                onCurrentIndexChanged:
+                {
+                    switch (prevTabIndex)
+                    {
+                    case 1:
+                    case 2: sigChangeFormula();
+                            statChart.strMessUnit = inputIndicator.messUnit;
+                            statChart.txFormula = getFormula();
+                            break;
+                    case 3: sigChangeLimit();
+                            statChart.dbHiLimit = tfHiLimit.text;
+                            statChart.dbLoLimit = tfLoLimit.text;
+                            sigChangeIndication();
+                            break;
+                    case 4: sigGetDivisionValue();
+                            statChart.iGaugeUnit = Math.round(tfUnitPoint.text);
+                            setTextBeforeSet();
+                            setIndicatorAccuracy();
+                            break;
+                    case 5: sigChangeLimit();
+                            statChart.dbHiLimit = tfHiLimit.text;
+                            statChart.dbLoLimit = tfLoLimit.text;
+                            break;
+                    case 6: receiptStatPeriod(tfStatPeriod.text);
+                            receiptSumPoint(tfSumPoint.text);
+                            statChart.blRun = false;
+                            break;
+                    default:
                     }
-                    Grid {
-                        rows: 4
-                        columns: 2
-                        spacing: 2
-                        enabled: inputIndicator.dopusk
-                        Text {
-                            text: highLevelFormula + "   "
-                        }
-                        TextField {
-                            id: tfHiLimit
-                            objectName: "tfHiLimit"
-                            width: itDopusk.width/3
-                            font.pixelSize: 12
-                            onTextChanged:
-                            {
-                                tfHiLevelF.text = text;
-                                inputIndicator.highLimit = text;
-                                setInterval();
+
+                    currentIndexMenuNumber = prevTabIndex;
+                    prevTabIndex = currentIndex;
+
+                    if (currentIndex === 0)
+                    {
+                        itMenu.visible = false;
+                        itMeasure.visible = true;
+                    }
+                }
+            }
+
+            StackLayout
+            {
+                id: slTabs
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: tbMenu.top
+                currentIndex: tbMenu.currentIndex
+                Item {
+                }
+                // Страница ОБЩИЕ НАСТРОЙКИ
+                Item {
+                    id: itFormula
+
+
+                    Column {
+                        id: colLeft
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        spacing: 5
+
+                        Grid {
+                            rows: 6
+                            columns: 2
+                            spacing: 10
+                            verticalItemAlignment: Grid.AlignVCenter
+
+                            Text { // row 0
+                                text: "Название:"
+                                font.pixelSize: tfName.font.pixelSize
                             }
-                        }
-                        Text {
-                            text: lowLevelFormula + "   "
-                        }
-                        TextField {
-                            id: tfLoLimit
-                            objectName: "tfLoLimit"
-                            width: tfHiLimit.width
-                            font.pixelSize: tfHiLimit.font.pixelSize
-                            onTextChanged:
-                            {
-                                tfLoLevelF.text = text;
-                                inputIndicator.lowLimit = text;
-                                setInterval();
+                            TextField {
+                                id: tfName
+                                objectName: "tfName"
+                                text: "Индикатор ?"
+                                font.pixelSize: 15
+                                padding: 10
+                                onTextEdited: sigNameEntered()
+                                width: 120
                             }
-                        }
-                        Text {
-                            text: "\nПриемочная граница    "
-                        }
-                        TextField {
-                            id: tfPriemka
-                            objectName: "tfPriemka"
-                            text: inputIndicator.priemka
-                            width: tfHiLimit.width
-                            font.pixelSize: tfHiLimit.font.pixelSize
-                        }
-                        Text {
-                            text: "\nЗвуковое оповещение   "
-                        }
-                        ComboBox {
-                            model: ["Выключено", "Короткое", "Длинное"]
-                            width: tfHiLimit.width
-                            onCurrentIndexChanged:
-                            {
-                                switch (currentIndex)
+                            Text { // row 1
+                                text: "Делитель:"
+                                font.pixelSize: tfName.font.pixelSize
+                            }
+                            TextField {
+                                id: tfDivider
+                                objectName: "tfDivider"
+                                text: "1"
+                                font.pixelSize: tfName.font.pixelSize
+                                onTextEdited: sigDividerEntered()
+                                padding: 10
+                                width: tfName.width
+                            }
+                            Text { // row 2
+                                text: "Усреднение, мс:"
+                                font.pixelSize: tfName.font.pixelSize
+                            }
+                            TextField {
+                                id: tfPeriod
+                                objectName: "tfPeriod"
+                                font.pixelSize: tfName.font.pixelSize
+                                validator: IntValidator{bottom: 0; top: 100000;}
+                                text: "0"
+                                inputMethodHints: Qt.ImhDigitsOnly
+                                onTextChanged:
                                 {
-                                case 0:
-                                    audioEnable = false;
-                                    break;
-                                case 1:
-                                    longPlay = false;
-                                    audioEnable = true;
-                                    break;
-                                case 2:
-                                    longPlay = true;
-                                    audioEnable = true;
+                                    if (text > 100000)
+                                        text = 100000;
+                                }
+                                padding: 10
+                                width: tfName.width
+                            }
+                            Text { // row 3
+                                text: "Режим max - min:"
+                                font.pixelSize: tfName.font.pixelSize
+                            }
+                            CheckBox {
+                                id: cbMode
+                                padding: 0
+                                checked: false
+                                onCheckedChanged:
+                                {
+                                    if (checked)
+                                    {
+                                        blockRBChangeMode = true;
+                                        deviationMode = true;
+                                    }
+                                    else
+                                    {
+                                        blockRBChangeMode = true;
+                                        deviationMode = false;
+                                    }
                                 }
                             }
 
+
+                        }
+
+                        Text {
+                            text: "Автоматическое сохранение"
+                            font.pixelSize: tfName.font.pixelSize
+                        }
+
+                        GroupBox {
+
+                            Grid {
+                                rows: 2
+                                columns: 2
+                                spacing: 10
+
+                                verticalItemAlignment: Grid.AlignVCenter
+
+                                Text { // row 4
+                                    text: "Включить"
+                                    font.pixelSize: tfName.font.pixelSize
+                                }
+                                CheckBox {
+                                    id: automaticSave
+                                    objectName: "automaticSave"
+                                    padding: 0
+                                    checked: false
+                                    font.pixelSize: tfName.font.pixelSize
+                                    onReleased: {
+                                        if (checked) {
+                                            timerSave.start();
+                                            //btSaveOption.text = "Выбрать файл выгрузки"
+                                        }
+                                        else {
+                                            timerSave.stop();
+                                            //btSaveOption.text = "  Сохранить измерения  "
+                                        }
+                                    }
+                                }
+
+                                Text { // row 4
+                                    text: "Частота сохранения, мин"
+                                    font.pixelSize: tfName.font.pixelSize
+                                }
+                                TextField {
+                                    id: tfAutoSave
+                                    objectName: "tfAutoSave"
+                                    text: "10"
+                                    padding: 10
+                                    font.pixelSize: tfName.font.pixelSize
+                                    validator: IntValidator{bottom: 1; top: 999;}
+                                    inputMethodHints: Qt.ImhDigitsOnly
+                                    onTextChanged:
+                                    {
+                                        if (text < 1)
+                                            text = 1;
+                                        timerSave.interval = text * 60 * 1000;
+                                    }
+                                    enabled: automaticSave.checked
+                                    width: tfName.width
+                                }
+                                /*Button // row 5
+                                {
+                                    id: btSaveOption
+                                    text: automaticSave.checked ? "Выбрать файл выгрузки" : "  Сохранить измерения  "
+                                    font.pixelSize: tfName.font.pixelSize
+                                    enabled: automaticSave.checked || lmMeasData.count > 0
+                                    onReleased: {
+                                        if (automaticSave.checked)
+                                            sigPeekFile();
+                                        else
+                                            saveMeasData();
+                                    }
+                                }*/
+                            }
+
+                        }
+                    }
+
+                }
+                // Страница ФОРМУЛА
+                Item
+                {
+                    id: formula
+                    Column
+                    {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        spacing: 30
+                        CheckBox
+                        {
+                            id: cbComplexFormula
+                            text: "Использовать сложную формулу"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            font.pixelSize: tfName.font.pixelSize
+                        }
+
+                        Grid {
+                            id: easyFormula
+                            rows: 4
+                            columns: 5
+                            spacing: colLeft.spacing
+                            horizontalItemAlignment: Grid.AlignHCenter
+                            verticalItemAlignment: Grid.AlignVCenter
+                            visible: !cbComplexFormula.checked
+                            height: 300
+                            // row 1
+                            Text {
+                                text: " "
+                            }
+                            Text {
+                                text: " "
+                            }
+                            Text {
+                                text: "Формула индикатора"
+                                font.pixelSize: tfName.font.pixelSize
+                            }
+                            Text {
+                                text: " "
+                            }
+                            Text {
+                                text: " "
+                            }
+                            // row 2
+                            TextField {
+                                id: tfFactor1
+                                objectName: "tfFactor1"
+                                text: "1"
+                                width: 40
+                                horizontalAlignment: "AlignHCenter"
+                                font.pixelSize: tfName.font.pixelSize
+                                ToolTip.text: "Множитель датчика 1"
+                                ToolTip.visible: hovered
+                            }
+                            Text {
+                                text: "*"
+                            }
+                            ComboBox{
+                                id: cbListDetect1
+                                objectName: "cbListDetect1"
+                                indicator.scale: 0.6
+                                height: 50
+                                width: 200
+                                background: Rectangle {
+                                    color: cbListDetect1.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                    border.color: impStyle.borderColor
+                                }
+                                font.pixelSize: tfName.font.pixelSize
+                                ToolTip.text: "Датчик 1"
+                                ToolTip.visible: hovered
+                                popup.font.pixelSize: cbListDetect1.font.pixelSize
+                                Rectangle // подсветка датчика при выходе за калибровочный диапазон
+                                {
+                                    anchors.fill: parent
+                                    anchors.topMargin: parent.height/8
+                                    anchors.bottomMargin: parent.height/8
+                                    color: "cyan"
+                                    opacity: inputIndicator.blOverRange1 ? 0.3 : 0.0
+                                }
+                            }
+                            Text {
+                                text: "+"
+                            }
+                            TextField {
+                                id: tfIncert1
+                                objectName: "tfIncert1"
+                                text: "0"
+                                width: 100
+                                horizontalAlignment: "AlignHCenter"
+                                font.pixelSize: tfName.font.pixelSize
+                                ToolTip.text: "Предустанов датчика 1"
+                                ToolTip.visible: hovered
+                            }
+                            // row 3
+                            Text {
+                                text: " "
+                            }
+                            Text {
+                                text: " "
+                            }
+                            Text {
+                                text: "+"
+                            }
+                            Text {
+                                text: " "
+                            }
+                            Text {
+                                text: " "
+                            }
+                            // row 4
+                            TextField {
+                                id: tfFactor2
+                                objectName: "tfFactor2"
+                                text: "1"
+                                width: 40
+                                horizontalAlignment: "AlignHCenter"
+                                font.pixelSize: tfName.font.pixelSize
+                                ToolTip.text: "Множитель датчика 2"
+                                ToolTip.visible: hovered
+                            }
+                            Text {
+                                text: "*"
+                            }
+                            ComboBox{
+                                id: cbListDetect2
+                                objectName: "cbListDetect2"
+                                indicator.scale: 0.6
+                                font.pixelSize: tfName.font.pixelSize
+                                height: 50
+                                width: cbListDetect1.width
+                                background: Rectangle {
+                                    color: cbListDetect2.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                    border.color: impStyle.borderColor
+                                }
+                                ToolTip.text: "Датчик 2"
+                                ToolTip.visible: hovered
+                                popup.font.pixelSize: cbListDetect2.font.pixelSize
+                                Rectangle // подсветка датчика при выходе за калибровочный диапазон
+                                {
+                                    anchors.fill: parent
+                                    anchors.topMargin: parent.height/8
+                                    anchors.bottomMargin: parent.height/8
+                                    color: "cyan"
+                                    opacity: inputIndicator.blOverRange2 ? 0.3 : 0.0
+                                }
+                            }
+                            Text {
+                                text: "+"
+                            }
+                            TextField {
+                                id: tfIncert2
+                                objectName: "tfIncert2"
+                                text: "0"
+                                width: tfIncert1.width
+                                horizontalAlignment: "AlignHCenter"
+                                font.pixelSize: tfName.font.pixelSize
+                                ToolTip.text: "Предустанов датчика 2"
+                                ToolTip.visible: hovered
+                            }
+                        }
+                        Rectangle
+                        {
+                            id: complexFormulaItem
+                            height: easyFormula.height * 4 / 5
+                            width: formula.width * 8 / 10
+                            visible: cbComplexFormula.checked
+                            border.color: impStyle.borderColor
+                            Flickable
+                            {
+                                id: flItem
+                                anchors.fill: parent
+                                anchors.bottomMargin: 3
+                                anchors.leftMargin: anchors.bottomMargin
+                                anchors.topMargin: anchors.bottomMargin
+                                anchors.rightMargin: anchors.bottomMargin
+                                visible: parent.visible
+                                clip: true
+                                flickableDirection: Flickable.VerticalFlick
+                                ScrollBar.vertical: ScrollBar {}
+                                ScrollBar.horizontal: null
+                                TextArea.flickable: TextArea
+                                {
+                                    id: complexFormula
+                                    height: flItem.height
+                                    width: flItem.width
+                                    visible: parent.visible
+                                    horizontalAlignment: Text.AlignLeft
+                                    wrapMode: TextArea.WrapAtWordBoundaryOrAnywhere
+                                    onTextChanged:
+                                    {
+                                        complexFormula.cursorPosition = complexFormula.length;
+                                        analyseComplexFormula(text);
+                                    }
+                                }
+                            }
+                        }
+                        Text
+                        {
+                            id: formulaMessage
+                            objectName: "formulaMessage"
+                            visible: complexFormulaItem.visible
+                            text: "Формула не задана"
+                            font.pixelSize: tfName.font.pixelSize
+                            height: easyFormula.height - complexFormulaItem.height
+                            width: complexFormulaItem.width
+                            color: impStyle.warningColor
+                            property int status: 0
+                            onStatusChanged:
+                            {
+                                if (status === 1)
+                                {
+                                    text = "Формула задана верно";
+                                    color = impStyle.baseTextColor
+                                }
+                                else
+                                {
+                                    text = "Формула задана не верно";
+                                    color = impStyle.warningColor
+                                }
+                            }
+                        }
+
+                    }
+                }
+                // Страница кнопки ДОПУСК
+                Item {
+                    id: itDopusk
+                    Column {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        CheckBox {
+                            id: dopusk
+                            padding: 0
+                            text: "Контроль допуска"
+                            font.pixelSize: tfName.font.pixelSize
+                            checked: inputIndicator.dopusk
+                            onCheckedChanged: inputIndicator.dopusk = checked
+                        }
+                        Grid {
+                            rows: 4
+                            columns: 2
+                            spacing: 2
+                            enabled: inputIndicator.dopusk
+                            verticalItemAlignment: Grid.AlignVCenter
+                            Text {
+                                text: highLevelFormula + "   "
+                                font.pixelSize: tfName.font.pixelSize
+                            }
+                            TextField {
+                                id: tfHiLimit
+                                objectName: "tfHiLimit"
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
+                                onTextChanged:
+                                {
+                                    tfHiLevelF.text = text;
+                                    inputIndicator.highLimit = text;
+                                    setInterval();
+                                }
+                            }
+                            Text {
+                                text: lowLevelFormula + "   "
+                                font.pixelSize: tfName.font.pixelSize
+                            }
+                            TextField {
+                                id: tfLoLimit
+                                objectName: "tfLoLimit"
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
+                                onTextChanged:
+                                {
+                                    tfLoLevelF.text = text;
+                                    inputIndicator.lowLimit = text;
+                                    setInterval();
+                                }
+                            }
+                            Text {
+                                text: "Приемочная граница    "
+                                font.pixelSize: tfName.font.pixelSize
+                            }
+                            TextField {
+                                id: tfPriemka
+                                objectName: "tfPriemka"
+                                text: inputIndicator.priemka
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
+                            }
+                            Text {
+                                text: "Звуковое оповещение   "
+                                font.pixelSize: tfName.font.pixelSize
+                            }
+                            ComboBox {
+                                id: cbSound
+                                model: ["Выкл.", "Короткое", "Длинное"]
+                                font.pixelSize: tfName.font.pixelSize
+                                height: 50
+                                width: tfName.width
+                                background: Rectangle {
+                                    color: cbSound.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                    border.color: impStyle.borderColor
+                                }
+                                onCurrentIndexChanged:
+                                {
+                                    switch (currentIndex)
+                                    {
+                                    case 0:
+                                        audioEnable = false;
+                                        break;
+                                    case 1:
+                                        longPlay = false;
+                                        audioEnable = true;
+                                        break;
+                                    case 2:
+                                        longPlay = true;
+                                        audioEnable = true;
+                                    }
+                                }
+
+                            }
                         }
                     }
                 }
-            }
-            // Страница кнопки ДИСПЛЕЙ
-            Item {
-                id: itGauge
-                Column{
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                    Grid {
-                        columns: 2
-                        rows: 3
-                        spacing: 5
+                // Страница кнопки ДИСПЛЕЙ
+                Item {
+                    id: itGauge
+                    Column{
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        spacing: 20
+
                         CheckBox {
                             id: cbStrelka
-                            text: "Цифровое и стрелочное\nотображение показаний"
-                            font.pixelSize: 12
+                            text: "Цифровое и стрелочное отображение показаний"
+                            font.pixelSize: tfName.font.pixelSize
+                            padding: 0
                             checked: true
                             onCheckedChanged: cbZifra.checked = !checked
                         }
                         CheckBox {
                             id: cbZifra
-                            text: "Цифровое\nотображение показаний"
-                            font.pixelSize: cbStrelka.font.pixelSize
+                            text: "Цифровое отображение показаний"
+                            font.pixelSize: tfName.font.pixelSize
+                            padding: 0
+                            topPadding: -15
                             checked: false
                             onCheckedChanged: cbStrelka.checked = !checked
                         }
-                        Text {
-                            text: "\n  Цена деления"
-                        }
-                        TextField{
-                            id: tfUnitPoint
-                            objectName: "tfUnitPoint"
-                            width: 4 * itGauge.width / 10
-                            font.pixelSize: 14
-                            inputMethodHints: Qt.ImhDigitsOnly
-                        }
-                        Text {
-                            text: "\n  Дискретность"
-                        }
-                        ComboBox {
-                            id: tfNumberCharPoint
-                            objectName: "tfNumberCharPoint"
-                            model: getNumberCharPointModel("mkm")
-                            currentIndex: 1
-                            width: tfUnitPoint.width
-                            font.pixelSize: 14
-                        }
-                    }
-                    GroupBox {
-                        title: "Единицы измерения"
-                        RowLayout {
-                            anchors.fill: parent
-                            spacing: 0;
-                            onVisibleChanged:
-                            {
-                                if (!visible)
-                                    return;
-                                switch (inputIndicator.transGauge){
-                                case 1: tgrb1.checked = true; // mm
-                                    tfNumberCharPoint.model = getNumberCharPointModel("mm");
-                                    break;
-                                case 2: tgrb2.checked = true; // inch
-                                    tfNumberCharPoint.model = getNumberCharPointModel("inch");
-                                    break;
-                                case 3: tgrb3.checked = true; // angle seconds
-                                    tfNumberCharPoint.model = getNumberCharPointModel("angle seconds");
-                                    break;
-                                default: tgrb0.checked = true; //mkm
-                                    tfNumberCharPoint.model = getNumberCharPointModel("mkm");
-                                    break;
-                                }
-                            }
 
-                            RadioButton {
-                                id: tgrb0
-                                text: "мкм";
-                                onCheckedChanged:
-                                {
-                                    inputIndicator.transGauge = 0;
-                                    tfNumberCharPoint.model = getNumberCharPointModel("mkm");
-                                    tfNumberCharPoint.currentIndex = currentIndexFromAccuracy();
-                                }
-                            }
-                            RadioButton {
-                                id: tgrb1
-                                text: "мм"
-                                onCheckedChanged:
-                                {
-                                    inputIndicator.transGauge = 1;
-                                    tfNumberCharPoint.model = getNumberCharPointModel("mm");
-                                    tfNumberCharPoint.currentIndex = currentIndexFromAccuracy();
-                                }
-                            }
-                            RadioButton {
-                                id: tgrb2
-                                text: "дюймы"
-                                onCheckedChanged:
-                                {
-                                    inputIndicator.transGauge = 2;
-                                    tfNumberCharPoint.model = getNumberCharPointModel("inch");
-                                    tfNumberCharPoint.currentIndex = currentIndexFromAccuracy();
-                                }
-                            }
-                            RadioButton {
-                                id: tgrb3
-                                text: "угл. секунды"
-                                onCheckedChanged:
-                                {
-                                    inputIndicator.transGauge = 3;
-                                    tfNumberCharPoint.model = getNumberCharPointModel("angle seconds");
-                                    tfNumberCharPoint.currentIndex = currentIndexFromAccuracy();
-                                }
-                            }
-                        }
-                    }
-                    Button {
-                        id: btSetDefault
-                        text: "Установить настройки по умолчанию"
-                        onReleased: {
-                            tfUnitPoint.text = 5;
-                            tgrb0.checked = true; // mkm
-                            tfNumberCharPoint.currentIndex = 1;
-                            tfPriemka.text = 0;
-                            inputIndicator.priemka = 0;
-                            cbSortFormula.checked = false; // no sort
-                            cbStatistic.checked = false; // no grafic
-                            cbMode.checked = false; // no max-min
-                            deviationMode = false;
-                            statChart.blRun = false;
-                            inputIndicator.beforeSet = 0;
-                        }
-                    }
-                }
+                        Grid {
+                            columns: 2
+                            rows: 2
+                            spacing: 20
+                            verticalItemAlignment: Grid.AlignVCenter
 
-            }
-            // Страница кнопки СОРТИРОВКА
-            Item {
-                id: itSort
-                Grid {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                    columns: 2
-                    rows: 5
-                    spacing: 15
-                    // row 1
-                    Text {
-                        text: "\nРежим сортировки"
-                    }
-                    CheckBox {
-                        id: cbSortFormula
-                        objectName: "cbSortFormula"
-                        checked: false
-                        onCheckedChanged: {
-                            if (checked)
-                                cbStatistic.checked = false;
+                            Text {
+                                text: "Цена деления"
+                                font.pixelSize: tfName.font.pixelSize
+                            }
+                            TextField{
+                                id: tfUnitPoint
+                                objectName: "tfUnitPoint"
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
+                                inputMethodHints: Qt.ImhDigitsOnly
+                            }
+                            Text {
+                                text: "Дискретность"
+                                font.pixelSize: tfName.font.pixelSize
+                            }
+                            ComboBox {
+                                id: tfNumberCharPoint
+                                objectName: "tfNumberCharPoint"
+                                model: getNumberCharPointModel("mkm")
+                                currentIndex: 1
+                                font.pixelSize: tfName.font.pixelSize
+                                height: 50
+                                width: tfName.width
+                                background: Rectangle {
+                                    color: tfNumberCharPoint.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                    border.color: impStyle.borderColor
+                                }
+                            }
                         }
-                    }
-                    // row 2
-                    Text {
-                        text: highLevelFormula
-                    }
-                    TextField {
-                        id: tfHiLevelF
-                        objectName: "tfHiLevelF"
-                        text: tfHiLimit.text
-                        onTextChanged: {
-                            tfHiLimit.text = text;
-                            inputIndicator.highLimit = text;
-                            setInterval();
+
+                        Text {
+                            text: "Единицы измерения"
+                            font.pixelSize: tfName.font.pixelSize
                         }
-                    }
-                    // row 3
-                    Text {
-                        text: lowLevelFormula
-                    }
-                    TextField {
-                        id: tfLoLevelF
-                        objectName: "tfLoLevelF"
-                        text: tfLoLimit.text
-                        onTextChanged: {
-                            tfLoLimit.text = text;
-                            inputIndicator.lowLimit = text;
-                            setInterval();
+
+                        GroupBox {
+                            font.pixelSize: tfName.font.pixelSize
+                            RowLayout {
+                                anchors.fill: parent
+                                spacing: 0;
+                                onVisibleChanged:
+                                {
+                                    if (!visible)
+                                        return;
+                                    switch (inputIndicator.transGauge){
+                                    case 1: tgrb1.checked = true; // mm
+                                        tfNumberCharPoint.model = getNumberCharPointModel("mm");
+                                        break;
+                                    case 2: tgrb2.checked = true; // inch
+                                        tfNumberCharPoint.model = getNumberCharPointModel("inch");
+                                        break;
+                                    case 3: tgrb3.checked = true; // angle seconds
+                                        tfNumberCharPoint.model = getNumberCharPointModel("angle seconds");
+                                        break;
+                                    default: tgrb0.checked = true; //mkm
+                                        tfNumberCharPoint.model = getNumberCharPointModel("mkm");
+                                        break;
+                                    }
+                                }
+
+                                RadioButton {
+                                    id: tgrb0
+                                    text: "мкм";
+                                    font.pixelSize: tfName.font.pixelSize
+                                    onCheckedChanged:
+                                    {
+                                        inputIndicator.transGauge = 0;
+                                        tfNumberCharPoint.model = getNumberCharPointModel("mkm");
+                                        tfNumberCharPoint.currentIndex = currentIndexFromAccuracy();
+                                    }
+                                }
+                                RadioButton {
+                                    id: tgrb1
+                                    text: "мм"
+                                    font.pixelSize: tfName.font.pixelSize
+                                    onCheckedChanged:
+                                    {
+                                        inputIndicator.transGauge = 1;
+                                        tfNumberCharPoint.model = getNumberCharPointModel("mm");
+                                        tfNumberCharPoint.currentIndex = currentIndexFromAccuracy();
+                                    }
+                                }
+                                RadioButton {
+                                    id: tgrb2
+                                    text: "дюймы"
+                                    font.pixelSize: tfName.font.pixelSize
+                                    onCheckedChanged:
+                                    {
+                                        inputIndicator.transGauge = 2;
+                                        tfNumberCharPoint.model = getNumberCharPointModel("inch");
+                                        tfNumberCharPoint.currentIndex = currentIndexFromAccuracy();
+                                    }
+                                }
+                                RadioButton {
+                                    id: tgrb3
+                                    text: "угл. секунды"
+                                    font.pixelSize: tfName.font.pixelSize
+                                    onCheckedChanged:
+                                    {
+                                        inputIndicator.transGauge = 3;
+                                        tfNumberCharPoint.model = getNumberCharPointModel("angle seconds");
+                                        tfNumberCharPoint.currentIndex = currentIndexFromAccuracy();
+                                    }
+                                }
+                            }
                         }
-                    }
-                    // row 4
-                    Text {
-                        text: "\nКоличество групп"
-                    }
-                    TextField {
-                        id: countGroupsF
-                        objectName: "countGroupsF"
-                        inputMethodHints: Qt.ImhDigitsOnly
-                        onTextChanged: setInterval()
-                    }
-                    // row 5
-                    Text {
-                        text: "\nИнтервал"
-                    }
-                    Row {
                         Button {
-                            id: btLeftInterval
-                            text: "<"
-                            scale: 0.7
+                            id: btSetDefault
+                            text: "Сбросить настройки"
+                            font.capitalization: Font.MixedCase
+                            background: Rectangle {
+                                color: btSetDefault.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                border.color: impStyle.borderColor
+                            }
                             onReleased: {
-                                var groups = countGroupsF.text;
-                                if (groups > 1)
-                                    groups = groups - 1;
-                                countGroupsF.text = groups;
+                                tfUnitPoint.text = 5;
+                                tgrb0.checked = true; // mkm
+                                tfNumberCharPoint.currentIndex = 1;
+                                tfPriemka.text = 0;
+                                inputIndicator.priemka = 0;
+                                cbSortFormula.checked = false; // no sort
+                                cbStatistic.checked = false; // no grafic
+                                cbMode.checked = false; // no max-min
+                                deviationMode = false;
+                                statChart.blRun = false;
+                                inputIndicator.beforeSet = 0;
                             }
                         }
+                    }
+
+                }
+                // Страница кнопки СОРТИРОВКА
+                Item {
+                    id: itSort
+                    Grid {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        columns: 2
+                        rows: 5
+                        spacing: 15
+                        verticalItemAlignment: Grid.AlignVCenter
+                        // row 1
                         Text {
+                            text: "Режим сортировки"
+                            font.pixelSize: tfName.font.pixelSize
+                        }
+                        CheckBox {
+                            id: cbSortFormula
+                            objectName: "cbSortFormula"
+                            padding: 5
+                            checked: false
+                            onCheckedChanged: {
+                                if (checked)
+                                    cbStatistic.checked = false;
+                            }
+                        }
+                        // row 2
+                        Text {
+                            text: highLevelFormula
+                            font.pixelSize: tfName.font.pixelSize
+                        }
+                        TextField {
+                            id: tfHiLevelF
+                            objectName: "tfHiLevelF"
+                            text: tfHiLimit.text
+                            font.pixelSize: tfName.font.pixelSize
+                            width: tfName.width
+                            padding: 10
+                            onTextChanged: {
+                                tfHiLimit.text = text;
+                                inputIndicator.highLimit = text;
+                                setInterval();
+                            }
+                        }
+                        // row 3
+                        Text {
+                            text: lowLevelFormula
+                            font.pixelSize: tfName.font.pixelSize
+
+                        }
+                        TextField {
+                            id: tfLoLevelF
+                            objectName: "tfLoLevelF"
+                            text: tfLoLimit.text
+                            font.pixelSize: tfName.font.pixelSize
+                            width: tfName.width
+                            padding: 10
+                            onTextChanged: {
+                                tfLoLimit.text = text;
+                                inputIndicator.lowLimit = text;
+                                setInterval();
+                            }
+                        }
+                        // row 4
+                        Text {
+                            text: "Количество групп"
+                            font.pixelSize: tfName.font.pixelSize
+                        }
+                        SpinBox {
+                            id: countGroupsF
+                            objectName: "countGroupsF"
+                            from: 1
+                            to: 100
+                            padding: 0
+                            width: tfName.width
+                            editable: true
+                            background: Rectangle
+                            {
+                                border.color: impStyle.borderColor
+                            }
+                            onValueChanged:
+                            {
+                                setInterval();
+                            }
+                        }
+
+                        // row 5
+                        Text {
+                            text: "Интервал"
+                            font.pixelSize: tfName.font.pixelSize
+                        }
+                        TextField {
                             id: intervalF
                             objectName: "intervalF"
-                            anchors.verticalCenter: btLeftInterval.verticalCenter
-                            text: getInterval(tfHiLevelF.text, tfLoLevelF.text, countGroupsF.text)
-                            font.pixelSize: 16
-                            width: btLeftInterval.width
+                            inputMethodHints: Qt.ImhDigitsOnly
+                            font.pixelSize: tfName.font.pixelSize
+                            width: tfName.width
+                            padding: 10
+                            enabled: false
                         }
-                        Button {
-                            text: ">"
-                            scale: btLeftInterval.scale
-                            onReleased: {
-                                var groups = countGroupsF.text - 1;
-                                if (groups < 99)
-                                    groups = groups + 2;
-                                countGroupsF.text = groups;
+
+
+
+                        /*Row {
+                            Button {
+                                id: btLeftInterval
+                                text: "<"
+                                height: 50
+                                background: Rectangle {
+                                    color: btLeftInterval.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                    border.color: impStyle.borderColor
+                                }
+                                onReleased: {
+                                    var groups = countGroupsF.text;
+                                    if (groups > 1)
+                                        groups = groups - 1;
+                                    countGroupsF.text = groups;
+                                }
                             }
-                        }
+                            Text {
+                                id: intervalF
+                                objectName: "intervalF"
+                                anchors.verticalCenter: btLeftInterval.verticalCenter
+                                text: getInterval(tfHiLevelF.text, tfLoLevelF.text, countGroupsF.text)
+                                font.pixelSize: tfName.font.pixelSize
+                                width: 70
+                            }
+                            Button {
+                                id: btRightInterval
+                                text: ">"
+                                height: 50
+                                background: Rectangle {
+                                    color: btRightInterval.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                    border.color: impStyle.borderColor
+                                }
+                                onReleased: {
+                                    var groups = countGroupsF.text - 1;
+                                    if (groups < 99)
+                                        groups = groups + 2;
+                                    countGroupsF.text = groups;
+                                }
+                            }
+                        }*/
                     }
                 }
-            }
-            // Страница кнопки СТАТИСТИКА
-            Item {
-                id: itStatistic
-                Column {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                    CheckBox {
-                        id: cbStatistic
-                        text: "Режим отображения графика"
-                        enabled: false
-                        checked: false
-                        font.pixelSize: 12
-                        onCheckedChanged: {
-                            if (checked)
-                                cbSortFormula.checked = false;
-                        }
-                    }
-                    CheckBox {
-                        id: cbHand
-                        text: "Ручная фиксация измерений"
-                        font.pixelSize: cbStatistic.font.pixelSize
-                        onCheckedChanged: {
-                            if (checked)
-                                cbAutomatic.checked = false;
-                            setStatMode();
-                        }
-                    }
-                    CheckBox {
-                        id: cbAutomatic
-                        text: "Автоматическая фиксация измерений"
-                        font.pixelSize: cbStatistic.font.pixelSize
-                        onCheckedChanged: {
-                            if (checked)
-                                cbHand.checked = false;
-                            setStatMode();
-                        }
-                    }
-                    Grid {
-                        rows: 4
-                        columns: 2
-                        spacing: 2
-                        Text
-                        {
-                            text: "\nШирина окна графика, с"
-                        }
-                        TextField
-                        {
-                            id: tfSumPoint
-                            objectName: "tfSumPoint"
-                            enabled: cbAutomatic.checked | cbHand.checked
-                            width: itStatistic.width/4
-                            font.pixelSize: cbStatistic.font.pixelSize
-                            validator: IntValidator{bottom: 10; top: 1000;}
-                            text: "100"
-                            onTextChanged: statChart.maxSizeMess = text
-                        }
-                        Text
-                        {
-                            text: "\nКоличество точек"
-                        }
-                        TextField
-                        {
-                            id: tfPointCount
-                            width: tfSumPoint.width
-                            enabled: cbAutomatic.checked
-                            font.pixelSize: cbStatistic.font.pixelSize
-                            validator: IntValidator{bottom: 10; top: 1000000;}
-                            text: "1000"
-                            onTextEdited: {
-                                if (cbAutomatic.checked)
-                                {
-                                    var data = tfPointCount.text * tfStatPeriod.text;
-                                    tfMeasLen.text = (data / 1000).toString();
-                                }
+                // Страница кнопки СТАТИСТИКА
+                Item {
+                    id: itStatistic
+                    Column {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        CheckBox {
+                            id: cbStatistic
+                            text: "Режим отображения графика"
+                            font.pixelSize: tfName.font.pixelSize
+                            enabled: false
+                            checked: false
+                            onCheckedChanged: {
+                                if (checked)
+                                    cbSortFormula.checked = false;
                             }
                         }
-                        Text
-                        {
-                            text: "\nИнтервал измерений, мс"
-                        }
-                        TextField
-                        {
-                            id: tfStatPeriod
-                            objectName: "tfStatPeriod"
-                            width: tfSumPoint.width
-                            enabled: cbAutomatic.checked
-                            font.pixelSize: tfSumPoint.font.pixelSize
-                            validator: IntValidator{bottom: 100; top: 10000;}
-                            text: "100"
-                            onTextEdited: {
-                                if (cbAutomatic.checked)
-                                {
-                                    var data = tfMeasLen.text / tfStatPeriod.text;
-                                    tfPointCount.text = Math.round(data * 1000).toString();
-                                }
+                        CheckBox {
+                            id: cbHand
+                            text: "Ручная фиксация измерений"
+                            font.pixelSize: tfName.font.pixelSize
+                            onCheckedChanged: {
+                                if (checked)
+                                    cbAutomatic.checked = false;
+                                setStatMode();
                             }
                         }
-                        Text
-                        {
-                            text: "\nПродолжительность измерений, с  "
+                        CheckBox {
+                            id: cbAutomatic
+                            text: "Автоматическая фиксация измерений"
+                            font.pixelSize: tfName.font.pixelSize
+                            onCheckedChanged: {
+                                if (checked)
+                                    cbHand.checked = false;
+                                setStatMode();
+                            }
                         }
-                        TextField
-                        {
-                            id: tfMeasLen
-                            width: tfSumPoint.width
-                            enabled: cbAutomatic.checked
-                            font.pixelSize: tfSumPoint.font.pixelSize
-                            validator: IntValidator{bottom: 10; top: 90000;}
-                            text: "100"
-                            onTextEdited: {
-                                if (cbAutomatic.checked)
-                                {
-                                    var data = tfMeasLen.text / tfStatPeriod.text;
-                                    tfPointCount.text = Math.round(data * 1000).toString();
+                        Grid {
+                            rows: 4
+                            columns: 2
+                            spacing: 2
+                            Text
+                            {
+                                text: "\nШирина окна графика, с"
+                                font.pixelSize: tfName.font.pixelSize
+                            }
+                            TextField
+                            {
+                                id: tfSumPoint
+                                objectName: "tfSumPoint"
+                                enabled: cbAutomatic.checked | cbHand.checked
+                                validator: IntValidator{bottom: 10; top: 1000;}
+                                text: "100"
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
+                                onTextChanged: statChart.maxSizeMess = text
+                            }
+                            Text
+                            {
+                                text: "\nКоличество точек"
+                                font.pixelSize: tfName.font.pixelSize
+                            }
+                            TextField
+                            {
+                                id: tfPointCount
+                                enabled: cbAutomatic.checked
+                                validator: IntValidator{bottom: 10; top: 1000000;}
+                                text: "1000"
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
+                                onTextEdited: {
+                                    if (cbAutomatic.checked)
+                                    {
+                                        var data = tfPointCount.text * tfStatPeriod.text;
+                                        tfMeasLen.text = (data / 1000).toString();
+                                    }
+                                }
+                            }
+                            Text
+                            {
+                                text: "\nИнтервал измерений, мс"
+                                font.pixelSize: tfName.font.pixelSize
+                            }
+                            TextField
+                            {
+                                id: tfStatPeriod
+                                objectName: "tfStatPeriod"
+                                enabled: cbAutomatic.checked
+                                validator: IntValidator{bottom: 100; top: 10000;}
+                                text: "100"
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
+                                onTextEdited: {
+                                    if (cbAutomatic.checked)
+                                    {
+                                        var data = tfMeasLen.text / tfStatPeriod.text;
+                                        tfPointCount.text = Math.round(data * 1000).toString();
+                                    }
+                                }
+                            }
+                            Text
+                            {
+                                text: "\nПродолжительность измерений, с  "
+                                font.pixelSize: tfName.font.pixelSize
+                            }
+                            TextField
+                            {
+                                id: tfMeasLen
+                                enabled: cbAutomatic.checked
+                                validator: IntValidator{bottom: 10; top: 90000;}
+                                text: "100"
+                                font.pixelSize: tfName.font.pixelSize
+                                width: tfName.width
+                                padding: 10
+                                onTextEdited: {
+                                    if (cbAutomatic.checked)
+                                    {
+                                        var data = tfMeasLen.text / tfStatPeriod.text;
+                                        tfPointCount.text = Math.round(data * 1000).toString();
+                                    }
                                 }
                             }
                         }

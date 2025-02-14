@@ -165,12 +165,12 @@ Item
 
     function getColorMessText()
     {
-        var result = "black";
+        var result = impStyle.baseTextColor;
         var status = getColorStatus();
         if (status === 1)
             result = "cyan";
         else if (status === 2)
-            result = "tomato";
+            result = impStyle.warningColor;
         else if (status === 3)
             result = "orange";
         return result;
@@ -191,8 +191,8 @@ Item
         return ((pos > inputIndicator.highLimit) |
                 (pos < inputIndicator.lowLimit))
                 & inputIndicator.dopusk
-               ? "tomato"
-               : "black"
+               ? impStyle.warningColor
+               : impStyle.baseTextColor
     }
 
 
@@ -200,7 +200,7 @@ Item
     Rectangle
     {
         anchors.fill: parent
-        color: getColorStatus() === 0 ? "seashell" : "light yellow"
+        color: getColorStatus() === 0 ? impStyle.actionbarColor : "lightcoral"
         radius: width/2
     }
     // Маркеры на циферблате
@@ -214,8 +214,8 @@ Item
             colorMark: ((output > inputIndicator.highLimit/inputIndicator.unitPoint) |
                         (output < inputIndicator.lowLimit/inputIndicator.unitPoint))
                         & inputIndicator.dopusk
-                       ? "tomato"
-                       : "black"
+                       ? impStyle.warningColor
+                       : impStyle.baseTextColor
             centerX: outerRadius
             centerY: outerRadius
             radiusDial: outerRadius
@@ -241,13 +241,13 @@ Item
         ColorAnimation {
             id: caMessTextToBlack
             loops: 1
-            to: "black"
+            to: impStyle.baseTextColor
             duration: 100
         }
         ColorAnimation {
             id: caMessTextToTomato
             loops: 1
-            to: "tomato"
+            to: impStyle.warningColor
             duration: 100
         }
     }
@@ -260,7 +260,7 @@ Item
         font.pixelSize: toPixels(0.04)
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: messText.top
-        color: "black"
+        color: impStyle.baseTextColor
         opacity: 0
         OpacityAnimator
         {
@@ -277,7 +277,7 @@ Item
     Text
     {
         text: round10(inputIndicator.unitPoint, inputIndicator.accurDivision) + " " + inputIndicator.messUnit
-        color: "black"
+        color: impStyle.baseTextColor
         font.pixelSize: toPixels(0.09)
         y: 3*parent.height/10
         anchors.horizontalCenter: parent.horizontalCenter
@@ -440,8 +440,8 @@ Item
             height: Math.max(20, outerRadius * 0.1)
             width: Math.max(20, outerRadius * 0.1)
             radius: width/2
-            border.color: "black"
-            color: blRect1Color ? "light yellow" : "black"
+            border.color: impStyle.baseTextColor
+            color: blRect1Color ? impStyle.actionbarColor : impStyle.baseTextColor
             visible: inputIndicator.blDetect1EnableInput
             Text
             {
@@ -449,7 +449,7 @@ Item
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 text: "1"
-                color: blRect1Color ? "black" : "light yellow"
+                color: blRect1Color ? impStyle.baseTextColor : impStyle.actionbarColor
                 font.pixelSize: Math.max(6, outerRadius * 0.07)
             }
         }
@@ -463,8 +463,8 @@ Item
             height: Math.max(20, outerRadius * 0.1)
             width: Math.max(20, outerRadius * 0.1)
             radius: width/2
-            border.color: "black"
-            color: blRect2Color ? "light yellow" : "black"
+            border.color: impStyle.baseTextColor
+            color: blRect2Color ? impStyle.actionbarColor : impStyle.baseTextColor
             visible: inputIndicator.blDetect2EnableInput
             Text
             {
@@ -472,7 +472,7 @@ Item
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 text: "2"
-                color: blRect2Color ? "black" : "light yellow"
+                color: blRect2Color ? impStyle.baseTextColor : impStyle.actionbarColor
                 font.pixelSize: Math.max(6, outerRadius * 0.07)
             }
         }
