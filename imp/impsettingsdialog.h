@@ -1,19 +1,14 @@
 #ifndef IMPSETTINGSDIALOG_H
 #define IMPSETTINGSDIALOG_H
 
-#include <QDialog>
+#include <WidgetUtil/centerdialog.h>
 
 class ImpSettingsDialog
-    : public QDialog
+    : public CenterDialog
 {
   Q_OBJECT
 public:
   ImpSettingsDialog(QWidget* parent = nullptr);
-  void UpdatePosition(QRect parentGeometry);
-
-private:
-  int _width;
-  int _height;
 };
 
 #endif // IMPSETTINGSDIALOG_H

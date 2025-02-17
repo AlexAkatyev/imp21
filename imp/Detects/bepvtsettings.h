@@ -2,14 +2,15 @@
 #define SETTINGS_H
 
 #include <QObject>
-#include <QDialog>
+
+#include "WidgetUtil/centerdialog.h"
 
 class QQuickWidget;
 class VT21Detect;
 
 
 class BepVTSettings
-    : public QDialog
+    : public CenterDialog
 {
     Q_OBJECT
 public:

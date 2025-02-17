@@ -340,7 +340,7 @@ void Imp::createNewSettings(QString idDetect)//,
   qApp->processEvents();
   ImpAbstractDetect* detect = DetectAtId(idDetect.toInt());
   if (detect)
-    detect->ShowSettings();
+    detect->ShowSettings(geometry());
 }
 
 

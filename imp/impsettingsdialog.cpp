@@ -3,10 +3,11 @@
 #include <QRect>
 
 #include "impsettingsdialog.h"
+#include "WidgetUtil/centerdialog.h"
 
 
 ImpSettingsDialog::ImpSettingsDialog(QWidget* parent)
-  : QDialog(parent)
+  : CenterDialog(parent)
 {
   QQuickWidget* pQuickUi = new QQuickWidget(this);
 
@@ -18,17 +19,5 @@ ImpSettingsDialog::ImpSettingsDialog(QWidget* parent)
   pvbx->addWidget(pQuickUi); // Вставляем QML виджет в лайоут окна
   pvbx->setMargin(0); // Толщина рамки
   setLayout(pvbx); //  Установка лайоута в окно
-  _height = pQuickUi->property("height").toInt();
-  _width = pQuickUi->property("width").toInt();
-  setMinimumSize(_width, _height);
-  setMaximumSize(_width, _height);
-  setModal(true);
-}
-
-
-void ImpSettingsDialog::UpdatePosition(QRect parentGeometry)
-{
-  int ax = parentGeometry.x() + (parentGeometry.width() - _width) / 2;
-  int ay = parentGeometry.y() + (parentGeometry.height() - _height) / 2;
-  setGeometry(ax, ay, _width, _height);
+  setSize(pQuickUi->property("width").toInt(), pQuickUi->property("height").toInt());
 }

@@ -167,9 +167,10 @@ void EmVTDetect::routeInput()
 }
 
 
-void EmVTDetect::ShowSettings()
+void EmVTDetect::ShowSettings(QRect pos)
 {
   EmVTSettings* settingsWindow = new EmVTSettings(this);
+  settingsWindow->UpdatePosition(pos);
   settingsWindow->show();
 }
 
