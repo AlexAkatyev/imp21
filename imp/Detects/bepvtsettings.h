@@ -2,13 +2,14 @@
 #define SETTINGS_H
 
 #include <QObject>
-#include <QWidget>
+#include <QDialog>
 
 class QQuickWidget;
 class VT21Detect;
 
 
-class BepVTSettings : public QWidget
+class BepVTSettings
+    : public QDialog
 {
     Q_OBJECT
 public:

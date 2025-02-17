@@ -17,11 +17,12 @@ const int SIZE_SETTINGS_WINDOW_Y = 450;
 
 
 EmVTSettings::EmVTSettings(ImpAbstractDetect* parent, int imageCode)
-  : QWidget(nullptr)
+  : QDialog(nullptr)
   , _quickUi(new QQuickWidget)
-  , _detect(parent)
   , _imageCode(imageCode)
+  , _detect(parent)
 {
+  setModal(true);
   connect(_detect, &ImpAbstractDetect::Stopped, this, &EmVTSettings::deleteLater);
 
   _codec = QTextCodec::codecForName(CODE_LOCALLY);

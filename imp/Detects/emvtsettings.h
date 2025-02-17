@@ -2,14 +2,14 @@
 #define SETTINGS_H
 
 #include <QObject>
-#include <QWidget>
+#include <QDialog>
 
 class QQuickWidget;
 class ImpAbstractDetect;
 
 
 // ImpAbstractDetectSettings
-class EmVTSettings : public QWidget
+class EmVTSettings : public QDialog
 {
     Q_OBJECT
 public:

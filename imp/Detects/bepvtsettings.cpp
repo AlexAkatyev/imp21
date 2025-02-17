@@ -17,10 +17,11 @@ const int SIZE_SETTINGS_WINDOW_Y = 450;
 
 
 BepVTSettings::BepVTSettings(VT21Detect* parent)
-  : QWidget(nullptr)
+  : QDialog(nullptr)
   , _quickUi(new QQuickWidget)
   , _detect(parent)
 {
+  setModal(true);
   connect(_detect, &VT21Detect::Stopped, this, &BepVTSettings::deleteLater);
 
   _codec = QTextCodec::codecForName(CODE_LOCALLY);

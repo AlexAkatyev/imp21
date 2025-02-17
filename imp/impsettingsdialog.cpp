@@ -22,6 +22,7 @@ ImpSettingsDialog::ImpSettingsDialog(QWidget* parent)
   _width = pQuickUi->property("width").toInt();
   setMinimumSize(_width, _height);
   setMaximumSize(_width, _height);
+  setModal(true);
 }
 
 
