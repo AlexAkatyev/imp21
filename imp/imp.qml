@@ -147,8 +147,25 @@ Item
                     icon.source: "icons/indicator_add.png"
                     display: Button.TextUnderIcon
                     ToolTip.visible: hovered
-                    ToolTip.text: "Добавить новый индикатор для найденного датчика"
+                    ToolTip.text: "Восстановить индикатор для найденного датчика"
                     onClicked: sigNewIndicator("Нет"); // Датчик для нового индикатора не выбран
+                }
+
+            Button {
+                    id: btRestore
+                    height: 100
+                    width: 100
+                    hoverEnabled: true
+                    background: Rectangle {
+                        color: btRestore.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
+                    }
+                    text: "Восстановить\nиндикатор"
+                    font.capitalization: Font.MixedCase
+                    icon.name: "indicator_add"
+                    icon.source: "icons/indicator_add.png"
+                    display: Button.TextUnderIcon
+                    ToolTip.visible: hovered
+                    ToolTip.text: "Восстановить индикатор с последними настройками"
                 }
 
             Button {

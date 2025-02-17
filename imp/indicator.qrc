@@ -32,5 +32,6 @@
         <file>icons/workspace_settings.png</file>
         <file>ImpStyle.qml</file>
         <file>icons/indicator.png</file>
+        <file>icons/palette.png</file>
     </qresource>
 </RCC>

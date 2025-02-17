@@ -501,6 +501,19 @@ Item
         }
 
         Button {
+            id: btPalette
+            icon.name: "palette"
+            icon.source: "icons/palette.png"
+            background: Rectangle {
+                color: btPalette.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
+                radius: 5
+                height: 50
+                width: 50
+                anchors.centerIn: parent
+            }
+        }
+
+        Button {
             id: btMenu
             anchors.left: parent.left
             anchors.bottom: parent.bottom

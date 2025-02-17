@@ -34,11 +34,11 @@ using namespace SimpleXlsx;
 
 
 // Исходные размеры окна индикатора
-const int SIZE_INDICATOR_WINDOW_X = 374;
-const int SIZE_INDICATOR_WINDOW_Y = 458;
+const int SIZE_INDICATOR_WINDOW_X = 450;
+const int SIZE_INDICATOR_WINDOW_Y = 400;
 //const int SIZE_INDICATOR_WINDOW_Y2 = (SIZE_INDICATOR_WINDOW_Y/2);
 
-const int MINIMAL_HEIGHT = 500;
+const int MINIMAL_HEIGHT = 450;
 const int MINIMAL_WIDTH = 400;
 
 // Периодичность считывания показаний датчиков
