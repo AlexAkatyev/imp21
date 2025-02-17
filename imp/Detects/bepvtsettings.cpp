@@ -29,7 +29,7 @@ BepVTSettings::BepVTSettings(VT21Detect* parent)
   setSize(SIZE_SETTINGS_WINDOW_X, SIZE_SETTINGS_WINDOW_Y);
 
   // Присвоение имени окну
-  this->setWindowTitle("Датчик " + _detect->UserName());
+  this->setWindowTitle("Датчик " + _detect->UserName() + ",  № " + QString::number(_detect->Id()));
   QUrl source("qrc:/bepvtsettings.qml");
   _quickUi->setSource(source);
 
