@@ -9,6 +9,11 @@ class ImpSettingsDialog
   Q_OBJECT
 public:
   ImpSettingsDialog(QWidget* parent = nullptr);
+  void UpdatePosition(QRect parentGeometry);
+
+private:
+  int _width;
+  int _height;
 };
 
 #endif // IMPSETTINGSDIALOG_H

@@ -1,5 +1,6 @@
 #include <QQuickWidget>
 #include <QVBoxLayout>
+#include <QRect>
 
 #include "impsettingsdialog.h"
 
@@ -17,11 +18,16 @@ ImpSettingsDialog::ImpSettingsDialog(QWidget* parent)
   pvbx->addWidget(pQuickUi); // Вставляем QML виджет в лайоут окна
   pvbx->setMargin(0); // Толщина рамки
   setLayout(pvbx); //  Установка лайоута в окно
-  int height = pQuickUi->property("height").toInt();
-  int width = pQuickUi->property("width").toInt();
-  int ax = parent->x() + (parent->width() - width) / 2;
-  int ay = parent->y() + (parent->height() - height) / 2;
-  setGeometry(ax, ay, width, height);
-  setMinimumSize(width, height);
-  setMaximumSize(width, height);
+  _height = pQuickUi->property("height").toInt();
+  _width = pQuickUi->property("width").toInt();
+  setMinimumSize(_width, _height);
+  setMaximumSize(_width, _height);
+}
+
+
+void ImpSettingsDialog::UpdatePosition(QRect parentGeometry)
+{
+  int ax = parentGeometry.x() + (parentGeometry.width() - _width) / 2;
+  int ay = parentGeometry.y() + (parentGeometry.height() - _height) / 2;
+  setGeometry(ax, ay, _width, _height);
 }
