@@ -46,6 +46,7 @@ const int SIZE_WINDOW_WIDTH = 1270;
 const int SIZE_WINDOW_HEIGTH = 500;
 
 const char* HELP_INFO = "build\\html\\index.html";
+const QString KEY_DEF_OPTIONS = "DEFAULT_INDICATOR";
 
 // Конструктор главного окна
 Imp::Imp(QWidget* parent)
@@ -218,7 +219,7 @@ void Imp::findDetect()
     { // при запуске программы открытие старых индикаторов
         for (int j = 0; j < MAX_INDICATOR; j++)
             if (_useIndicators.contains(j) == true)
-                createIndicator(j);
+                createIndicator(j, nullptr, false);
         _flagRunIndicators = false; // старые индикаторы больше не запускать
     }
     emit sigFindDetect();
@@ -369,7 +370,7 @@ void Imp::createNewIndicator(QString strNDS)
             if (_useIndicators.contains(j) == false)
                 break;
         _useIndicators.insert(j);
-        createIndicator(j, baseDetect);
+        createIndicator(j, baseDetect, strNDS == KEY_DEF_OPTIONS);
     }
 }
 
@@ -392,13 +393,14 @@ void Imp::deleteIndicator(int idInd)
 }
 
 
-void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect)
+void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect, bool defOption)
 {
   qApp->processEvents();
     Indicator* ind;
     ind = new Indicator(this,
                         index, // Номер индикатора
-                        baseDetect); // ссылка на датчик
+                        baseDetect, // ссылка на датчик
+                        defOption);
     _indicators.push_back(ind);
     connect(ind, &Indicator::sigDataPressed, this, [=]()
     {

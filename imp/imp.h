@@ -70,7 +70,7 @@ private:
     std::vector<Indicator*> _indicators;
     bool _flagRunIndicators; // Флаг необходимости запускать индикаторы после запуска программы
 
-    void createIndicator(int index, ImpAbstractDetect* baseDetect = nullptr);
+    void createIndicator(int index, ImpAbstractDetect* baseDetect, bool defOption);
 
     // Количество найденых датчиков
     int _uiCounter; // для отображения прогресса поиска датчиков

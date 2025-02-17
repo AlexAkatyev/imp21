@@ -73,7 +73,7 @@ Item
 
     signal sigClickedbtAbout();
     signal sigClickedbtHelp();
-    signal sigNewIndicator(string SerialNum); // Серийный номер индикатора, или "Нет"
+    signal sigNewIndicator(string SerialNum); // Серийный номер индикатора, или "Нет", или "DEFAULT_INDICATOR"
     signal sigFindDetect();
     signal sigSelectDetectToInit(string SerialNum);
 
@@ -148,7 +148,7 @@ Item
                     display: Button.TextUnderIcon
                     ToolTip.visible: hovered
                     ToolTip.text: "Восстановить индикатор для найденного датчика"
-                    onClicked: sigNewIndicator("Нет"); // Датчик для нового индикатора не выбран
+                    onClicked: sigNewIndicator("DEFAULT_INDICATOR");
                 }
 
             Button {
@@ -166,6 +166,7 @@ Item
                     display: Button.TextUnderIcon
                     ToolTip.visible: hovered
                     ToolTip.text: "Восстановить индикатор с последними настройками"
+                    onClicked: sigNewIndicator("Нет"); // Датчик для нового индикатора не выбран
                 }
 
             Button {

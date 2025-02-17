@@ -41,12 +41,16 @@ public:
   IndSettings(QString setFileName, QObject* parent);
   void SetValue(IndKeys key, QVariant data);
   QVariant Value(IndKeys key);
+  void LockDefaultValues();
+  void UnlockDefaultValues();
 
 private:
   QSettings* _settings;
 
   QString keyFromCode(IndKeys c);
   QVariant defaultValues(IndKeys c);
+
+  bool _defaultLock;
 };
 
 #endif // INDSETTINGS_H

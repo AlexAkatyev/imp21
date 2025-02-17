@@ -49,7 +49,13 @@ const int PRECISION_INCREMENT = 7;
 const int PRECISION_RANGE = 7;
 const int PRECISION_DIVISION = 6;
 
-Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* baseDetect)
+Indicator::Indicator
+(
+    QWidget* parent
+    , int identificator
+    , ImpAbstractDetect* baseDetect
+    , bool defOptions
+)
   : QWidget(nullptr, Qt::Window)
   , _parent(static_cast<Imp*>(parent))
   , _idIndicator(identificator)
@@ -151,7 +157,7 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   connect(this, SIGNAL(sigCloseIndicator(int)), _parent, SLOT(deleteIndicator(int)));
 
   // Загрузка настроек
-  loadSettingsIndicator();
+  loadSettingsIndicator(defOptions);
 
   _measuredLogs.clear();
 
@@ -626,8 +632,12 @@ void Indicator::loadSettingsWindow()
 
 
 // Чтение установок
-bool Indicator::loadSettingsIndicator()
+bool Indicator::loadSettingsIndicator(bool defOptions)
 {
+  if (defOptions)
+  {
+    _settings->LockDefaultValues();
+  }
   QVariant v = _settings->Value(IndKeys::SCALE1);
   _scale1 = v.toDouble();
   _tfFactor1->setProperty("text", v);
@@ -745,6 +755,7 @@ bool Indicator::loadSettingsIndicator()
   qmlWidget->setProperty("text",  _settings->Value(IndKeys::AUTO_SAVE_PERIOD));
   _autoSaveFile = _settings->Value(IndKeys::AUTO_SAVE_FILE).toString();
 
+  _settings->UnlockDefaultValues();
   return true;
 }
 

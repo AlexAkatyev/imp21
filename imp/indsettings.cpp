@@ -13,6 +13,7 @@ const int SIZE_WINDOW_HEIGTH = 480;
 IndSettings::IndSettings(QString setFileName, QObject* parent)
   : QObject(parent)
   , _settings(new QSettings(setFileName, QSettings::IniFormat, this))
+  , _defaultLock(false)
 {
 }
 
@@ -25,7 +26,14 @@ void IndSettings::SetValue(IndKeys key, QVariant data)
 
 QVariant IndSettings::Value(IndKeys key)
 {
-  return _settings->value(keyFromCode(key), defaultValues(key));
+  if (_defaultLock)
+  {
+    return defaultValues(key);
+  }
+  else
+  {
+    return _settings->value(keyFromCode(key), defaultValues(key));
+  }
 }
 
 
@@ -223,3 +231,14 @@ QVariant IndSettings::defaultValues(IndKeys c)
   }
 }
 
+
+void IndSettings::LockDefaultValues()
+{
+  _defaultLock = true;
+}
+
+
+void IndSettings::UnlockDefaultValues()
+{
+  _defaultLock = false;
+}
