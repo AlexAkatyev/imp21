@@ -4,6 +4,7 @@ import QtQuick.Controls.Material 2.12
 import QtMultimedia 5.5
 import QtQuick.Layouts 1.12
 import QtQml 2.12
+import QtQuick.Dialogs 1.2
 
 Item
 {
@@ -485,11 +486,27 @@ Item
         id: lmMeasData
     }
 
+
+    ColorDialog
+    {
+        id: colorDialog
+        title: "Please choose a color"
+        modality: Qt.ApplicationModal
+        visible: false
+        onAccepted:
+        {
+            backRect.color = colorDialog.color;
+        }
+    }
+
+
     Item {
         id: itMeasure
         anchors.fill: parent
 
-        Rectangle {
+        Rectangle
+        {
+            id: backRect
             anchors.fill: parent
             color: impStyle.windowColor
         }
@@ -510,6 +527,10 @@ Item
                 height: 50
                 width: 50
                 anchors.centerIn: parent
+            }
+            onReleased:
+            {
+                colorDialog.open();
             }
         }
 
