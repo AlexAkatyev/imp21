@@ -490,7 +490,7 @@ Item
     ColorDialog
     {
         id: colorDialog
-        title: "Please choose a color"
+        title: "Выберите цвет фона окна"
         modality: Qt.ApplicationModal
         visible: false
         onAccepted:
@@ -530,6 +530,7 @@ Item
             }
             onReleased:
             {
+                colorDialog.color = impStyle.windowColor
                 colorDialog.open();
             }
         }
