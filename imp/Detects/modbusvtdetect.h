@@ -14,7 +14,7 @@ public:
   void Init() override;
   void Stop() override;
   int WaitInit() override;
-  void ShowSettings() override;
+  void ShowSettings(QRect pos) override;
   void SetNewName(QString newName) override;
   void SetAddres(int addres);
   void SetLocator(SerialPortLocator* locator);

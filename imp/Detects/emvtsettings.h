@@ -2,14 +2,15 @@
 #define SETTINGS_H
 
 #include <QObject>
-#include <QWidget>
+
+#include "WidgetUtil/centerdialog.h"
 
 class QQuickWidget;
 class ImpAbstractDetect;
 
 
 // ImpAbstractDetectSettings
-class EmVTSettings : public QWidget
+class EmVTSettings : public CenterDialog
 {
     Q_OBJECT
 public:

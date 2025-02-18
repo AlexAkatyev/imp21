@@ -68,6 +68,9 @@ QString ImpSettings::keyFromCode(ImpKeys c)
   case RECORDING_IN_ALL_INDICATORS:
     return "recording_in_all_indicators";
     break;
+  case DEBUG_GUI_MODE:
+    return "debug_gui_mode";
+    break;
   default:
     return "";
   }
@@ -116,6 +119,9 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
     break;
   }
   case RECORDING_IN_ALL_INDICATORS:
+    return false;
+    break;
+  case DEBUG_GUI_MODE:
     return false;
     break;
   default:

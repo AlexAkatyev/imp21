@@ -13,7 +13,7 @@ public:
   void Init() override;
   void Stop() override;
   int WaitInit() override;
-  void ShowSettings() override;
+  void ShowSettings(QRect pos) override;
   void SetNewName(QString newName) override;
 
 protected:
@@ -34,6 +34,14 @@ private:
   int bufferSize(SizeBufMode mode = SizeBufMode::FREE_MODE) override;
 
   QTimer* _measTimer;
+};
+
+
+class TestBepVTDetect: public BepVTDetect
+{
+  Q_OBJECT
+public:
+  explicit TestBepVTDetect(QSerialPortInfo portInfo, QObject *parent = nullptr);
 };
 
 #endif // BEPVTDETECT_H

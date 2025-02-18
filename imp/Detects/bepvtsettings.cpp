@@ -9,32 +9,28 @@
 #include "vt21detect.h"
 
 // Исходные размеры окна установок
-const int SIZE_SETTINGS_WINDOW_X = 320;
-const int SIZE_SETTINGS_WINDOW_Y = 480;
+const int SIZE_SETTINGS_WINDOW_X = 400;
+const int SIZE_SETTINGS_WINDOW_Y = 450;
 
 //Кодировщик шрифта - код для записи строк в датчик
 #define CODE_LOCALLY "Windows-1251"
 
 
 BepVTSettings::BepVTSettings(VT21Detect* parent)
-  : QWidget(nullptr)
+  : CenterDialog(nullptr)
   , _quickUi(new QQuickWidget)
   , _detect(parent)
 {
+  setModal(true);
   connect(_detect, &VT21Detect::Stopped, this, &BepVTSettings::deleteLater);
 
   _codec = QTextCodec::codecForName(CODE_LOCALLY);
 
-  // Размещение окна установок в центр экрана
-  QPoint center = QDesktopWidget().availableGeometry().center(); //получаем координаты центра экрана
-  center.setX(center.x() - (SIZE_SETTINGS_WINDOW_X/2));
-  center.setY(center.y() - (SIZE_SETTINGS_WINDOW_Y/2));
-  resize(SIZE_SETTINGS_WINDOW_X, SIZE_SETTINGS_WINDOW_Y);
-  move(center);
+  setSize(SIZE_SETTINGS_WINDOW_X, SIZE_SETTINGS_WINDOW_Y);
 
   // Присвоение имени окну
-  this->setWindowTitle("Датчик " + _detect->UserName());
-  QUrl source("qrc:bepvtsettings.qml");
+  this->setWindowTitle("Датчик " + _detect->UserName() + ",  № " + QString::number(_detect->Id()));
+  QUrl source("qrc:/bepvtsettings.qml");
   _quickUi->setSource(source);
 
   QVBoxLayout* pvbx = new QVBoxLayout();

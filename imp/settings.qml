@@ -6,7 +6,7 @@ import QtQuick.Layouts 1.3
 
 Item {
     height: 500
-    width: 340
+    width: 355
     objectName: "ImpSettings"
 
     ImpStyle
@@ -54,41 +54,109 @@ Item {
                     topPadding: 50
                     padding: 10
 
-                    Column {
-                        spacing: -10
+                    Frame
+                    {
+                        id: checkFrame
+                        Column {
+                            spacing: -10
 
-                        RadioButton {
-                            id: cbWireSearch
-                            text: "Искать проводные датчики"
-                            checked: true
-                            Material.accent: impStyle.chekedColor
+                            RadioButton {
+                                id: cbWireSearch
+                                text: "Искать проводные датчики"
+                                checked: true
+                                Material.accent: impStyle.chekedColor
 
-                        }
+                            }
 
-                        CheckBox {
-                            id: cbSearch
-                            text: "Искать датчики по протоколу RS-485"
-                            Material.accent: impStyle.chekedColor
-                        }
+                            CheckBox {
+                                id: cbSearch
+                                text: "Искать датчики по протоколу RS-485"
+                                Material.accent: impStyle.chekedColor
+                            }
 
-                        RadioButton {
-                            id: cbModBusSearch
-                            text: "Искать датчики через сервер Modbus TCP"
-                            Material.accent: impStyle.chekedColor
+                            RadioButton {
+                                id: cbModBusSearch
+                                text: "Искать датчики через сервер Modbus TCP"
+                                Material.accent: impStyle.chekedColor
+                            }
                         }
                     }
 
-                    Row
+                    Text {
+                        text: "Адреса"
+                        font.pixelSize: 15
+                    }
+
+                    Frame
                     {
-                        spacing: 10
+                        height: 200
+                        width: checkFrame.width
+
+                        ListView
+                        {
+                            id: lvAddresses
+                            height: 170
+                            width: 310
+                            Material.accent: impStyle.chekedColor
+                            focus: true
+                            boundsBehavior: Flickable.StopAtBounds
+                                    ScrollBar.vertical: ScrollBar
+                                    {
+                                        id: scroll
+                                        policy: ScrollBar.AlwaysOn
+                                        active: ScrollBar.AlwaysOn
+                                    }
+
+                            model: ListModel
+                            { // Здесь будет содержаться список адресов
+                                id: lmAddress
+                                objectName: "lmAddress"
+                            }
+                            delegate: TextField
+                            {
+                                width: parent.width - scroll.width
+                                height: 50
+                                property var view: ListView.view
+                                property int itemIndex: index
+                                text: serverAddress
+                                color:  ListView.isCurrentItem ? impStyle.chekedColor : impStyle.unChekedColor
+                                onPressed:
+                                {
+                                    view.currentIndex = itemIndex;
+                                }
+                            }
+                            onCountChanged:
+                            {
+                                visible = count != 0;
+                                imNoAddress.visible = !visible;
+                            }
+                            visible: count != 0
+                        }
+
+                        Image
+                        {
+                            id: imNoAddress
+                            source: "icons/no_adress_added.png"
+                            anchors.centerIn: parent
+                            height: 180
+                            width: imNoAddress.height
+                            visible: lvAddresses.count == 0
+                        }
+                    }
+                    Item
+                    {
+                        width: checkFrame.width
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.bottom: parent.bottom
 
                         Button
                         {
                             id: btAddressAdd
+                            anchors.left: parent.left
                             height: 50
-                            width: 150
+                            width: 160
                             text: "Добавить адрес"
-                            font.capitalization: Font.Capitalize
+                            font.capitalization: Font.MixedCase
                             icon.name: "address_add"
                             icon.source: "icons/address_add.png"
                             background: Rectangle {
@@ -104,10 +172,11 @@ Item {
                         Button
                         {
                             id: btAddressRemove
+                            anchors.right: parent.right
                             height: 50
-                            width: 150
+                            width: 160
                             text: "Удалить адрес"
-                            font.capitalization: Font.Capitalize
+                            font.capitalization: Font.MixedCase
                             icon.name: "address_remove"
                             icon.source: "icons/address_remove.png"
                             background: Rectangle
@@ -122,33 +191,6 @@ Item {
                                 {
                                     lmAddress.remove(index);
                                 }
-                            }
-                        }
-                    }
-
-
-                    ListView
-                    {
-                        id: lvAddresses
-                        height: 240
-                        width: 310
-                        Material.accent: impStyle.chekedColor
-                        model: ListModel
-                        { // Здесь будет содержаться список адресов
-                            id: lmAddress
-                            objectName: "lmAddress"
-                        }
-                        delegate: TextField
-                        {
-                            width: parent.width
-                            height: 50
-                            property var view: ListView.view
-                            property int itemIndex: index
-                            text: serverAddress
-                            color:  ListView.isCurrentItem ? impStyle.chekedColor : impStyle.unChekedColor
-                            onPressed:
-                            {
-                                view.currentIndex = itemIndex;
                             }
                         }
                     }
@@ -170,8 +212,6 @@ Item {
                         Material.accent: impStyle.chekedColor
                     }
                 }
-
-
             }
         }
     }

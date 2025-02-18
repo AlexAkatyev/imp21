@@ -86,9 +86,10 @@ int ModbusVTDetect::WaitInit()
 }
 
 
-void ModbusVTDetect::ShowSettings()
+void ModbusVTDetect::ShowSettings(QRect pos)
 {
   BepVTSettings* settingsWindow = new BepVTSettings(this);
+  settingsWindow->UpdatePosition(pos);
   settingsWindow->show();
 }
 

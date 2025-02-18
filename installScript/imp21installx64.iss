@@ -1,7 +1,7 @@
 
 [Setup]
 AppName=IMP
-AppVersion=21.8.3
+AppVersion=21.8.4
 WizardStyle=modern
 DefaultDirName={autopf}\..\ImcMikro\IMP
 DefaultGroupName=IMP

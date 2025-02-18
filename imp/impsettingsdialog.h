@@ -1,10 +1,10 @@
 #ifndef IMPSETTINGSDIALOG_H
 #define IMPSETTINGSDIALOG_H
 
-#include <QDialog>
+#include <WidgetUtil/centerdialog.h>
 
 class ImpSettingsDialog
-    : public QDialog
+    : public CenterDialog
 {
   Q_OBJECT
 public:

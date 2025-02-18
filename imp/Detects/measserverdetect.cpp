@@ -92,9 +92,10 @@ QString MeasServerDetect::PortName()
 }
 
 
-void MeasServerDetect::ShowSettings()
+void MeasServerDetect::ShowSettings(QRect pos)
 {
   EmVTSettings* settingsWindow = new EmVTSettings(this, 1);
+  settingsWindow->UpdatePosition(pos);
   settingsWindow->show();
 }
 

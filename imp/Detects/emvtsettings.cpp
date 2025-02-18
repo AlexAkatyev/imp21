@@ -9,33 +9,29 @@
 #include "impabstractdetect.h"
 
 // Исходные размеры окна установок
-const int SIZE_SETTINGS_WINDOW_X = 320;
-const int SIZE_SETTINGS_WINDOW_Y = 480;
+const int SIZE_SETTINGS_WINDOW_X = 400;
+const int SIZE_SETTINGS_WINDOW_Y = 450;
 
 //Кодировщик шрифта - код для записи строк в датчик
 #define CODE_LOCALLY "Windows-1251"
 
 
 EmVTSettings::EmVTSettings(ImpAbstractDetect* parent, int imageCode)
-  : QWidget(nullptr)
+  : CenterDialog(nullptr)
   , _quickUi(new QQuickWidget)
-  , _detect(parent)
   , _imageCode(imageCode)
+  , _detect(parent)
 {
+  setModal(true);
   connect(_detect, &ImpAbstractDetect::Stopped, this, &EmVTSettings::deleteLater);
 
   _codec = QTextCodec::codecForName(CODE_LOCALLY);
 
-  // Размещение окна установок в центр экрана
-  QPoint center = QDesktopWidget().availableGeometry().center(); //получаем координаты центра экрана
-  center.setX(center.x() - (SIZE_SETTINGS_WINDOW_X/2));
-  center.setY(center.y() - (SIZE_SETTINGS_WINDOW_Y/2));
-  resize(SIZE_SETTINGS_WINDOW_X, SIZE_SETTINGS_WINDOW_Y);
-  move(center);
+  setSize(SIZE_SETTINGS_WINDOW_X, SIZE_SETTINGS_WINDOW_Y);
 
   // Присвоение имени окну
-  this->setWindowTitle("Датчик " + _detect->UserName());
-  QUrl source("qrc:emvtsettings.qml");
+  this->setWindowTitle("Датчик " + _detect->UserName() + ",  № " + QString::number(_detect->Id()));
+  QUrl source("qrc:/emvtsettings.qml");
   _quickUi->setSource(source);
 
   QVBoxLayout* pvbx = new QVBoxLayout();

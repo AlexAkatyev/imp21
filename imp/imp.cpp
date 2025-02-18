@@ -42,10 +42,11 @@ const int VERSION_PATCH = DEF_VERSION_PATCH;
 const int VERSION_TEST  = DEF_VERSION_TEST;
 
 // Исходные размеры окна
-const int SIZE_WINDOW_WIDTH = 1155;
+const int SIZE_WINDOW_WIDTH = 1270;
 const int SIZE_WINDOW_HEIGTH = 500;
 
 const char* HELP_INFO = "build\\html\\index.html";
+const QString KEY_DEF_OPTIONS = "DEFAULT_INDICATOR";
 
 // Конструктор главного окна
 Imp::Imp(QWidget* parent)
@@ -108,15 +109,18 @@ Imp::Imp(QWidget* parent)
     _timerUpdaterActiveStatus->setInterval(INTERVAL_UPDATE);
     connect(_timerUpdaterActiveStatus, &QTimer::timeout, this, &Imp::changeActiveStatusToTable);
 
-    // Поиск датчиков при запуске программы после паузы, чтобы оформилось главное окно
-    //TimerBeforeFound->start(); // вернуть при заливке в dev !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    _flagRunIndicators = false; // to do git revert
-
-
-    // Убрать после изменения внешнего вида главного окна !!!!!!!!!!!!!!!!!!!!!!!!
-    _detects = DetectFactory::Instance(this)->TestDetects();
-    reWriteDetectsToTable();
-    pitWin->setProperty("iCommand", 4);
+    if (ImpSettings::Instance(this)->Value(ImpKeys::DEBUG_GUI_MODE).toBool())
+    {
+      _flagRunIndicators = false;
+      _detects = DetectFactory::Instance(this)->TestDetects();
+      reWriteDetectsToTable();
+      pitWin->setProperty("iCommand", 4);
+    }
+    else
+    {
+      // Поиск датчиков при запуске программы после паузы, чтобы оформилось главное окно
+      TimerBeforeFound->start();
+    }
 }
 
 
@@ -215,7 +219,7 @@ void Imp::findDetect()
     { // при запуске программы открытие старых индикаторов
         for (int j = 0; j < MAX_INDICATOR; j++)
             if (_useIndicators.contains(j) == true)
-                createIndicator(j);
+                createIndicator(j, nullptr, false);
         _flagRunIndicators = false; // старые индикаторы больше не запускать
     }
     emit sigFindDetect();
@@ -336,7 +340,7 @@ void Imp::createNewSettings(QString idDetect)//,
   qApp->processEvents();
   ImpAbstractDetect* detect = DetectAtId(idDetect.toInt());
   if (detect)
-    detect->ShowSettings();
+    detect->ShowSettings(geometry());
 }
 
 
@@ -366,7 +370,7 @@ void Imp::createNewIndicator(QString strNDS)
             if (_useIndicators.contains(j) == false)
                 break;
         _useIndicators.insert(j);
-        createIndicator(j, baseDetect);
+        createIndicator(j, baseDetect, strNDS == KEY_DEF_OPTIONS);
     }
 }
 
@@ -389,13 +393,14 @@ void Imp::deleteIndicator(int idInd)
 }
 
 
-void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect)
+void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect, bool defOption)
 {
   qApp->processEvents();
     Indicator* ind;
     ind = new Indicator(this,
                         index, // Номер индикатора
-                        baseDetect); // ссылка на датчик
+                        baseDetect, // ссылка на датчик
+                        defOption);
     _indicators.push_back(ind);
     connect(ind, &Indicator::sigDataPressed, this, [=]()
     {
@@ -430,9 +435,10 @@ void Imp::showHelp()
 
 void Imp::showAbout()
 {
-  static AboutDialog* aboutWindow = new AboutDialog(this, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
+  //static AboutDialog* aboutWindow = new AboutDialog(this, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
   static ImpSettingsDialog* sDialog = new ImpSettingsDialog(this);
-  aboutWindow->show();
+  //aboutWindow->show();
+  sDialog->UpdatePosition(geometry());
   sDialog->show();
 }
 

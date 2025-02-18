@@ -51,6 +51,7 @@ SOURCES += main.cpp\
   UtilLib/modbus.cpp \
     UtilLib/utillib.cpp \
     formulatree/formulafactory.cpp \
+    WidgetUtil/centerdialog.cpp \
     formulatree/formulanode.cpp \
         imp.cpp \
     about/about.cpp \
@@ -89,6 +90,7 @@ HEADERS  += imp.h \
     Logger/logger.h \
     UtilLib/modbus.h \
     UtilLib/utillib.h \
+    WidgetUtil/centerdialog.h \
     about/about.h \
     formulatree/formulafactory.h \
     formulatree/formulanode.h \

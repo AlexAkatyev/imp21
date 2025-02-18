@@ -25,7 +25,7 @@ public:
   int LMeasureInterval();
   int ZeroInterval();
   int PreSetInterval();
-  virtual void ShowSettings();
+  virtual void ShowSettings(QRect);
   virtual void SetNewName(QString);
   virtual bool Ready();
   virtual QString Address();
