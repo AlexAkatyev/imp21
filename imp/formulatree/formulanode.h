@@ -3,25 +3,39 @@
 
 #include <QObject>
 
+class ImpAbstractDetect;
+enum FormulaNodeOperator
+{
+  ADD
+  , SUB
+  , MUL
+  , DIV
+};
+
 class FormulaNode : public QObject
 {
   Q_OBJECT
 public:
   explicit FormulaNode(QObject *parent = nullptr);
 
-  double Get();
+  void SetL(float);
+  void SetL(FormulaNode*);
+  void SetL(ImpAbstractDetect*);
+  void SetR(float);
+  void SetR(FormulaNode*);
+  void SetR(ImpAbstractDetect*);
+  void SetOp(FormulaNodeOperator);
+
+  float Get();
 
 private:
-  enum Operator
-  {
-    ADD
-    , SUB
-    , MUL
-    , DIV
-  };
+  FormulaNodeOperator _op;
   FormulaNode* _lh;
   FormulaNode* _rh;
-  Operator _op;
+  float _lValue;
+  float _rValue;
+  ImpAbstractDetect* _lDetect;
+  ImpAbstractDetect* _rDetect;
 };
 
 #endif // FORMULANODE_H

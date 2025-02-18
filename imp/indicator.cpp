@@ -14,6 +14,8 @@
 #include "checkInputNumberIF/checkInputNumberIF.h"
 #include "indsettings.h"
 #include "postmessagesender.h"
+#include "formulatree/formulafactory.h"
+#include "formulatree/formulanode.h"
 
 #include <Xlsx/Workbook.h>
 using namespace SimpleXlsx;
@@ -64,6 +66,7 @@ Indicator::Indicator
   , _detect1(nullptr)
   , _detect2(nullptr)
   , _transGauge(UnitMKM)
+  , _complexFormula(nullptr)
 {
   _zeroShifts = {0, 0};
   _settings = new IndSettings("indicator" + QString::number(_idIndicator) + ".ini", this);
@@ -1037,9 +1040,17 @@ void Indicator::createComplexFormula(QString inputText)
     statusMessage = "Формула задана верно";
   }
 
+  bool error = false;
+  QString textError;
+  FormulaNode* fNode = nullptr;
   if (status)
   {
-
+    fNode = FormulaFactory(this).Do(inputText, &error, &textError);
+    status = error ? STATUS_FORMULA_ERROR : STATUS_FORMULA_OK;
+    if (error)
+    {
+      statusMessage = textError;
+    }
   }
 
   QObject* fMessage = _quickUi->rootObject()->findChild<QObject*>("formulaMessage");
