@@ -9,6 +9,14 @@ Item {
     width: 355
     objectName: "ImpSettings"
 
+    function enabledFinderCheck()
+    {
+        cbSearch.enabled = cbWireSearch.checked;
+        cmdAdressbutons.enabled = cbModBusSearch.checked;
+        frameAdresses.enabled = cbModBusSearch.checked;
+    }
+
+
     ImpStyle
     {
         id: impStyle
@@ -65,19 +73,21 @@ Item {
                                 text: "Искать проводные датчики"
                                 checked: true
                                 Material.accent: impStyle.chekedColor
-
+                                onReleased: enabledFinderCheck()
                             }
 
                             CheckBox {
                                 id: cbSearch
                                 text: "Искать датчики по протоколу RS-485"
                                 Material.accent: impStyle.chekedColor
+                                enabled: cbWireSearch.checked
                             }
 
                             RadioButton {
                                 id: cbModBusSearch
                                 text: "Искать датчики через сервер Modbus TCP"
                                 Material.accent: impStyle.chekedColor
+                                onReleased: enabledFinderCheck()
                             }
                         }
                     }
@@ -89,8 +99,10 @@ Item {
 
                     Frame
                     {
+                        id: frameAdresses
                         height: 200
                         width: checkFrame.width
+                        enabled: cbModBusSearch.checked
 
                         ListView
                         {
@@ -145,9 +157,11 @@ Item {
                     }
                     Item
                     {
+                        id: cmdAdressbutons
                         width: checkFrame.width
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.bottom: parent.bottom
+                        enabled: cbModBusSearch.checked
 
                         Button
                         {
