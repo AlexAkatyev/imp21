@@ -3,7 +3,7 @@
 
 FormulaNode::FormulaNode(QObject *parent)
   : QObject(parent)
-  , _op(Operator::ADD)
+  , _op(FormulaNodeOperator::ADD)
   , _lh(nullptr)
   , _rh(nullptr)
   , _lValue(0.0)
@@ -36,16 +36,16 @@ float FormulaNode::Get()
   }
   switch (_op)
   {
-  case Operator::ADD:
+  case FormulaNodeOperator::ADD:
     lh += rh;
     break;
-  case Operator::SUB:
+  case FormulaNodeOperator::SUB:
     lh -= rh;
     break;
-  case Operator::MUL:
+  case FormulaNodeOperator::MUL:
     lh *= rh;
     break;
-  case Operator::DIV:
+  case FormulaNodeOperator::DIV:
     if (rh == 0)
     {
       lh = __FLT_MAX__;
@@ -96,7 +96,7 @@ void FormulaNode::SetR(ImpAbstractDetect* d)
 }
 
 
-void FormulaNode::SetOp(Operator d)
+void FormulaNode::SetOp(FormulaNodeOperator d)
 {
   _op = d;
 }

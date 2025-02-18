@@ -11,7 +11,11 @@ class FormulaFactory : public QObject
 public:
   explicit FormulaFactory(QObject *parent);
 
-  FormulaNode* Do(QString input, bool& error, QString& textError);
+  FormulaNode* Do(QString input, bool* error, QString* textError);
+
+private:
+  FormulaNode* stapleDo(QString input, bool* error, QString* textError);
+  FormulaNode* signDo(QString input, bool* error, QString* textError);
 };
 
 #endif // FORMULAFACTORY_H
