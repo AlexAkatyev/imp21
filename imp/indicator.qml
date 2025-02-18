@@ -1416,7 +1416,6 @@ Item
                                     wrapMode: TextArea.WrapAtWordBoundaryOrAnywhere
                                     onTextChanged:
                                     {
-                                        complexFormula.cursorPosition = complexFormula.length;
                                         analyseComplexFormula(text);
                                     }
                                 }
