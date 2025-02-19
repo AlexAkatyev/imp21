@@ -147,14 +147,23 @@ Item {
                             visible: count != 0
                         }
 
-                        Image
-                        {
-                            id: imNoAddress
-                            source: "icons/no_adress_added.png"
-                            anchors.centerIn: parent
-                            height: 180
-                            width: imNoAddress.height
-                            visible: lvAddresses.count == 0
+                        Item {
+                            anchors.top: frameAdresses.top
+                            Image
+                            {
+                                id: imNoAddress
+                                source: "icons/no_adress_added.png"
+                                anchors.top: txNoAddress.bottom
+                                height: 100
+                                width: imNoAddress.height
+                                visible: lvAddresses.count == 0
+                            }
+
+                            Text {
+                                id: txNoAddress
+                                text: "Адресов не найдено"
+                                font.pixelSize: 12
+                            }
                         }
                     }
                     Item
