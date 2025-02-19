@@ -17,6 +17,7 @@ private:
 
 private slots:
   void setIniFindModbusTCP(bool en);
+  void setIniFindModbus485(bool en);
 };
 
 #endif // IMPSETTINGSDIALOG_H

@@ -10,10 +10,11 @@ Item {
     objectName: "ImpSettings"
 
     signal sigFindModbusTCP(bool enableFind);
+    signal sigFindModbus485(bool enableFind);
 
     function enabledFinderCheck()
     {
-        cbSearch.enabled = cbWireSearch.checked;
+        cbSearch485.enabled = cbWireSearch.checked;
         cmdAdressbutons.enabled = cbModBusSearch.checked;
         frameAdresses.enabled = cbModBusSearch.checked;
     }
@@ -76,14 +77,23 @@ Item {
                                 text: "Искать проводные датчики"
                                 checked: true
                                 Material.accent: impStyle.chekedColor
-                                onReleased: enabledFinderCheck()
+                                onReleased:
+                                {
+                                    enabledFinderCheck();
+                                    sigFindModbusTCP(!checked);
+                                }
                             }
 
                             CheckBox {
-                                id: cbSearch
+                                id: cbSearch485
+                                objectName: "cbSearch485"
                                 text: "Искать датчики по протоколу RS-485"
                                 Material.accent: impStyle.chekedColor
                                 enabled: cbWireSearch.checked
+                                onReleased:
+                                {
+                                    sigFindModbus485(checked);
+                                }
                             }
 
                             RadioButton {
