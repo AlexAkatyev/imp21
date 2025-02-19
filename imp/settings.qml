@@ -142,27 +142,28 @@ Item {
                             onCountChanged:
                             {
                                 visible = count != 0;
-                                imNoAddress.visible = !visible;
+                                emptyWidgets.visible = !visible;
                             }
                             visible: count != 0
                         }
 
-                        Item {
-                            anchors.top: frameAdresses.top
-                            Image
-                            {
-                                id: imNoAddress
-                                source: "icons/no_adress_added.png"
-                                anchors.top: txNoAddress.bottom
-                                height: 100
-                                width: imNoAddress.height
-                                visible: lvAddresses.count == 0
-                            }
-
+                        Column
+                        {
+                            id: emptyWidgets
+                            visible: lvAddresses.count == 0
+                            anchors.verticalCenter: parent.verticalCenter
                             Text {
                                 id: txNoAddress
                                 text: "Адресов не найдено"
                                 font.pixelSize: 12
+                            }
+
+                            Image
+                            {
+                                id: imNoAddress
+                                source: "icons/no_adress_added.png"
+                                height: 100
+                                width: imNoAddress.height
                             }
                         }
                     }
