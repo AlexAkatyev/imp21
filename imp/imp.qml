@@ -75,7 +75,7 @@ Item
     signal sigClickedbtHelp();
     signal sigNewIndicator(string SerialNum); // Серийный номер индикатора, или "Нет"
     signal sigFillScreenWithIndicators(string SerialNum);
-    signal sigMoveOpenWindowsInOrder(string SerialNum);
+    signal sigComposeOpenWindowsInOrder();
     signal sigFindDetect();
     signal sigSelectDetectToInit(string SerialNum);
 
@@ -168,6 +168,7 @@ Item
                 display: Button.TextUnderIcon
                 ToolTip.visible: hovered
                 ToolTip.text: "Разместить открытые индикаторы в пределах всех доступных экранов"
+                onClicked: sigComposeOpenWindowsInOrder();
             }
 
             Button
@@ -186,6 +187,7 @@ Item
                 display: Button.TextUnderIcon
                 ToolTip.visible: hovered
                 ToolTip.text: "Добавить выбранное количество индикаторов и разместить в пределах одного экрана"
+                onClicked: sigFillScreenWithIndicators("нет");
             }
 
             ToolSeparator {
@@ -460,29 +462,5 @@ Item
             }
         }
 
-    }
-
-    Row
-    {
-        id: rowCommand
-        anchors.bottom: itWin.bottom
-        Button
-        {
-            id: btFind
-            objectName: "btFind"
-            height: itWin.height/10
-            width: itWin.width/2
-            text: "Поиск датчиков"
-            onClicked: sigFindDetect();
-        }
-        Button
-        {
-            id: btIndicator
-            objectName: "btIndicator"
-            height: itWin.height/10
-            width: itWin.width/2
-            text: "Новый индикатор"
-            onClicked: sigNewIndicator("Нет"); // Датчик для нового индикатора не выбран
-        }
     }
 }

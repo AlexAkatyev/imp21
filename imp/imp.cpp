@@ -82,8 +82,8 @@ Imp::Imp(QWidget* parent)
     ptextComment = pQuickUi->rootObject()->findChild<QObject*>("textComment");
     pbtFind = pQuickUi->rootObject()->findChild<QObject*>("btFind");
     pbtIndicator = pQuickUi->rootObject()->findChild<QObject*>("btIndicator");
-    pbtFillScreenWithIndicators = pQuickUi->rootObject()->findChild<QObject*>("btFillScreenWithIndicators");    
-    pbtMoveOpenWindowsInOrder = pQuickUi->rootObject()->findChild<QObject*>("btMoveOpenWindowsInOrder");
+    pbtFillScreenWithIndicators = pQuickUi->rootObject()->findChild<QObject*>("btAddAndCompose");
+    pbtComposeOpenWindowsInOrder = pQuickUi->rootObject()->findChild<QObject*>("btCompose");
 
     // Отработка команды: Помощь/Справка
     connect(pQuickUi->rootObject(), SIGNAL(sigClickedbtHelp()), this, SLOT(showHelp()));
@@ -104,7 +104,7 @@ Imp::Imp(QWidget* parent)
     connect(pQuickUi->rootObject(), SIGNAL(sigFillScreenWithIndicators(QString)), this, SLOT(fillScreenWithIndicators(QString)));
 
     //Отработка команды: Разместить отрытые окна по порядку
-    connect(pQuickUi->rootObject(), SIGNAL(sigMoveOpenWindowsInOrder(QString)), this, SLOT(moveOpenWindowsInOrder(QString)));
+    connect(pQuickUi->rootObject(), SIGNAL(sigComposeOpenWindowsInOrder()), this, SLOT(composeOpenWindowsInOrder()));
 
     // Поиск датчиков при запуске программы через паузу
     TimerBeforeFound = new QTimer(this);
@@ -226,7 +226,7 @@ void Imp::findDetect()
     { // при запуске программы открытие старых индикаторов
         for (int j = 0; j < MAX_INDICATOR; j++)
             if (_useIndicators.contains(j) == true){
-                _indicatorsMap[j] =  createIndicator(j);
+                createIndicator(j);
             }
         _flagRunIndicators = false; // старые индикаторы больше не запускать
     }
@@ -378,10 +378,11 @@ void Imp::createNewIndicator(QString strNDS)
             if (_useIndicators.contains(j) == false)
                 break;
         _useIndicators.insert(j);
-        _indicatorsMap[j] =  createIndicator(j, baseDetect);
+        createIndicator(j, baseDetect);
     }
 }
 
+//Заполнение экрана индикаторами
 void Imp::fillScreenWithIndicators(QString strNDS)
 {
   qApp->processEvents();
@@ -429,48 +430,55 @@ void Imp::deleteIndicator(int idInd)
       }
     }
 }
-    _indicatorsMap.erase(_indicatorsMap.find(idInd));
-}
 
+//создание индикаторов для заполнения экрана(-ов)
 void Imp::createScreenIndicators(int index, ImpAbstractDetect* baseDetect)
 {
     qApp->processEvents();
     Indicator* ind;
 
-    QSize activScreenSize = QApplication::activeWindow()->screen()->availableSize();
+    int countScreen = QApplication::screens().count();
+
+    std::map<int, QSize> _sizeWindowMap;
+    QList<QScreen *> screen = QApplication::screens();
 
     std::vector<int> sizeWindowIndicator = ind->getDefaultSize();
     int sizeWidthIndicator = sizeWindowIndicator.at(0);
     int sizeHeigthIndicator = sizeWindowIndicator.at(1);
-    int numberWindowsInColumn = (int)(activScreenSize.width())/sizeWidthIndicator;
-    int numberWindowsInRow = (int)(activScreenSize.height())/sizeHeigthIndicator;
 
-    int allIndex = index + numberWindowsInRow * numberWindowsInColumn;
+    for(int i = 0; i < countScreen; i++){
+        _sizeWindowMap[i] = screen[i]->availableSize();
 
-    int startActiveSreenX = QApplication::activeWindow()->screen()->geometry().x();
-    int startActiveSreenY = QApplication::activeWindow()->screen()->geometry().y();
+        int numberOfWindowsColumns = (int)(_sizeWindowMap[i].width())/sizeWidthIndicator;
+        int numberOfWindowsRows = (int)(_sizeWindowMap[i].height())/sizeHeigthIndicator;
 
-    for(int row = 0; row < numberWindowsInRow; row++){
-        for(int column = 0; column < numberWindowsInColumn; column++){
-            ind = new Indicator(this,
-                                index, // Номер индикатора
-                                baseDetect); // ссылка на датчик
+        int allIndex = index + numberOfWindowsRows * numberOfWindowsColumns;
 
-            ind->setGeometry(startActiveSreenX+sizeWidthIndicator*column,
-                             startActiveSreenY+25+(row*sizeHeigthIndicator*1.1),
-                             0,
-                             0);
+        int startSreenX = screen[i]->geometry().x();
+        int startSreenY = screen[i]->geometry().y();
 
-            if(index<=allIndex){
-                index++;
+        for(int row = 0; row < numberOfWindowsRows; row++){
+            for(int column = 0; column < numberOfWindowsColumns; column++){
+                ind = new Indicator(this,
+                                    index, // Номер индикатора
+                                    baseDetect); // ссылка на датчик
+
+                ind->setGeometry(startSreenX+sizeWidthIndicator*column,
+                                 startSreenY+25+(row*sizeHeigthIndicator+25*row),
+                                 0,
+                                 0);
+
+                if(index <= allIndex){
+                    index++;
+                }
+                // Закрытие индикаторов при завершении работы приложения
+                connect(this, &Imp::sigCloseIndicatorWindows, ind, &Indicator::CloseMyIndicator);
             }
-            // Закрытие индикаторов при завершении работы приложения
-            connect(this, &Imp::sigCloseIndicatorWindows, ind, &Indicator::CloseMyIndicator);
         }
     }
 }
 
-Indicator* Imp::createIndicator(int index, ImpAbstractDetect* baseDetect)
+void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect)
 {
   qApp->processEvents();
     Indicator* ind;
@@ -498,47 +506,93 @@ Indicator* Imp::createIndicator(int index, ImpAbstractDetect* baseDetect)
     });
     // Закрытие индикатора при закрытии главного окна
     connect(this, &Imp::sigCloseIndicatorWindows, ind, &Indicator::CloseMyIndicator);
-    return ind;
 }
 
-void Imp::moveOpenWindowsInOrder(QString strNDS)
+//Размещение открытых индикаторов по экрану
+void Imp::composeOpenWindowsInOrder()
 {
     qApp->processEvents();
-    //int id = strNDS.toInt();
-    int numberScreens = QApplication::screens().count();
 
-    QSize activScreenSize = QApplication::activeWindow()->screen()->availableSize();
+        int countScreen = QApplication::screens().count();
 
-    int startActiveSreenX = QApplication::activeWindow()->screen()->geometry().x();
-    int startActiveSreenY = QApplication::activeWindow()->screen()->geometry().y();
+        std::map<int, QSize> _sizeScreenMap;
+        QList<QScreen *> screen = QApplication::screens();
 
-    int newStartColumn = startActiveSreenX;
-    int newStartRow = startActiveSreenY;
-    for (auto indicator : _indicatorsMap) {
-        Indicator* ind = indicator.second;
+        Indicator* ind;
+        //узнаем размеры окна индикатора по умолчанию
+        std::vector<int> sizeWindowIndicator = ind->getDefaultSize();
+        int sizeWidthIndicator = sizeWindowIndicator.at(0);
+        int sizeHeigthIndicator = sizeWindowIndicator.at(1);
+        //узнаем количество открытых окон
+        int countOpenIndicators = _indicators.size();
+        int allWindows = 0;
 
-        QRect windowIndicator = ind->geometry();    //окно индикатора
-        QSize size = windowIndicator.size();
-        int windowIndicatorWidth = size.width();    //ширина; x
-        int windowIndicatorHeight = size.height();  //высота; y
-
-        //сохранить самое большое значение окна индикатора по y
-        if (startActiveSreenY + windowIndicatorHeight > newStartRow) {
-            newStartRow = windowIndicatorHeight + 27;
+        for(int i = 0; i < countScreen; i++){
+            //узнаем размеры экрана
+            _sizeScreenMap[i] = screen[i]->availableSize();
+            int numberOfWindowsColumns = (int)(_sizeScreenMap[i].width())/sizeWidthIndicator;
+            int numberOfWindowsRows = (int)(_sizeScreenMap[i].height())/sizeHeigthIndicator;
+            //сколько может быть всего окон на экранах
+            allWindows = allWindows + numberOfWindowsRows * numberOfWindowsColumns;
         }
 
-        // при большом значении по x перенести следующие индикаторы на 2 строчку
-        if (activScreenSize.width() + newStartColumn <= startActiveSreenX + windowIndicatorWidth) {
-            startActiveSreenX = newStartColumn;
-            startActiveSreenY = newStartRow;
-        }
+        if(countOpenIndicators <= allWindows)
+        {
+            int currentScreen = 0;
+            int row = 0;
+            int column = 0;
+            bool recalculateWindowSize = true;
+            //количество столбцов
+            int numberOfWindowsColumns = (int)(_sizeScreenMap[currentScreen].width()) / sizeWidthIndicator;
+            //количество строк
+            int numberOfWindowsRows = (int)(_sizeScreenMap[currentScreen].height()) / sizeHeigthIndicator;
+            int startSreenX;
+            int startSreenY;
+            int newStartColumn;
+            int newStartRow;
 
-        ind->setGeometry(startActiveSreenX,
-                        startActiveSreenY + 26,
-                        windowIndicatorWidth,
-                        windowIndicatorHeight);
-        startActiveSreenX += windowIndicatorWidth;
-    }
+            for (auto indicator : _indicators) {
+                if (column > numberOfWindowsColumns - 1) {
+                    if (numberOfWindowsRows - 1 > row) {
+                        row++;
+                    }
+                    else {
+                        currentScreen++;
+                        row = 0;
+                        recalculateWindowSize = true;
+                    }
+                    column = 0;
+                }
+
+                if (recalculateWindowSize) {
+                    recalculateWindowSize = false;
+                    numberOfWindowsColumns = (int)(_sizeScreenMap[currentScreen].width()) / sizeWidthIndicator;
+                    numberOfWindowsRows = (int)(_sizeScreenMap[currentScreen].height()) / sizeHeigthIndicator;
+                    //начало currentScreen-того экрана
+                    startSreenX = screen[currentScreen]->geometry().x();
+                    startSreenY = screen[currentScreen]->geometry().y();
+                    newStartColumn = startSreenX;
+                    newStartRow = startSreenY;
+                }
+
+
+                ind = indicator;
+
+                startSreenX = newStartColumn + column * sizeWidthIndicator;
+                startSreenY = newStartRow + row * sizeHeigthIndicator + 25 * row;
+                // отрисовка start
+                ind->setGeometry(startSreenX,
+                                 startSreenY + 26,
+                                 sizeWidthIndicator,
+                                 sizeHeigthIndicator);
+                column++;
+                // отрисовка finish
+            }
+        }
+        else
+        {
+            QMessageBox::information(this, "ИМП","Нет возможности распределить все открытые окна.");
+        }
 }
 
 void Imp::showHelp()
