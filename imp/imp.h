@@ -78,7 +78,7 @@ private:
     bool _flagRunIndicators; // Флаг необходимости запускать индикаторы после запуска программы
 
     void createIndicator(int index, ImpAbstractDetect* baseDetect = nullptr);
-    void createScreenIndicators(int index, ImpAbstractDetect* baseDetect = nullptr);
+    void createScreenIndicators(QList<int> indexList, ImpAbstractDetect* baseDetect = nullptr);
 
     // Количество найденых датчиков
     int _uiCounter; // для отображения прогресса поиска датчиков

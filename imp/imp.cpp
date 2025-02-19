@@ -400,17 +400,18 @@ void Imp::fillScreenWithIndicators(QString strNDS)
       }
     }
   }
+  QList<int> indexList;
 
   if (!_flagRunIndicators) // Первый поиск датчиков и запуск старых индикаторов завершен
   {
-      int j;
+      int index;
       //Поиск свободного идентификатора
-      for (j = 0; j < MAX_INDICATOR; j++){
-          if (_useIndicators.contains(j) == false){
-              break;
-          }
+      for (index = 0; index < MAX_INDICATOR; index++){
+           if (_useIndicators.contains(index) == false){
+               indexList.push_back(index);
+           }
       }
-      createScreenIndicators(j, baseDetect);
+      createScreenIndicators(indexList, baseDetect);
   }
 }
 
@@ -432,7 +433,7 @@ void Imp::deleteIndicator(int idInd)
 }
 
 //создание индикаторов для заполнения экрана(-ов)
-void Imp::createScreenIndicators(int index, ImpAbstractDetect* baseDetect)
+void Imp::createScreenIndicators(QList<int> indexList, ImpAbstractDetect* baseDetect)
 {
     qApp->processEvents();
     Indicator* ind;
@@ -446,13 +447,15 @@ void Imp::createScreenIndicators(int index, ImpAbstractDetect* baseDetect)
     int sizeWidthIndicator = sizeWindowIndicator.at(0);
     int sizeHeigthIndicator = sizeWindowIndicator.at(1);
 
+    int numberInd = 0;
+
     for(int i = 0; i < countScreen; i++){
         _sizeWindowMap[i] = screen[i]->availableSize();
 
         int numberOfWindowsColumns = (int)(_sizeWindowMap[i].width())/sizeWidthIndicator;
         int numberOfWindowsRows = (int)(_sizeWindowMap[i].height())/sizeHeigthIndicator;
 
-        int allIndex = index + numberOfWindowsRows * numberOfWindowsColumns;
+        int numberIndicators = numberOfWindowsRows * numberOfWindowsColumns + numberInd;
 
         int startSreenX = screen[i]->geometry().x();
         int startSreenY = screen[i]->geometry().y();
@@ -460,7 +463,7 @@ void Imp::createScreenIndicators(int index, ImpAbstractDetect* baseDetect)
         for(int row = 0; row < numberOfWindowsRows; row++){
             for(int column = 0; column < numberOfWindowsColumns; column++){
                 ind = new Indicator(this,
-                                    index, // Номер индикатора
+                                    indexList[numberInd], // Номер индикатора
                                     baseDetect); // ссылка на датчик
 
                 ind->setGeometry(startSreenX+sizeWidthIndicator*column,
@@ -468,8 +471,11 @@ void Imp::createScreenIndicators(int index, ImpAbstractDetect* baseDetect)
                                  0,
                                  0);
 
-                if(index <= allIndex){
-                    index++;
+                _useIndicators.insert(indexList[numberInd]);
+                _indicators.push_back(ind);
+
+                if(numberInd < numberIndicators){
+                    numberInd++;
                 }
                 // Закрытие индикаторов при завершении работы приложения
                 connect(this, &Imp::sigCloseIndicatorWindows, ind, &Indicator::CloseMyIndicator);
