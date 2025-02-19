@@ -11,6 +11,7 @@ Item {
 
     signal sigFindModbusTCP(bool enableFind);
     signal sigFindModbus485(bool enableFind);
+    signal sigSimRec(bool enableSimRec);
 
     function enabledFinderCheck()
     {
@@ -250,8 +251,13 @@ Item {
 
                     CheckBox {
                         id: cbSimRec
+                        objectName: "cbSimRec"
                         text: "Запись одновременно во всех индикаторах"
                         Material.accent: impStyle.chekedColor
+                        onReleased:
+                        {
+                            sigSimRec(checked);
+                        }
                     }
                 }
             }

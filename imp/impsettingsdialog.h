@@ -12,12 +12,13 @@ class ImpSettingsDialog
 public:
   ImpSettingsDialog(QWidget* parent = nullptr);
 
-private:
-  void linkIni(QQuickWidget* ui);
-
 private slots:
   void setIniFindModbusTCP(bool en);
   void setIniFindModbus485(bool en);
+  void setRecordingInAllIndicators(bool en);
+
+private:
+  void linkIni(QQuickWidget* ui);
 };
 
 #endif // IMPSETTINGSDIALOG_H

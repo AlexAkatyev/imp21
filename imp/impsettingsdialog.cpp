@@ -38,6 +38,10 @@ void ImpSettingsDialog::linkIni(QQuickWidget* ui)
   QObject* cbSearch485 = ui->rootObject()->findChild<QObject*>("cbSearch485");
   cbSearch485->setProperty("checked", settings->Value(ImpKeys::EN_RS_485).toBool());
   connect(ui->rootObject(), SIGNAL(sigFindModbus485(bool)), this, SLOT(setIniFindModbus485(bool)));
+
+  QObject* cbSimRec = ui->rootObject()->findChild<QObject*>("cbSimRec");
+  cbSimRec->setProperty("checked", settings->Value(ImpKeys::RECORDING_IN_ALL_INDICATORS).toBool());
+  connect(ui->rootObject(), SIGNAL(sigSimRec(bool)), this, SLOT(setRecordingInAllIndicators(bool)));
 }
 
 
@@ -52,4 +56,11 @@ void ImpSettingsDialog::setIniFindModbus485(bool en)
 {
   ImpSettings* settings = ImpSettings::Instance(parent());
   settings->SetValue(ImpKeys::EN_RS_485, en);
+}
+
+
+void ImpSettingsDialog::setRecordingInAllIndicators(bool en)
+{
+  ImpSettings* settings = ImpSettings::Instance(parent());
+  settings->SetValue(ImpKeys::RECORDING_IN_ALL_INDICATORS, en);
 }
