@@ -9,6 +9,23 @@ Item {
     width: 355
     objectName: "ImpSettings"
 
+    property string tcpAdress: ""
+    property int iCommand: 0 // 0 - нет команды
+                             // 1 - стереть список
+                             // 2 - добавить запись
+    onICommandChanged: // Получена команда работы со списком датчиков
+    {
+        if (iCommand === 1) // 1 - стереть список
+        {
+            lmAddress.clear(); // Очистка списка
+        }
+        if (iCommand === 2) // 2 - добавить запись
+        {
+            lmAddress.append({serverAddress : tcpAdress});
+        }
+        iCommand = 0; // 0 - нет команды
+    }
+
     signal sigFindModbusTCP(bool enableFind);
     signal sigFindModbus485(bool enableFind);
     signal sigSimRec(bool enableSimRec);
@@ -141,7 +158,10 @@ Item {
                             model: ListModel
                             { // Здесь будет содержаться список адресов
                                 id: lmAddress
-                                objectName: "lmAddress"
+                                onDataChanged:
+                                {
+
+                                }
                             }
                             delegate: TextField
                             {

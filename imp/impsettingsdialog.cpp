@@ -30,18 +30,27 @@ ImpSettingsDialog::ImpSettingsDialog(QWidget* parent)
 void ImpSettingsDialog::linkIni(QQuickWidget* ui)
 {
   ImpSettings* settings = ImpSettings::Instance(parent());
+  QQuickItem* root = ui->rootObject();
 
-  QObject* cbModBusSearch = ui->rootObject()->findChild<QObject*>("cbModBusSearch");
+  QObject* cbModBusSearch = root->findChild<QObject*>("cbModBusSearch");
   cbModBusSearch->setProperty("checked", settings->Value(ImpKeys::EN_MODBUS_TCP).toBool());
-  connect(ui->rootObject(), SIGNAL(sigFindModbusTCP(bool)), this, SLOT(setIniFindModbusTCP(bool)));
+  connect(root, SIGNAL(sigFindModbusTCP(bool)), this, SLOT(setIniFindModbusTCP(bool)));
 
-  QObject* cbSearch485 = ui->rootObject()->findChild<QObject*>("cbSearch485");
+  QObject* cbSearch485 = root->findChild<QObject*>("cbSearch485");
   cbSearch485->setProperty("checked", settings->Value(ImpKeys::EN_RS_485).toBool());
-  connect(ui->rootObject(), SIGNAL(sigFindModbus485(bool)), this, SLOT(setIniFindModbus485(bool)));
+  connect(root, SIGNAL(sigFindModbus485(bool)), this, SLOT(setIniFindModbus485(bool)));
 
-  QObject* cbSimRec = ui->rootObject()->findChild<QObject*>("cbSimRec");
+  QObject* cbSimRec = root->findChild<QObject*>("cbSimRec");
   cbSimRec->setProperty("checked", settings->Value(ImpKeys::RECORDING_IN_ALL_INDICATORS).toBool());
-  connect(ui->rootObject(), SIGNAL(sigSimRec(bool)), this, SLOT(setRecordingInAllIndicators(bool)));
+  connect(root, SIGNAL(sigSimRec(bool)), this, SLOT(setRecordingInAllIndicators(bool)));
+
+  QStringList sl = settings->Value(ImpKeys::LIST_MB_ADDR).toStringList();
+  root->setProperty("iCommand", 1); // clear list of adresses
+  for (QString adress : sl)
+  {
+    root->setProperty("tcpAdress", adress);
+    root->setProperty("iCommand", 2); // Команда на добавление записи
+  }
 }
 
 
