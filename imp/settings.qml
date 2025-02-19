@@ -9,6 +9,8 @@ Item {
     width: 355
     objectName: "ImpSettings"
 
+    signal sigFindModbusTCP(bool enableFind);
+
     function enabledFinderCheck()
     {
         cbSearch.enabled = cbWireSearch.checked;
@@ -89,7 +91,11 @@ Item {
                                 objectName: "cbModBusSearch"
                                 text: "Искать датчики через сервер Modbus TCP"
                                 Material.accent: impStyle.chekedColor
-                                onReleased: enabledFinderCheck()
+                                onReleased:
+                                {
+                                    enabledFinderCheck();
+                                    sigFindModbusTCP(checked)
+                                }
                             }
                         }
                     }

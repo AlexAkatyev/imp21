@@ -14,6 +14,9 @@ public:
 
 private:
   void linkIni(QQuickWidget* ui);
+
+private slots:
+  void setIniFindModbusTCP(bool en);
 };
 
 #endif // IMPSETTINGSDIALOG_H

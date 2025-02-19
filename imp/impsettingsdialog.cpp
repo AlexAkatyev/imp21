@@ -29,11 +29,16 @@ ImpSettingsDialog::ImpSettingsDialog(QWidget* parent)
 
 void ImpSettingsDialog::linkIni(QQuickWidget* ui)
 {
-  ImpSettings * settings = ImpSettings::Instance(parent());
-  //QObject* cbWireSearch = ui->rootObject()->findChild<QObject*>("cbWireSearch");
-  //cbWireSearch->setProperty("checked", !settings->Value(ImpKeys::EN_MODBUS_TCP).toBool());
+  ImpSettings* settings = ImpSettings::Instance(parent());
 
   QObject* cbModBusSearch = ui->rootObject()->findChild<QObject*>("cbModBusSearch");
   cbModBusSearch->setProperty("checked", settings->Value(ImpKeys::EN_MODBUS_TCP).toBool());
-  //connect(ui->rootObject(), SIGNAL(sigClickedbtAbout()), this, SLOT(showAbout()));
+  connect(ui->rootObject(), SIGNAL(sigFindModbusTCP(bool)), this, SLOT(setIniFindModbusTCP(bool)));
+}
+
+
+void ImpSettingsDialog::setIniFindModbusTCP(bool en)
+{
+  ImpSettings* settings = ImpSettings::Instance(parent());
+  settings->SetValue(ImpKeys::EN_MODBUS_TCP, en);
 }
