@@ -161,8 +161,8 @@ Item
                     }
                     text: "Восстановить\nиндикатор"
                     font.capitalization: Font.MixedCase
-                    icon.name: "indicator_add"
-                    icon.source: "icons/indicator_add.png"
+                    icon.name: "indicator_restore"
+                    icon.source: "icons/indicator_restore.png"
                     display: Button.TextUnderIcon
                     ToolTip.visible: hovered
                     ToolTip.text: "Восстановить индикатор с последними настройками"
@@ -365,72 +365,88 @@ Item
             id: itDetect
             height: 80
             width: itWin.width
-            Row
-            {
-                anchors.verticalCenter: parent.verticalCenter
-                topPadding: 5
-                leftPadding: 10
-                spacing: 10
 
-                Text
-                {
-                    id: textNumber
-                    font.pointSize: 30
-                    text: serialNumber
-                }
+            Frame {
+                anchors.fill: itDetect
+                anchors.margins: 1
 
-                Column
+                Row
                 {
+                    id: mainRow
+                    anchors.verticalCenter: parent.verticalCenter
                     topPadding: 5
-                    spacing: 5
+                    leftPadding: 10
+                    spacing: 10
 
-                    Row
-                    {
+                    Rectangle {
 
+                        color: impStyle.actionbarColor
+                        height: textNumber.height+10
+                        width: 150
                         Text
                         {
-                            id: textName
-                            font.pointSize: 12
-                            text: nameDetect
-                        }
-                        Text
-                        {
-                            id: textActive
-                            font.pointSize: 12
-                            text: activeState
+                            id: textNumber
+                            anchors.centerIn: parent
+                            font.pointSize: 30
+                            text: serialNumber
                         }
                     }
-                    Text
+
+                    Column
                     {
-                        id: textType
-                        font.pointSize: 10
-                        text: typeDetect
-                    }
-                    Row
-                    {
-                        spacing: 10
-                        Text
+                        anchors.verticalCenter: mainRow.verticalCenter
+                        spacing: 5
+
+                        Row
                         {
-                            id: textDataManuf
-                            font.pointSize: 10
-                            text: "Изг.: " + dataManuf
+
+                            Text
+                            {
+                                id: textName
+                                font.pointSize: 12
+                                text: nameDetect
+                            }
+                            Text
+                            {
+                                id: textActive
+                                font.pointSize: 12
+                                text: activeState
+                            }
                         }
                         Text
                         {
-                            id: textPort
+                            id: textType
                             font.pointSize: 10
-                            text: "Порт: " + port
+                            text: typeDetect
                         }
-                        Text
+                        Row
                         {
-                            id:textModbusAddress
-                            font.pointSize: 10
-                            text: "Адрес Modbus: " + modbusAddress
-                            visible: modbusAddress !== ""
+                            spacing: 10
+                            Text
+                            {
+                                id: textDataManuf
+                                font.pointSize: 10
+                                text: "Изг.: " + dataManuf
+                            }
+                            Text
+                            {
+                                id: textPort
+                                font.pointSize: 10
+                                text: "Порт: " + port
+                            }
+                            Text
+                            {
+                                id:textModbusAddress
+                                font.pointSize: 10
+                                text: "Адрес Modbus: " + modbusAddress
+                                visible: modbusAddress !== ""
+                            }
                         }
                     }
                 }
             }
+
+
             MouseArea
             { // Для запуска окна установок
                 anchors.fill: parent

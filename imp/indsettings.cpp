@@ -6,8 +6,8 @@
 #include "indsettings.h"
 
 // Исходные размеры окна
-const int SIZE_WINDOW_WIDTH = 320;
-const int SIZE_WINDOW_HEIGTH = 480;
+const int SIZE_WINDOW_WIDTH = 450;
+const int SIZE_WINDOW_HEIGTH = 400;
 
 
 IndSettings::IndSettings(QString setFileName, QObject* parent)

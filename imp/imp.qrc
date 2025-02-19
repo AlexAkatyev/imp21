@@ -15,5 +15,6 @@
         <file>icons/help.png</file>
         <file>ImpStyle.qml</file>
         <file>icons/no_adress_added.png</file>
+        <file>icons/indicator_restore.png</file>
     </qresource>
 </RCC>
