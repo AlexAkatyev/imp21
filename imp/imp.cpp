@@ -435,9 +435,7 @@ void Imp::showHelp()
 
 void Imp::showAbout()
 {
-  //static AboutDialog* aboutWindow = new AboutDialog(this, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
   static ImpSettingsDialog* sDialog = new ImpSettingsDialog(this);
-  //aboutWindow->show();
   sDialog->UpdatePosition(geometry());
   sDialog->show();
 }

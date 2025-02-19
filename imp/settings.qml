@@ -70,6 +70,7 @@ Item {
 
                             RadioButton {
                                 id: cbWireSearch
+                                objectName: "cbWireSearch"
                                 text: "Искать проводные датчики"
                                 checked: true
                                 Material.accent: impStyle.chekedColor
@@ -85,6 +86,7 @@ Item {
 
                             RadioButton {
                                 id: cbModBusSearch
+                                objectName: "cbModBusSearch"
                                 text: "Искать датчики через сервер Modbus TCP"
                                 Material.accent: impStyle.chekedColor
                                 onReleased: enabledFinderCheck()
