@@ -201,7 +201,7 @@ Item
                 icon.source: "icons/add_and_compose.png"
                 display: Button.TextUnderIcon
                 ToolTip.visible: hovered
-                ToolTip.text: "Добавить выбранное количество индикаторов и разместить в пределах одного экрана"
+                ToolTip.text: "Добавить максимальное количество индикаторов и разместить их в пределах всех доступных экранов"
             }
 
             ToolSeparator {

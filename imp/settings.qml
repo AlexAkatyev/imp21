@@ -188,7 +188,7 @@ Item {
                         {
                             id: emptyWidgets
                             visible: lvAddresses.count == 0
-                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.centerIn: parent
                             Text {
                                 id: txNoAddress
                                 text: "Адресов не найдено"
