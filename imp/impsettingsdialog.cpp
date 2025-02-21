@@ -51,6 +51,9 @@ void ImpSettingsDialog::linkIni(QQuickWidget* ui)
     root->setProperty("tcpAdress", adress);
     root->setProperty("iCommand", 2); // Команда на добавление записи
   }
+  connect(root, SIGNAL(sigAdresses(QString)), this, SLOT(setModbusAdresses(QString)));
+  QObject* modelUpdater = root->findChild<QObject*>("modelUpdater");
+  modelUpdater->setProperty("running", true);
 }
 
 
@@ -72,4 +75,12 @@ void ImpSettingsDialog::setRecordingInAllIndicators(bool en)
 {
   ImpSettings* settings = ImpSettings::Instance(parent());
   settings->SetValue(ImpKeys::RECORDING_IN_ALL_INDICATORS, en);
+}
+
+
+void ImpSettingsDialog::setModbusAdresses(QString adresses)
+{
+  ImpSettings* settings = ImpSettings::Instance(parent());
+  QStringList sl = adresses.split("\n");
+  settings->SetValue(ImpKeys::LIST_MB_ADDR, sl);
 }

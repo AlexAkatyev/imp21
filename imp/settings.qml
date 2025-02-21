@@ -25,10 +25,12 @@ Item {
         }
         iCommand = 0; // 0 - нет команды
     }
+    property string oldAdresses: ""
 
     signal sigFindModbusTCP(bool enableFind);
     signal sigFindModbus485(bool enableFind);
     signal sigSimRec(bool enableSimRec);
+    signal sigAdresses(string listAdresses);
 
     function enabledFinderCheck()
     {
@@ -41,6 +43,34 @@ Item {
     ImpStyle
     {
         id: impStyle
+    }
+
+    Timer
+    {
+        id: modelUpdater
+        objectName: "modelUpdater"
+        interval: 1000
+        repeat: true
+        running: false
+        onTriggered:
+        {
+            var mes = "";
+            for (var i = 0; i < lmAddress.count; i++)
+            {
+                if (i !== 0)
+                {
+                    mes += "\n";
+                }
+
+                mes += lmAddress.get(i).serverAddress;
+            }
+            if (oldAdresses !== mes)
+            {
+                oldAdresses = mes;
+                sigAdresses(mes);
+            }
+
+        }
     }
 
     Rectangle {
@@ -158,11 +188,8 @@ Item {
                             model: ListModel
                             { // Здесь будет содержаться список адресов
                                 id: lmAddress
-                                onDataChanged:
-                                {
-
-                                }
                             }
+
                             delegate: TextField
                             {
                                 width: parent.width - scroll.width
@@ -174,6 +201,10 @@ Item {
                                 onPressed:
                                 {
                                     view.currentIndex = itemIndex;
+                                }
+                                onTextChanged:
+                                {
+                                    lmAddress.set(index, {serverAddress : text});
                                 }
                             }
                             onCountChanged:

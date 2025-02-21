@@ -16,6 +16,7 @@ private slots:
   void setIniFindModbusTCP(bool en);
   void setIniFindModbus485(bool en);
   void setRecordingInAllIndicators(bool en);
+  void setModbusAdresses(QString adresses);
 
 private:
   void linkIni(QQuickWidget* ui);
