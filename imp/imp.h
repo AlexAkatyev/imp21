@@ -45,7 +45,7 @@ private slots:
     // Удаление индикатора из множества
     void deleteIndicator(int);
     // Отработка команды: Помощь/О программе
-    void showAbout();
+    void showSettingsDialog();
     // Отработка команды: Помощь/Справка
     void showHelp();
 
@@ -75,7 +75,7 @@ private:
     std::vector<Indicator*> _indicators;
     bool _flagRunIndicators; // Флаг необходимости запускать индикаторы после запуска программы
 
-    void createIndicator(int index, ImpAbstractDetect* baseDetect = nullptr);
+    void createIndicator(int index, ImpAbstractDetect* baseDetect, bool defOption);
     void createScreenIndicators(QList<int> indexList, ImpAbstractDetect* baseDetect = nullptr);
 
     // Количество найденых датчиков

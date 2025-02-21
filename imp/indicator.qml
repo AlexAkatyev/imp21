@@ -4,6 +4,7 @@ import QtQuick.Controls.Material 2.12
 import QtMultimedia 5.5
 import QtQuick.Layouts 1.12
 import QtQml 2.12
+import QtQuick.Dialogs 1.2
 
 Item
 {
@@ -485,11 +486,27 @@ Item
         id: lmMeasData
     }
 
+
+    ColorDialog
+    {
+        id: colorDialog
+        title: "Выберите цвет фона окна"
+        modality: Qt.ApplicationModal
+        visible: false
+        onAccepted:
+        {
+            backRect.color = colorDialog.color;
+        }
+    }
+
+
     Item {
         id: itMeasure
         anchors.fill: parent
 
-        Rectangle {
+        Rectangle
+        {
+            id: backRect
             anchors.fill: parent
             color: impStyle.windowColor
         }
@@ -498,6 +515,24 @@ Item
             height: 50
             width: parent.width
             anchors.bottom: parent.bottom
+        }
+
+        Button {
+            id: btPalette
+            icon.name: "palette"
+            icon.source: "icons/palette.png"
+            background: Rectangle {
+                color: btPalette.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
+                radius: 5
+                height: 50
+                width: 50
+                anchors.centerIn: parent
+            }
+            onReleased:
+            {
+                colorDialog.color = impStyle.windowColor
+                colorDialog.open();
+            }
         }
 
         Button {
@@ -1381,7 +1416,6 @@ Item
                                     wrapMode: TextArea.WrapAtWordBoundaryOrAnywhere
                                     onTextChanged:
                                     {
-                                        complexFormula.cursorPosition = complexFormula.length;
                                         analyseComplexFormula(text);
                                     }
                                 }

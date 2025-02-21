@@ -488,9 +488,10 @@ bool BepVTDetect::defCalibrateDataTable(const QByteArray& baStream)
 }
 
 
-void BepVTDetect::ShowSettings()
+void BepVTDetect::ShowSettings(QRect pos)
 {
   BepVTSettings* settingsWindow = new BepVTSettings(this);
+  settingsWindow->UpdatePosition(pos);
   settingsWindow->show();
 }
 

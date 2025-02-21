@@ -14,6 +14,8 @@
 #include "checkInputNumberIF/checkInputNumberIF.h"
 #include "indsettings.h"
 #include "postmessagesender.h"
+#include "formulatree/formulafactory.h"
+#include "formulatree/formulanode.h"
 
 #include <Xlsx/Workbook.h>
 using namespace SimpleXlsx;
@@ -34,11 +36,11 @@ using namespace SimpleXlsx;
 
 
 // Исходные размеры окна индикатора
-const int SIZE_INDICATOR_WINDOW_X = 374;
-const int SIZE_INDICATOR_WINDOW_Y = 458;
+const int SIZE_INDICATOR_WINDOW_X = 450;
+const int SIZE_INDICATOR_WINDOW_Y = 400;
 //const int SIZE_INDICATOR_WINDOW_Y2 = (SIZE_INDICATOR_WINDOW_Y/2);
 
-const int MINIMAL_HEIGHT = 500;
+const int MINIMAL_HEIGHT = 450;
 const int MINIMAL_WIDTH = 400;
 
 // Периодичность считывания показаний датчиков
@@ -49,7 +51,13 @@ const int PRECISION_INCREMENT = 7;
 const int PRECISION_RANGE = 7;
 const int PRECISION_DIVISION = 6;
 
-Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* baseDetect)
+Indicator::Indicator
+(
+    QWidget* parent
+    , int identificator
+    , ImpAbstractDetect* baseDetect
+    , bool defOptions
+)
   : QWidget(nullptr, Qt::Window)
   , _parent(static_cast<Imp*>(parent))
   , _idIndicator(identificator)
@@ -58,6 +66,7 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   , _detect1(nullptr)
   , _detect2(nullptr)
   , _transGauge(UnitMKM)
+  , _complexFormula(nullptr)
 {
   _zeroShifts = {0, 0};
   _settings = new IndSettings("indicator" + QString::number(_idIndicator) + ".ini", this);
@@ -151,7 +160,7 @@ Indicator::Indicator(QWidget* parent, int identificator, ImpAbstractDetect* base
   connect(this, SIGNAL(sigCloseIndicator(int)), _parent, SLOT(deleteIndicator(int)));
 
   // Загрузка настроек
-  loadSettingsIndicator();
+  loadSettingsIndicator(defOptions);
 
   _measuredLogs.clear();
 
@@ -626,8 +635,12 @@ void Indicator::loadSettingsWindow()
 
 
 // Чтение установок
-bool Indicator::loadSettingsIndicator()
+bool Indicator::loadSettingsIndicator(bool defOptions)
 {
+  if (defOptions)
+  {
+    _settings->LockDefaultValues();
+  }
   QVariant v = _settings->Value(IndKeys::SCALE1);
   _scale1 = v.toDouble();
   _tfFactor1->setProperty("text", v);
@@ -745,6 +758,7 @@ bool Indicator::loadSettingsIndicator()
   qmlWidget->setProperty("text",  _settings->Value(IndKeys::AUTO_SAVE_PERIOD));
   _autoSaveFile = _settings->Value(IndKeys::AUTO_SAVE_FILE).toString();
 
+  _settings->UnlockDefaultValues();
   return true;
 }
 
@@ -1026,9 +1040,17 @@ void Indicator::createComplexFormula(QString inputText)
     statusMessage = "Формула задана верно";
   }
 
+  bool error = false;
+  QString textError;
+  FormulaNode* fNode = nullptr;
   if (status)
   {
-
+    fNode = FormulaFactory(this).Do(inputText, &error, &textError);
+    status = error ? STATUS_FORMULA_ERROR : STATUS_FORMULA_OK;
+    if (error)
+    {
+      statusMessage = textError;
+    }
   }
 
   QObject* fMessage = _quickUi->rootObject()->findChild<QObject*>("formulaMessage");

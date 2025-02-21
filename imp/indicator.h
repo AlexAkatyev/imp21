@@ -8,6 +8,7 @@ class Imp;
 class IndSettings;
 class QQuickWidget;
 class ImpAbstractDetect;
+class FormulaNode;
 
 // Максимальная длина истории измерений для усреднения
 #define LEN_MAD 2000
@@ -18,7 +19,8 @@ class Indicator : public QWidget
 public:
     Indicator(QWidget* parent,         // родитель
               int identificator,       // Номер индикатора
-              ImpAbstractDetect* baseDetect = nullptr);    // Ссылка на датчик
+              ImpAbstractDetect* baseDetect = nullptr,
+              bool defOptions = false);    // Ссылка на датчик
     int Id();
     static std::vector<int> GetDefaultSize();
 
@@ -111,6 +113,7 @@ private:
     float _divider;
     std::vector<float> _zeroShifts;
     TransToUnit _transGauge;
+    FormulaNode* _complexFormula;
 
     // Диапазон измерения датчиков
     int iRange1; // датчик 1
@@ -129,7 +132,7 @@ private:
     IndSettings* _settings;
     // сохранение настроек
     void loadSettingsWindow(); // Загрузка параметров окна
-    bool loadSettingsIndicator(); // Загрузка параметров из файла установок
+    bool loadSettingsIndicator(bool defOptions); // Загрузка параметров из файла установок
     void saveSettingsIndicator(); // Сохранение параметров установок в файл
 
     QStringList createListByDetect1();

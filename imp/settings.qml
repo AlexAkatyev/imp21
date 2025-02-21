@@ -9,9 +9,68 @@ Item {
     width: 355
     objectName: "ImpSettings"
 
+    property string tcpAdress: ""
+    property int iCommand: 0 // 0 - нет команды
+                             // 1 - стереть список
+                             // 2 - добавить запись
+    onICommandChanged: // Получена команда работы со списком датчиков
+    {
+        if (iCommand === 1) // 1 - стереть список
+        {
+            lmAddress.clear(); // Очистка списка
+        }
+        if (iCommand === 2) // 2 - добавить запись
+        {
+            lmAddress.append({serverAddress : tcpAdress});
+        }
+        iCommand = 0; // 0 - нет команды
+    }
+    property string oldAdresses: ""
+
+    signal sigFindModbusTCP(bool enableFind);
+    signal sigFindModbus485(bool enableFind);
+    signal sigSimRec(bool enableSimRec);
+    signal sigAdresses(string listAdresses);
+
+    function enabledFinderCheck()
+    {
+        cbSearch485.enabled = cbWireSearch.checked;
+        cmdAdressbutons.enabled = cbModBusSearch.checked;
+        frameAdresses.enabled = cbModBusSearch.checked;
+    }
+
+
     ImpStyle
     {
         id: impStyle
+    }
+
+    Timer
+    {
+        id: modelUpdater
+        objectName: "modelUpdater"
+        interval: 1000
+        repeat: true
+        running: false
+        onTriggered:
+        {
+            var mes = "";
+            for (var i = 0; i < lmAddress.count; i++)
+            {
+                if (i !== 0)
+                {
+                    mes += "\n";
+                }
+
+                mes += lmAddress.get(i).serverAddress;
+            }
+            if (oldAdresses !== mes)
+            {
+                oldAdresses = mes;
+                sigAdresses(mes);
+            }
+
+        }
     }
 
     Rectangle {
@@ -62,22 +121,39 @@ Item {
 
                             RadioButton {
                                 id: cbWireSearch
+                                objectName: "cbWireSearch"
                                 text: "Искать проводные датчики"
                                 checked: true
                                 Material.accent: impStyle.chekedColor
-
+                                onReleased:
+                                {
+                                    enabledFinderCheck();
+                                    sigFindModbusTCP(!checked);
+                                }
                             }
 
                             CheckBox {
-                                id: cbSearch
+                                id: cbSearch485
+                                objectName: "cbSearch485"
                                 text: "Искать датчики по протоколу RS-485"
                                 Material.accent: impStyle.chekedColor
+                                enabled: cbWireSearch.checked
+                                onReleased:
+                                {
+                                    sigFindModbus485(checked);
+                                }
                             }
 
                             RadioButton {
                                 id: cbModBusSearch
+                                objectName: "cbModBusSearch"
                                 text: "Искать датчики через сервер Modbus TCP"
                                 Material.accent: impStyle.chekedColor
+                                onReleased:
+                                {
+                                    enabledFinderCheck();
+                                    sigFindModbusTCP(checked)
+                                }
                             }
                         }
                     }
@@ -89,8 +165,10 @@ Item {
 
                     Frame
                     {
+                        id: frameAdresses
                         height: 200
                         width: checkFrame.width
+                        enabled: cbModBusSearch.checked
 
                         ListView
                         {
@@ -110,8 +188,8 @@ Item {
                             model: ListModel
                             { // Здесь будет содержаться список адресов
                                 id: lmAddress
-                                objectName: "lmAddress"
                             }
+
                             delegate: TextField
                             {
                                 width: parent.width - scroll.width
@@ -124,30 +202,46 @@ Item {
                                 {
                                     view.currentIndex = itemIndex;
                                 }
+                                onTextChanged:
+                                {
+                                    lmAddress.set(index, {serverAddress : text});
+                                }
                             }
                             onCountChanged:
                             {
                                 visible = count != 0;
-                                imNoAddress.visible = !visible;
+                                emptyWidgets.visible = !visible;
                             }
                             visible: count != 0
                         }
 
-                        Image
+                        Column
                         {
-                            id: imNoAddress
-                            source: "icons/no_adress_added.png"
-                            anchors.centerIn: parent
-                            height: 180
-                            width: imNoAddress.height
+                            id: emptyWidgets
                             visible: lvAddresses.count == 0
+                            anchors.centerIn: parent
+                            Text {
+                                id: txNoAddress
+                                text: "Адресов не найдено"
+                                font.pixelSize: 12
+                            }
+
+                            Image
+                            {
+                                id: imNoAddress
+                                source: "icons/no_adress_added.png"
+                                height: 100
+                                width: imNoAddress.height
+                            }
                         }
                     }
                     Item
                     {
+                        id: cmdAdressbutons
                         width: checkFrame.width
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.bottom: parent.bottom
+                        enabled: cbModBusSearch.checked
 
                         Button
                         {
@@ -208,8 +302,13 @@ Item {
 
                     CheckBox {
                         id: cbSimRec
+                        objectName: "cbSimRec"
                         text: "Запись одновременно во всех индикаторах"
                         Material.accent: impStyle.chekedColor
+                        onReleased:
+                        {
+                            sigSimRec(checked);
+                        }
                     }
                 }
             }

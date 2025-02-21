@@ -13,7 +13,7 @@ public:
   explicit MeasServerDetect(MBTcpLocator* locator, int countD, QObject* parent);
   void Init() override;
   QString PortName() override;
-  void ShowSettings() override;
+  void ShowSettings(QRect pos) override;
   void ReportReadyWrite(bool ready) override;
 
 private:

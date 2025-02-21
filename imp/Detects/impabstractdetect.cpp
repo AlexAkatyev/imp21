@@ -1,3 +1,5 @@
+#include <QRect>
+
 #include "impabstractdetect.h"
 #include "../postmessagesender.h"
 
@@ -127,9 +129,9 @@ int ImpAbstractDetect::PreSetInterval()
 }
 
 
-void ImpAbstractDetect::ShowSettings()
+void ImpAbstractDetect::ShowSettings(QRect pos)
 {
-
+  Q_UNUSED(pos);
 }
 
 
