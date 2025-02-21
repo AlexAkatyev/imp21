@@ -435,8 +435,8 @@ void Imp::createScreenIndicators(QList<int> indexList, ImpAbstractDetect* baseDe
     for(int i = 0; i < countScreen; i++){
         _sizeWindowMap[i] = screen[i]->availableSize();
 
-        int numberOfWindowsColumns = (int)(_sizeWindowMap[i].width())/sizeWidthIndicator;
-        int numberOfWindowsRows = (int)(_sizeWindowMap[i].height())/sizeHeigthIndicator;
+        int numberOfWindowsColumns = static_cast<int>((_sizeWindowMap[i].width())/sizeWidthIndicator);
+        int numberOfWindowsRows = static_cast<int>((_sizeWindowMap[i].height())/sizeHeigthIndicator);
 
         int numberIndicators = numberOfWindowsRows * numberOfWindowsColumns + numberInd;
 
@@ -522,8 +522,8 @@ void Imp::composeOpenWindowsInOrder()
         {
             //узнаем размеры экрана
             _sizeScreenMap[i] = screen[i]->availableSize();
-            int numberOfWindowsColumns = (int)(_sizeScreenMap[i].width())/sizeWidthIndicator;
-            int numberOfWindowsRows = (int)(_sizeScreenMap[i].height())/sizeHeigthIndicator;
+            int numberOfWindowsColumns = static_cast<int>((_sizeScreenMap[i].width())/sizeWidthIndicator);
+            int numberOfWindowsRows = static_cast<int>((_sizeScreenMap[i].height())/sizeHeigthIndicator);
             //сколько может быть всего окон на экранах
             allWindows = allWindows + numberOfWindowsRows * numberOfWindowsColumns;
         }
@@ -535,9 +535,9 @@ void Imp::composeOpenWindowsInOrder()
             int column = 0;
             bool recalculateWindowSize = true;
             //количество столбцов
-            int numberOfWindowsColumns = (int)(_sizeScreenMap[currentScreen].width()) / sizeWidthIndicator;
+            int numberOfWindowsColumns = static_cast<int>((_sizeScreenMap[currentScreen].width()) / sizeWidthIndicator);
             //количество строк
-            int numberOfWindowsRows = (int)(_sizeScreenMap[currentScreen].height()) / sizeHeigthIndicator;
+            int numberOfWindowsRows = static_cast<int>((_sizeScreenMap[currentScreen].height()) / sizeHeigthIndicator);
             int startSreenX;
             int startSreenY;
             int newStartColumn;
@@ -563,8 +563,8 @@ void Imp::composeOpenWindowsInOrder()
                 if (recalculateWindowSize)
                 {
                     recalculateWindowSize = false;
-                    numberOfWindowsColumns = (int)(_sizeScreenMap[currentScreen].width()) / sizeWidthIndicator;
-                    numberOfWindowsRows = (int)(_sizeScreenMap[currentScreen].height()) / sizeHeigthIndicator;
+                    numberOfWindowsColumns = static_cast<int>((_sizeScreenMap[currentScreen].width()) / sizeWidthIndicator);
+                    numberOfWindowsRows = static_cast<int>((_sizeScreenMap[currentScreen].height()) / sizeHeigthIndicator);
                     //начало currentScreen-того экрана
                     startSreenX = screen[currentScreen]->geometry().x();
                     startSreenY = screen[currentScreen]->geometry().y();
