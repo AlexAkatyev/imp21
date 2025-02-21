@@ -39,7 +39,7 @@ private slots:
     // Создание нового индикатора, можно задать имя датчика
     void createNewIndicator(QString);
     //Создание множества окон индикаторов для заполнения всего экрана
-    void fillScreenWithIndicators(QString);
+    void fillScreenWithIndicators();
     //Расстановка окон индикаторов попорядку
     void composeOpenWindowsInOrder();
     // Удаление индикатора из множества
@@ -59,8 +59,6 @@ private:
     QObject* ptextComment; // статус поиска датчиков
     QObject* pbtFind; // кнопка поиска датчиков
     QObject* pbtIndicator; // кнопка открытия нового индикатора
-    QObject* pbtFillScreenWithIndicators; //кнопка заполнения экрана множевством индикаторов
-    QObject* pbtComposeOpenWindowsInOrder; //кнопка расстановки открытых окон индикаторов
 
     // переопределение события изменения окна
     void resizeEvent(QResizeEvent*);

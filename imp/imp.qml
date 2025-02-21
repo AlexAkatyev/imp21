@@ -74,7 +74,7 @@ Item
     signal sigClickedbtAbout();
     signal sigClickedbtHelp();
     signal sigNewIndicator(string SerialNum); // Серийный номер индикатора, или "Нет"
-    signal sigFillScreenWithIndicators(string SerialNum);
+    signal sigFillScreenWithIndicators();
     signal sigComposeOpenWindowsInOrder();
     signal sigFindDetect();
     signal sigSelectDetectToInit(string SerialNum);
@@ -187,7 +187,7 @@ Item
                 display: Button.TextUnderIcon
                 ToolTip.visible: hovered
                 ToolTip.text: "Добавить выбранное количество индикаторов и разместить в пределах одного экрана"
-                onClicked: sigFillScreenWithIndicators("нет");
+                onClicked: sigFillScreenWithIndicators();
             }
 
             ToolSeparator {

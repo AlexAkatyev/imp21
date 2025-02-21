@@ -47,6 +47,7 @@ const int VERSION_TEST  = DEF_VERSION_TEST;
 // Исходные размеры окна
 const int SIZE_WINDOW_WIDTH = 1155;
 const int SIZE_WINDOW_HEIGTH = 500;
+const int SIZE_WINDOW_TITLE = 25;
 
 const char* HELP_INFO = "build\\html\\index.html";
 
@@ -82,8 +83,6 @@ Imp::Imp(QWidget* parent)
     ptextComment = pQuickUi->rootObject()->findChild<QObject*>("textComment");
     pbtFind = pQuickUi->rootObject()->findChild<QObject*>("btFind");
     pbtIndicator = pQuickUi->rootObject()->findChild<QObject*>("btIndicator");
-    pbtFillScreenWithIndicators = pQuickUi->rootObject()->findChild<QObject*>("btAddAndCompose");
-    pbtComposeOpenWindowsInOrder = pQuickUi->rootObject()->findChild<QObject*>("btCompose");
 
     // Отработка команды: Помощь/Справка
     connect(pQuickUi->rootObject(), SIGNAL(sigClickedbtHelp()), this, SLOT(showHelp()));
@@ -101,7 +100,7 @@ Imp::Imp(QWidget* parent)
     connect(pQuickUi->rootObject(), SIGNAL(sigFindDetect()), this, SLOT(findDetect()));
 
     //Отработка команды: Заполнить экран окнами индикаторов
-    connect(pQuickUi->rootObject(), SIGNAL(sigFillScreenWithIndicators(QString)), this, SLOT(fillScreenWithIndicators(QString)));
+    connect(pQuickUi->rootObject(), SIGNAL(sigFillScreenWithIndicators()), this, SLOT(fillScreenWithIndicators()));
 
     //Отработка команды: Разместить отрытые окна по порядку
     connect(pQuickUi->rootObject(), SIGNAL(sigComposeOpenWindowsInOrder()), this, SLOT(composeOpenWindowsInOrder()));
@@ -225,7 +224,8 @@ void Imp::findDetect()
     if(_flagRunIndicators)
     { // при запуске программы открытие старых индикаторов
         for (int j = 0; j < MAX_INDICATOR; j++)
-            if (_useIndicators.contains(j) == true){
+            if (_useIndicators.contains(j) == true)
+            {
                 createIndicator(j);
             }
         _flagRunIndicators = false; // старые индикаторы больше не запускать
@@ -383,36 +383,20 @@ void Imp::createNewIndicator(QString strNDS)
 }
 
 //Заполнение экрана индикаторами
-void Imp::fillScreenWithIndicators(QString strNDS)
+void Imp::fillScreenWithIndicators()
 {
   qApp->processEvents();
-  int id = strNDS.toInt();
-
-  ImpAbstractDetect* baseDetect = nullptr;
-  if (id)
-  {
-    for (auto detect : _detects)
-    {
-      if (id == detect->Id())
-      {
-        baseDetect = detect;
-        break;
-      }
-    }
-  }
   QList<int> indexList;
+  int index;
 
-  if (!_flagRunIndicators) // Первый поиск датчиков и запуск старых индикаторов завершен
+  for (index = 0; index < MAX_INDICATOR; index++)
   {
-      int index;
-      //Поиск свободного идентификатора
-      for (index = 0; index < MAX_INDICATOR; index++){
-           if (_useIndicators.contains(index) == false){
-               indexList.push_back(index);
-           }
-      }
-      createScreenIndicators(indexList, baseDetect);
+       if (_useIndicators.contains(index) == false)
+       {
+           indexList.push_back(index);
+       }
   }
+  createScreenIndicators(indexList, nullptr);
 }
 
 // Удаление индикатора из множества
@@ -435,7 +419,6 @@ void Imp::deleteIndicator(int idInd)
 //создание индикаторов для заполнения экрана(-ов)
 void Imp::createScreenIndicators(QList<int> indexList, ImpAbstractDetect* baseDetect)
 {
-    qApp->processEvents();
     Indicator* ind;
 
     int countScreen = QApplication::screens().count();
@@ -443,7 +426,7 @@ void Imp::createScreenIndicators(QList<int> indexList, ImpAbstractDetect* baseDe
     std::map<int, QSize> _sizeWindowMap;
     QList<QScreen *> screen = QApplication::screens();
 
-    std::vector<int> sizeWindowIndicator = ind->getDefaultSize();
+    std::vector<int> sizeWindowIndicator = ind->GetDefaultSize();
     int sizeWidthIndicator = sizeWindowIndicator.at(0);
     int sizeHeigthIndicator = sizeWindowIndicator.at(1);
 
@@ -460,14 +443,16 @@ void Imp::createScreenIndicators(QList<int> indexList, ImpAbstractDetect* baseDe
         int startSreenX = screen[i]->geometry().x();
         int startSreenY = screen[i]->geometry().y();
 
-        for(int row = 0; row < numberOfWindowsRows; row++){
-            for(int column = 0; column < numberOfWindowsColumns; column++){
+        for(int row = 0; row < numberOfWindowsRows; row++)
+        {
+            for(int column = 0; column < numberOfWindowsColumns; column++)
+            {
                 ind = new Indicator(this,
                                     indexList[numberInd], // Номер индикатора
                                     baseDetect); // ссылка на датчик
 
                 ind->setGeometry(startSreenX+sizeWidthIndicator*column,
-                                 startSreenY+25+(row*sizeHeigthIndicator+25*row),
+                                 startSreenY+SIZE_WINDOW_TITLE+(row*sizeHeigthIndicator+SIZE_WINDOW_TITLE*row),
                                  0,
                                  0);
 
@@ -526,14 +511,15 @@ void Imp::composeOpenWindowsInOrder()
 
         Indicator* ind;
         //узнаем размеры окна индикатора по умолчанию
-        std::vector<int> sizeWindowIndicator = ind->getDefaultSize();
+        std::vector<int> sizeWindowIndicator = ind->GetDefaultSize();
         int sizeWidthIndicator = sizeWindowIndicator.at(0);
         int sizeHeigthIndicator = sizeWindowIndicator.at(1);
         //узнаем количество открытых окон
         int countOpenIndicators = _indicators.size();
         int allWindows = 0;
 
-        for(int i = 0; i < countScreen; i++){
+        for(int i = 0; i < countScreen; i++)
+        {
             //узнаем размеры экрана
             _sizeScreenMap[i] = screen[i]->availableSize();
             int numberOfWindowsColumns = (int)(_sizeScreenMap[i].width())/sizeWidthIndicator;
@@ -557,12 +543,16 @@ void Imp::composeOpenWindowsInOrder()
             int newStartColumn;
             int newStartRow;
 
-            for (auto indicator : _indicators) {
-                if (column > numberOfWindowsColumns - 1) {
-                    if (numberOfWindowsRows - 1 > row) {
+            for (auto indicator : _indicators)
+            {
+                if (column > numberOfWindowsColumns - 1)
+                {
+                    if (numberOfWindowsRows - 1 > row)
+                    {
                         row++;
                     }
-                    else {
+                    else
+                    {
                         currentScreen++;
                         row = 0;
                         recalculateWindowSize = true;
@@ -570,7 +560,8 @@ void Imp::composeOpenWindowsInOrder()
                     column = 0;
                 }
 
-                if (recalculateWindowSize) {
+                if (recalculateWindowSize)
+                {
                     recalculateWindowSize = false;
                     numberOfWindowsColumns = (int)(_sizeScreenMap[currentScreen].width()) / sizeWidthIndicator;
                     numberOfWindowsRows = (int)(_sizeScreenMap[currentScreen].height()) / sizeHeigthIndicator;
@@ -585,10 +576,10 @@ void Imp::composeOpenWindowsInOrder()
                 ind = indicator;
 
                 startSreenX = newStartColumn + column * sizeWidthIndicator;
-                startSreenY = newStartRow + row * sizeHeigthIndicator + 25 * row;
+                startSreenY = newStartRow + row * sizeHeigthIndicator + SIZE_WINDOW_TITLE * row;
                 // отрисовка start
                 ind->setGeometry(startSreenX,
-                                 startSreenY + 26,
+                                 startSreenY + SIZE_WINDOW_TITLE,
                                  sizeWidthIndicator,
                                  sizeHeigthIndicator);
                 column++;
