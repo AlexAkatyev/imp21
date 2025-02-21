@@ -54,7 +54,6 @@ SOURCES += main.cpp\
     WidgetUtil/centerdialog.cpp \
     formulatree/formulanode.cpp \
         imp.cpp \
-    about/about.cpp \
     impsettings.cpp \
     impsettingsdialog.cpp \
     indicator.cpp \
@@ -91,7 +90,6 @@ HEADERS  += imp.h \
     UtilLib/modbus.h \
     UtilLib/utillib.h \
     WidgetUtil/centerdialog.h \
-    about/about.h \
     formulatree/formulafactory.h \
     formulatree/formulanode.h \
     impdef.h \

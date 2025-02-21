@@ -71,7 +71,7 @@ Item
         iCommand = 0; // 0 - нет команды
     }
 
-    signal sigClickedbtAbout();
+    signal sigClickedGeneralSettings();
     signal sigClickedbtHelp();
     signal sigNewIndicator(string SerialNum); // Серийный номер индикатора, или "Нет", или "DEFAULT_INDICATOR"
     signal sigFindDetect();
@@ -252,7 +252,7 @@ Item
                 display: Button.TextUnderIcon
                 ToolTip.visible: hovered
                 ToolTip.text: "Выбрать тип датчика и способ поиска"
-                onClicked: sigClickedbtAbout();
+                onClicked: sigClickedGeneralSettings();
             }
 
 

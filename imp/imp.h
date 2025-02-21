@@ -40,7 +40,7 @@ private slots:
     // Удаление индикатора из множества
     void deleteIndicator(int);
     // Отработка команды: Помощь/О программе
-    void showAbout();
+    void showSettingsDialog();
     // Отработка команды: Помощь/Справка
     void showHelp();
 

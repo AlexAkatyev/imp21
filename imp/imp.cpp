@@ -16,7 +16,6 @@
 #include <QQuickWidget>
 #include <QVBoxLayout>
 
-#include "about/about.h"
 #include "indicator.h"
 #include "versionNo.h"
 #include "Detects/detectfactory.h"
@@ -84,8 +83,8 @@ Imp::Imp(QWidget* parent)
     // Отработка команды: Помощь/Справка
     connect(pQuickUi->rootObject(), SIGNAL(sigClickedbtHelp()), this, SLOT(showHelp()));
 
-    // Отработка команды: Помощь/О программе
-    connect(pQuickUi->rootObject(), SIGNAL(sigClickedbtAbout()), this, SLOT(showAbout()));
+    // Отработка команды: настройка рабочего места
+    connect(pQuickUi->rootObject(), SIGNAL(sigClickedGeneralSettings()), this, SLOT(showSettingsDialog()));
 
     // Отработка команды: Новый индикатор
     connect(pQuickUi->rootObject(), SIGNAL(sigNewIndicator(QString)), this, SLOT(createNewIndicator(QString)));
@@ -433,7 +432,7 @@ void Imp::showHelp()
 }
 
 
-void Imp::showAbout()
+void Imp::showSettingsDialog()
 {
   static ImpSettingsDialog* sDialog = new ImpSettingsDialog(this);
   sDialog->UpdatePosition(geometry());
