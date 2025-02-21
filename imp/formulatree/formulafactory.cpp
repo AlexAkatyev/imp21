@@ -165,7 +165,7 @@ FormulaNode* FormulaFactory::signDo(QString clInput, bool* error, QString* textE
   else
   {
     *error = true;
-    *textError = "Не допустимые символы в формуле";
+    *textError = "Некорректная запись формулы";
   }
   if (!*error)
   {
