@@ -1035,3 +1035,9 @@ void Indicator::createComplexFormula(QString inputText)
   fMessage->setProperty("status", status);
   fMessage->setProperty("text", QVariant(statusMessage));
 }
+
+std::vector<int> Indicator::GetDefaultSize()
+{
+    std::vector<int> defaultSize = {MINIMAL_WIDTH, MINIMAL_HEIGHT};
+    return defaultSize;
+}

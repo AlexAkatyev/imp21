@@ -23,6 +23,9 @@
 #include "Logger/logger.h"
 #include "impsettings.h"
 #include "impsettingsdialog.h"
+#include <QApplication>
+#include <QScreen>
+#include <QWindow>
 
 // Пауза после запуска программы перед поиском датчиков
 const int PAUSE_BEFORE_FIND_DETECT = 500;
@@ -44,6 +47,7 @@ const int VERSION_TEST  = DEF_VERSION_TEST;
 // Исходные размеры окна
 const int SIZE_WINDOW_WIDTH = 1155;
 const int SIZE_WINDOW_HEIGTH = 500;
+const int SIZE_WINDOW_TITLE = 25;
 
 const char* HELP_INFO = "build\\html\\index.html";
 
@@ -94,6 +98,12 @@ Imp::Imp(QWidget* parent)
 
     // Отработка команды: Поиск датчиков
     connect(pQuickUi->rootObject(), SIGNAL(sigFindDetect()), this, SLOT(findDetect()));
+
+    //Отработка команды: Заполнить экран окнами индикаторов
+    connect(pQuickUi->rootObject(), SIGNAL(sigFillScreenWithIndicators()), this, SLOT(fillScreenWithIndicators()));
+
+    //Отработка команды: Разместить отрытые окна по порядку
+    connect(pQuickUi->rootObject(), SIGNAL(sigComposeOpenWindowsInOrder()), this, SLOT(composeOpenWindowsInOrder()));
 
     // Поиск датчиков при запуске программы через паузу
     TimerBeforeFound = new QTimer(this);
@@ -218,7 +228,9 @@ void Imp::findDetect()
     { // при запуске программы открытие старых индикаторов
         for (int j = 0; j < MAX_INDICATOR; j++)
             if (_useIndicators.contains(j) == true)
+            {
                 createIndicator(j);
+            }
         _flagRunIndicators = false; // старые индикаторы больше не запускать
     }
     emit sigFindDetect();
@@ -373,6 +385,22 @@ void Imp::createNewIndicator(QString strNDS)
     }
 }
 
+//Заполнение экрана индикаторами
+void Imp::fillScreenWithIndicators()
+{
+  qApp->processEvents();
+  QList<int> indexList;
+  int index;
+
+  for (index = 0; index < MAX_INDICATOR; index++)
+  {
+       if (_useIndicators.contains(index) == false)
+       {
+           indexList.push_back(index);
+       }
+  }
+  createScreenIndicators(indexList, nullptr);
+}
 
 // Удаление индикатора из множества
 void Imp::deleteIndicator(int idInd)
@@ -391,6 +419,58 @@ void Imp::deleteIndicator(int idInd)
     }
 }
 
+//создание индикаторов для заполнения экрана(-ов)
+void Imp::createScreenIndicators(QList<int> indexList, ImpAbstractDetect* baseDetect)
+{
+    Indicator* ind;
+
+    int countScreen = QApplication::screens().count();
+
+    std::map<int, QSize> _sizeWindowMap;
+    QList<QScreen *> screen = QApplication::screens();
+
+    std::vector<int> sizeWindowIndicator = ind->GetDefaultSize();
+    int sizeWidthIndicator = sizeWindowIndicator.at(0);
+    int sizeHeigthIndicator = sizeWindowIndicator.at(1);
+
+    int numberInd = 0;
+
+    for(int i = 0; i < countScreen; i++){
+        _sizeWindowMap[i] = screen[i]->availableSize();
+
+        int numberOfWindowsColumns = static_cast<int>((_sizeWindowMap[i].width())/sizeWidthIndicator);
+        int numberOfWindowsRows = static_cast<int>((_sizeWindowMap[i].height())/sizeHeigthIndicator);
+
+        int numberIndicators = numberOfWindowsRows * numberOfWindowsColumns + numberInd;
+
+        int startSreenX = screen[i]->geometry().x();
+        int startSreenY = screen[i]->geometry().y();
+
+        for(int row = 0; row < numberOfWindowsRows; row++)
+        {
+            for(int column = 0; column < numberOfWindowsColumns; column++)
+            {
+                ind = new Indicator(this,
+                                    indexList[numberInd], // Номер индикатора
+                                    baseDetect); // ссылка на датчик
+
+                ind->setGeometry(startSreenX+sizeWidthIndicator*column,
+                                 startSreenY+SIZE_WINDOW_TITLE+(row*sizeHeigthIndicator+SIZE_WINDOW_TITLE*row),
+                                 0,
+                                 0);
+
+                _useIndicators.insert(indexList[numberInd]);
+                _indicators.push_back(ind);
+
+                if(numberInd < numberIndicators){
+                    numberInd++;
+                }
+                // Закрытие индикаторов при завершении работы приложения
+                connect(this, &Imp::sigCloseIndicatorWindows, ind, &Indicator::CloseMyIndicator);
+            }
+        }
+    }
+}
 
 void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect)
 {
@@ -422,6 +502,98 @@ void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect)
     connect(this, &Imp::sigCloseIndicatorWindows, ind, &Indicator::CloseMyIndicator);
 }
 
+//Размещение открытых индикаторов по экрану
+void Imp::composeOpenWindowsInOrder()
+{
+    qApp->processEvents();
+
+        int countScreen = QApplication::screens().count();
+
+        std::map<int, QSize> _sizeScreenMap;
+        QList<QScreen *> screen = QApplication::screens();
+
+        Indicator* ind;
+        //узнаем размеры окна индикатора по умолчанию
+        std::vector<int> sizeWindowIndicator = ind->GetDefaultSize();
+        int sizeWidthIndicator = sizeWindowIndicator.at(0);
+        int sizeHeigthIndicator = sizeWindowIndicator.at(1);
+        //узнаем количество открытых окон
+        int countOpenIndicators = _indicators.size();
+        int allWindows = 0;
+
+        for(int i = 0; i < countScreen; i++)
+        {
+            //узнаем размеры экрана
+            _sizeScreenMap[i] = screen[i]->availableSize();
+            int numberOfWindowsColumns = static_cast<int>((_sizeScreenMap[i].width())/sizeWidthIndicator);
+            int numberOfWindowsRows = static_cast<int>((_sizeScreenMap[i].height())/sizeHeigthIndicator);
+            //сколько может быть всего окон на экранах
+            allWindows = allWindows + numberOfWindowsRows * numberOfWindowsColumns;
+        }
+
+        if(countOpenIndicators <= allWindows)
+        {
+            int currentScreen = 0;
+            int row = 0;
+            int column = 0;
+            bool recalculateWindowSize = true;
+            //количество столбцов
+            int numberOfWindowsColumns = static_cast<int>((_sizeScreenMap[currentScreen].width()) / sizeWidthIndicator);
+            //количество строк
+            int numberOfWindowsRows = static_cast<int>((_sizeScreenMap[currentScreen].height()) / sizeHeigthIndicator);
+            int startSreenX;
+            int startSreenY;
+            int newStartColumn;
+            int newStartRow;
+
+            for (auto indicator : _indicators)
+            {
+                if (column > numberOfWindowsColumns - 1)
+                {
+                    if (numberOfWindowsRows - 1 > row)
+                    {
+                        row++;
+                    }
+                    else
+                    {
+                        currentScreen++;
+                        row = 0;
+                        recalculateWindowSize = true;
+                    }
+                    column = 0;
+                }
+
+                if (recalculateWindowSize)
+                {
+                    recalculateWindowSize = false;
+                    numberOfWindowsColumns = static_cast<int>((_sizeScreenMap[currentScreen].width()) / sizeWidthIndicator);
+                    numberOfWindowsRows = static_cast<int>((_sizeScreenMap[currentScreen].height()) / sizeHeigthIndicator);
+                    //начало currentScreen-того экрана
+                    startSreenX = screen[currentScreen]->geometry().x();
+                    startSreenY = screen[currentScreen]->geometry().y();
+                    newStartColumn = startSreenX;
+                    newStartRow = startSreenY;
+                }
+
+
+                ind = indicator;
+
+                startSreenX = newStartColumn + column * sizeWidthIndicator;
+                startSreenY = newStartRow + row * sizeHeigthIndicator + SIZE_WINDOW_TITLE * row;
+                // отрисовка start
+                ind->setGeometry(startSreenX,
+                                 startSreenY + SIZE_WINDOW_TITLE,
+                                 sizeWidthIndicator,
+                                 sizeHeigthIndicator);
+                column++;
+                // отрисовка finish
+            }
+        }
+        else
+        {
+            QMessageBox::information(this, "ИМП","Нет возможности распределить все открытые окна.");
+        }
+}
 
 void Imp::showHelp()
 {

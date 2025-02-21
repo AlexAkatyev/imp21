@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QSet>
+#include <map>
 
 class Indicator;
 class QQuickWidget;
@@ -37,6 +38,10 @@ private slots:
     void createNewSettings(QString);
     // Создание нового индикатора, можно задать имя датчика
     void createNewIndicator(QString);
+    //Создание множества окон индикаторов для заполнения всего экрана
+    void fillScreenWithIndicators();
+    //Расстановка окон индикаторов попорядку
+    void composeOpenWindowsInOrder();
     // Удаление индикатора из множества
     void deleteIndicator(int);
     // Отработка команды: Помощь/О программе
@@ -71,6 +76,7 @@ private:
     bool _flagRunIndicators; // Флаг необходимости запускать индикаторы после запуска программы
 
     void createIndicator(int index, ImpAbstractDetect* baseDetect = nullptr);
+    void createScreenIndicators(QList<int> indexList, ImpAbstractDetect* baseDetect = nullptr);
 
     // Количество найденых датчиков
     int _uiCounter; // для отображения прогресса поиска датчиков
