@@ -2,12 +2,47 @@
 #include "formulanode.h"
 #include "imp.h"
 
-bool IsExpression(QString input)
+const char BEGIN_STAPLE = '(';
+const char END_STAPLE = ')';
+
+bool isExpression(QString input)
 {
   return input.contains('+')
       || input.contains('-')
       || input.contains('*')
       || input.contains('/');
+}
+
+
+int getBeginForLastEndStaple(QString str)
+{
+  int lh = -1;
+  int rh = str.lastIndexOf(END_STAPLE);
+  if (rh == -1)
+  {
+    return lh;
+  }
+  int depth = 0;
+  for (int i = rh - 1; i > -1; --i)
+  {
+    if (str[i] == END_STAPLE)
+    {
+      ++depth;
+    }
+    else if (str[i] == BEGIN_STAPLE)
+    {
+      if (depth == 0)
+      {
+        lh = i;
+        break;
+      }
+      else
+      {
+        --depth;
+      }
+    }
+  }
+  return lh;
 }
 
 
@@ -46,8 +81,16 @@ FormulaNode* FormulaFactory::Do(QString input, bool* error, QString* textError)
 FormulaNode* FormulaFactory::stapleDo(QString clInput, bool* error, QString* textError)
 {
   FormulaNode* result = new FormulaNode(parent());
-  int ls = clInput.indexOf('(');
-  int rs = clInput.lastIndexOf(')');
+  int leftCount = clInput.count(BEGIN_STAPLE);
+  int rightCount = clInput.count(END_STAPLE);
+  if (leftCount != rightCount)
+  {
+    *textError = "Открывающие и закрывающие скобки не спарены";
+    *error = true;
+    return result;
+  }
+  int ls = getBeginForLastEndStaple(clInput);
+  int rs = clInput.lastIndexOf(END_STAPLE);
   if (rs != -1)
   {
     if (ls == -1)
@@ -210,7 +253,7 @@ FormulaNode* FormulaFactory::getExpression(QString clInput, bool* error, QString
     {
       result->SetL(data);
     }
-    else if (IsExpression(strLH))
+    else if (isExpression(strLH))
     {
       result->SetL(getExpression(strLH, error, textError));
     }
@@ -229,7 +272,7 @@ FormulaNode* FormulaFactory::getExpression(QString clInput, bool* error, QString
     {
       result->SetR(data);
     }
-    else if (IsExpression(strRH))
+    else if (isExpression(strRH))
     {
       result->SetR(getExpression(strRH, error, textError));
     }
