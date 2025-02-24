@@ -113,6 +113,7 @@ private:
     std::vector<float> _zeroShifts;
     TransToUnit _transGauge;
     FormulaNode* _complexFormula;
+    bool _complexFormulaEnable;
 
     // Диапазон измерения датчиков
     int iRange1; // датчик 1
@@ -160,6 +161,7 @@ private slots:
     // Определение, какой датчик не работает
     void watchDogControl(void); // Чтение результатов измерения датчиков для контроля работоспособноси
     void createComplexFormula(QString inputText);
+    void enableComplexFormula(bool en);
 
     // Для работы с виджетом QML
     void setComboListDetect(void); // отработка сигнала об изменении списка датчиков от главного окна

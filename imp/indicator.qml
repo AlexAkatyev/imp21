@@ -105,6 +105,7 @@ Item
     signal sigReleaseData();
     // передать текст формулы
     signal analyseComplexFormula(string inputText);
+    signal sigEnableComplexFormula(bool en);
 
     function toPixels(percentage) {
         return percentage * scaleBase / 100;
@@ -1242,6 +1243,10 @@ Item
                             text: "Использовать сложную формулу"
                             anchors.horizontalCenter: parent.horizontalCenter
                             font.pixelSize: tfName.font.pixelSize
+                            onCheckedChanged:
+                            {
+                                sigEnableComplexFormula(checked);
+                            }
                         }
 
                         Grid {

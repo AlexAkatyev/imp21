@@ -67,6 +67,7 @@ Indicator::Indicator
   , _detect2(nullptr)
   , _transGauge(UnitMKM)
   , _complexFormula(nullptr)
+  , _complexFormulaEnable(false)
 {
   _zeroShifts = {0, 0};
   _settings = new IndSettings("indicator" + QString::number(_idIndicator) + ".ini", this);
@@ -140,6 +141,7 @@ Indicator::Indicator
   connect(_inputIndicator, SIGNAL(sigChangeTransGauge()), this, SLOT(changedTransGauge()));
   // изменения в сложной формуле
   connect(_quickUi->rootObject(), SIGNAL(analyseComplexFormula(QString)), this, SLOT(createComplexFormula(QString)));
+  connect(_quickUi->rootObject(), SIGNAL(sigEnableComplexFormula(bool)), this, SLOT(enableComplexFormula(bool)));
 
   // получение информиции о имеющихся датчиках от главного окна
   connect(_parent, SIGNAL(sigFindDetect()), this, SLOT(setComboListDetect()));
@@ -594,9 +596,7 @@ void Indicator::saveSettingsIndicator()
   _settings->SetValue(IndKeys::BEFORESET, _inputIndicator->property("beforeSet"));
   _settings->SetValue(IndKeys::DOPUSK, _inputIndicator->property("dopusk"));
   _settings->SetValue(IndKeys::PERIOD, _tfPeriod->property("text").toInt());
-
-  QObject* cbComplexFormula = _quickUi->rootObject()->findChild<QObject*>("cbComplexFormula");
-  _settings->SetValue(IndKeys::COMPLEX_FORMULA_ENABLE, cbComplexFormula->property("checked"));
+  _settings->SetValue(IndKeys::COMPLEX_FORMULA_ENABLE, _complexFormulaEnable);
 
   // настройка шкалы
   _settings->SetValue(IndKeys::UNITPOINT, _inputIndicator->property("unitPoint"));
@@ -727,6 +727,7 @@ bool Indicator::loadSettingsIndicator(bool defOptions)
   QObject* cbComplexFormula = root->findChild<QObject*>("cbComplexFormula");
   v = _settings->Value(IndKeys::COMPLEX_FORMULA_ENABLE);
   cbComplexFormula->setProperty("checked", v);
+  _complexFormulaEnable = v.toBool();
 
   _inputIndicator->setProperty("unitPoint", _settings->Value(IndKeys::UNITPOINT));
   _tfUnitPoint->setProperty("text", _settings->Value(IndKeys::UNITPOINT));
@@ -1054,10 +1055,9 @@ void Indicator::createComplexFormula(QString inputText)
 
   bool error = false;
   QString textError;
-  FormulaNode* fNode = nullptr;
   if (status)
   {
-    fNode = FormulaFactory::Instance()->Do(inputText, &error, &textError);
+    _complexFormula = FormulaFactory::Instance()->Do(inputText, &error, &textError);
     status = error ? STATUS_FORMULA_ERROR : STATUS_FORMULA_OK;
     if (error)
     {
@@ -1068,4 +1068,10 @@ void Indicator::createComplexFormula(QString inputText)
   QObject* fMessage = _quickUi->rootObject()->findChild<QObject*>("formulaMessage");
   fMessage->setProperty("status", status);
   fMessage->setProperty("text", QVariant(statusMessage));
+}
+
+
+void Indicator::enableComplexFormula(bool en)
+{
+  _complexFormulaEnable = en;
 }
