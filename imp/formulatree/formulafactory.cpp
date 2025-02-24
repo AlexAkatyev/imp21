@@ -235,7 +235,7 @@ FormulaNode* FormulaFactory::getExpression(QString clInput, bool* error, QString
     }
     else
     {
-      result->SetL(getDetect(strRH, error, textError));
+      result->SetR(getDetect(strRH, error, textError));
     }
   }
   return result;
@@ -244,7 +244,51 @@ FormulaNode* FormulaFactory::getExpression(QString clInput, bool* error, QString
 
 ImpAbstractDetect* FormulaFactory::getDetect(QString clInput, bool* error, QString* textError)
 {
-  *error = true;
-  *textError = "неверная запись датчика : " + clInput;
+  if (clInput.length() < 2)
+  {
+    *error = true;
+    *textError = "неверная запись датчика : " + clInput;
+    return nullptr;
+  }
+  else
+  {
+    if (clInput.at(0) == "#")
+    {
+      bool numeric;
+      int number = clInput.mid(1).toInt(&numeric);
+      if (!numeric)
+      {
+        *error = true;
+        *textError = "неверная запись датчика : " + clInput;
+        return nullptr;
+      }
+      if (_imp != nullptr)
+      {
+        ImpAbstractDetect* detect = _imp->DetectAtId(number);
+        if (detect)
+        {
+          return detect;
+        }
+        else
+        {
+          *error = true;
+          *textError = "датчик  " + clInput + " не обнаружен";
+          return nullptr;
+        }
+      }
+      else
+      {
+        *error = true;
+        *textError = "Не удается найти список датчиков";
+        return nullptr;
+      }
+    }
+    else
+    {
+      *error = true;
+      *textError = "неверная запись датчика : " + clInput;
+      return nullptr;
+    }
+  }
   return nullptr;
 }
