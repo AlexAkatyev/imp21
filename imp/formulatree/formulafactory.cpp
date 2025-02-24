@@ -1,9 +1,32 @@
 #include "formulafactory.h"
 #include "formulanode.h"
+#include "imp.h"
 
-FormulaFactory::FormulaFactory(QObject *parent) : QObject(parent)
+bool IsExpression(QString input)
 {
+  return input.contains('+')
+      || input.contains('-')
+      || input.contains('*')
+      || input.contains('/');
+}
 
+
+FormulaFactory* FormulaFactory::Instance(Imp* imp)
+{
+  static FormulaFactory* singleton = nullptr;
+  if (singleton == nullptr
+      && imp != nullptr)
+  {
+    singleton = new FormulaFactory(imp);
+  }
+  return singleton;
+}
+
+
+FormulaFactory::FormulaFactory(Imp* imp)
+  : QObject(imp)
+  , _imp(imp)
+{
 }
 
 
@@ -16,7 +39,7 @@ FormulaNode* FormulaFactory::Do(QString input, bool* error, QString* textError)
     return stapleDo(clInput, error, textError);
   }
   // скобок нет
-  return signDo(clInput, error, textError);
+  return getExpression(clInput, error, textError);
 }
 
 
@@ -121,7 +144,7 @@ FormulaNode* FormulaFactory::stapleDo(QString clInput, bool* error, QString* tex
 }
 
 
-FormulaNode* FormulaFactory::signDo(QString clInput, bool* error, QString* textError)
+FormulaNode* FormulaFactory::getExpression(QString clInput, bool* error, QString* textError)
 {
   FormulaNode* result = new FormulaNode(parent());
   QString strLH;
@@ -164,29 +187,64 @@ FormulaNode* FormulaFactory::signDo(QString clInput, bool* error, QString* textE
   }
   else
   {
-    *error = true;
-    *textError = "Некорректная запись формулы";
+    if (clInput.isEmpty())
+    {
+      *error = true;
+      *textError = "Некорректная запись формулы";
+    }
+    else
+    {
+      // возможно, здесь записан датчик
+      result->SetL(getDetect(clInput, error, textError));
+    }
   }
   if (!*error)
   {
     data = strLH.toFloat(&numeric);
-    if (numeric)
+    if (strLH.isEmpty())
+    {
+      *error = true;
+      *textError = "Некорректная запись формулы слева";
+    }
+    else if (numeric)
     {
       result->SetL(data);
     }
+    else if (IsExpression(strLH))
+    {
+      result->SetL(getExpression(strLH, error, textError));
+    }
     else
     {
-      result->SetL(signDo(strLH, error, textError));
+      result->SetL(getDetect(strLH, error, textError));
     }
+
     data = strRH.toFloat(&numeric);
-    if (numeric)
+    if (strRH.isEmpty())
+    {
+      *error = true;
+      *textError = "Некорректная запись формулы справа";
+    }
+    else if (numeric)
     {
       result->SetR(data);
     }
+    else if (IsExpression(strRH))
+    {
+      result->SetR(getExpression(strRH, error, textError));
+    }
     else
     {
-      result->SetR(signDo(strRH, error, textError));
+      result->SetL(getDetect(strRH, error, textError));
     }
   }
   return result;
+}
+
+
+ImpAbstractDetect* FormulaFactory::getDetect(QString clInput, bool* error, QString* textError)
+{
+  *error = true;
+  *textError = "неверная запись датчика : " + clInput;
+  return nullptr;
 }

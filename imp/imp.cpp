@@ -22,6 +22,7 @@
 #include "Logger/logger.h"
 #include "impsettings.h"
 #include "impsettingsdialog.h"
+#include "formulatree/formulafactory.h"
 
 // Пауза после запуска программы перед поиском датчиков
 const int PAUSE_BEFORE_FIND_DETECT = 500;
@@ -54,6 +55,7 @@ Imp::Imp(QWidget* parent)
     , _indicateTimer(new QTimer(this))
 {
     Logger::GetInstance(this); // Запуск журнала
+    FormulaFactory::Instance(this);
 
     // Загрузка параметров из файла установок
     _useIndicators.clear(); // подготовка к загрузке множества индикаторов

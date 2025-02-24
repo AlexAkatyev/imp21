@@ -1045,7 +1045,7 @@ void Indicator::createComplexFormula(QString inputText)
   FormulaNode* fNode = nullptr;
   if (status)
   {
-    fNode = FormulaFactory(this).Do(inputText, &error, &textError);
+    fNode = FormulaFactory::Instance()->Do(inputText, &error, &textError);
     status = error ? STATUS_FORMULA_ERROR : STATUS_FORMULA_OK;
     if (error)
     {
