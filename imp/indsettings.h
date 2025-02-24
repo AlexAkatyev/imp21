@@ -33,6 +33,8 @@ enum IndKeys {WIN_X
               , AUTO_SAVE_ENABLE
               , AUTO_SAVE_FILE
               , AUTO_SAVE_PERIOD
+              , COMPLEX_FORMULA_ENABLE
+              , COMPLEX_FORMULA_EXPRESSION
              };
 
 class IndSettings : public QObject

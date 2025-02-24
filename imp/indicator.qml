@@ -1238,6 +1238,7 @@ Item
                         CheckBox
                         {
                             id: cbComplexFormula
+                            objectName: "cbComplexFormula"
                             text: "Использовать сложную формулу"
                             anchors.horizontalCenter: parent.horizontalCenter
                             font.pixelSize: tfName.font.pixelSize
@@ -1409,6 +1410,7 @@ Item
                                 TextArea.flickable: TextArea
                                 {
                                     id: complexFormula
+                                    objectName: "complexFormula"
                                     height: flItem.height
                                     width: flItem.width
                                     visible: parent.visible

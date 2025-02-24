@@ -595,6 +595,9 @@ void Indicator::saveSettingsIndicator()
   _settings->SetValue(IndKeys::DOPUSK, _inputIndicator->property("dopusk"));
   _settings->SetValue(IndKeys::PERIOD, _tfPeriod->property("text").toInt());
 
+  QObject* cbComplexFormula = _quickUi->rootObject()->findChild<QObject*>("cbComplexFormula");
+  _settings->SetValue(IndKeys::COMPLEX_FORMULA_ENABLE, cbComplexFormula->property("checked"));
+
   // настройка шкалы
   _settings->SetValue(IndKeys::UNITPOINT, _inputIndicator->property("unitPoint"));
   _settings->SetValue(IndKeys::HIGHLIMIT, _tfHiLimit->property("text"));
@@ -702,7 +705,6 @@ bool Indicator::loadSettingsIndicator(bool defOptions)
   v = _settings->Value(IndKeys::INCREMENT2);
   _increment2 = v.toDouble();
   _tfIncert2->setProperty("text", v);
-
   v = _settings->Value(IndKeys::DIVIDER);
   _divider = v.toFloat();
   _tfDivider->setProperty("text", v);
@@ -717,6 +719,14 @@ bool Indicator::loadSettingsIndicator(bool defOptions)
   _lenMean = _lenMean == 0 ? 1 : _lenMean; // Минимальное значение - 1
   for (int i=0; i<_lenMean; i++) flHistoryMean[i] = 0; // Очистка истории
   _tfPeriod->setProperty("text", QString::number(_periodMean));
+
+  QQuickItem* root = _quickUi->rootObject();
+  QObject* complexFormula = root->findChild<QObject*>("complexFormula");
+  v = _settings->Value(IndKeys::COMPLEX_FORMULA_EXPRESSION);
+  complexFormula->setProperty("text", v);
+  QObject* cbComplexFormula = root->findChild<QObject*>("cbComplexFormula");
+  v = _settings->Value(IndKeys::COMPLEX_FORMULA_ENABLE);
+  cbComplexFormula->setProperty("checked", v);
 
   _inputIndicator->setProperty("unitPoint", _settings->Value(IndKeys::UNITPOINT));
   _tfUnitPoint->setProperty("text", _settings->Value(IndKeys::UNITPOINT));
@@ -1025,6 +1035,8 @@ void Indicator::changedTransGauge()
 
 void Indicator::createComplexFormula(QString inputText)
 {
+  _settings->SetValue(IndKeys::COMPLEX_FORMULA_EXPRESSION, inputText);
+
   const int STATUS_FORMULA_EMPTY = 0;
   const int STATUS_FORMULA_OK = 1;
   const int STATUS_FORMULA_ERROR = 2;

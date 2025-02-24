@@ -128,6 +128,12 @@ QString IndSettings::keyFromCode(IndKeys c)
   case AUTO_SAVE_FILE:
     return "auto_save_file";
     break;
+  case COMPLEX_FORMULA_ENABLE:
+    return "complex_formula_enable";
+    break;
+  case COMPLEX_FORMULA_EXPRESSION:
+    return "complex_formula_expression";
+    break;
   default:
     return "";
   }
@@ -225,6 +231,12 @@ QVariant IndSettings::defaultValues(IndKeys c)
     break;
   case AUTO_SAVE_FILE:
     return "indicator.xlsx";
+    break;
+  case COMPLEX_FORMULA_ENABLE:
+    return false;
+    break;
+  case COMPLEX_FORMULA_EXPRESSION:
+    return "";
     break;
   default:
     return QVariant();
