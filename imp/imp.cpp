@@ -187,6 +187,9 @@ void Imp::SaveSettingsGeneral()
 // Запуск поиска датчиков
 void Imp::findDetect()
 {
+    QObject* findProgressBar = pQuickUi->rootObject()->findChild<QObject*>("searchProgress");
+    findProgressBar->setProperty("visible", true);
+
     QVariant enableNewIndiator;
     _timerUpdaterActiveStatus->stop();
 
@@ -225,6 +228,8 @@ void Imp::findDetect()
     }
     emit sigFindDetect();
     _timerUpdaterActiveStatus->start();
+
+    findProgressBar->setProperty("visible", false);
 }
 
 
