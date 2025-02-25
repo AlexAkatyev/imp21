@@ -99,7 +99,6 @@ private:
     float calculateResult();
     float calculateChannel(int number);
     void enableSetZero();
-    float getMeasForTransform(float mr);
 
     // Флаг готовности функции
     bool _formulaComplete;

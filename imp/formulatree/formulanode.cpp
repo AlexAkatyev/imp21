@@ -14,25 +14,25 @@ FormulaNode::FormulaNode(QObject *parent)
 }
 
 
-float FormulaNode::Get()
+float FormulaNode::Get(std::function<float(float, int)> transformation, int prop)
 {
   float lh = _lValue;
   if (_lh)
   {
-    lh = _lh->Get();
+    lh = _lh->Get(transformation, prop);
   }
   else if (_lDetect)
   {
-    lh = _lDetect->CurrentMeasure();
+    lh = transformation(_lDetect->CurrentMeasure(), prop);
   }
   float rh = _rValue;
   if (_rh)
   {
-    rh = _rh->Get();
+    rh = _rh->Get(transformation, prop);
   }
   else if (_rDetect)
   {
-    rh = _rDetect->CurrentMeasure();
+    rh = transformation(_rDetect->CurrentMeasure(), prop);
   }
   switch (_op)
   {

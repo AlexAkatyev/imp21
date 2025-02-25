@@ -51,6 +51,28 @@ const int PRECISION_INCREMENT = 7;
 const int PRECISION_RANGE = 7;
 const int PRECISION_DIVISION = 6;
 
+float getMeasForTransform(float mr, int ttu)
+{
+    float result = 0;
+    switch (ttu)
+    {
+    case 1: // мкм - мм
+        result = mr / 1000;
+        break;
+    case 2: // мкм - дюйм
+        result = mr / 25400;
+        break;
+    case 3: // мкм/м -> угловая секунда
+        result = 3600 * atanf(mr / 1000000) * 180 / M_PI;
+        break;
+    default:
+        result = mr;
+        break;
+    }
+    return result;
+}
+
+
 Indicator::Indicator
 (
     QWidget* parent
@@ -529,10 +551,10 @@ float Indicator::calculateChannel(int number)
   float result = 0;
   switch (number) {
   case 1:
-    result = _scale1 * (_detect1 ? getMeasForTransform(_detect1->CurrentMeasure()) - _zeroShifts[0] : 0) + _increment1;
+    result = _scale1 * (_detect1 ? getMeasForTransform(_detect1->CurrentMeasure(), static_cast<int>(_transGauge)) - _zeroShifts[0] : 0) + _increment1;
     break;
   case 2:
-    result = _scale2 * (_detect2 ? getMeasForTransform(_detect2->CurrentMeasure()) - _zeroShifts[1] : 0) + _increment2;
+    result = _scale2 * (_detect2 ? getMeasForTransform(_detect2->CurrentMeasure(), static_cast<int>(_transGauge)) - _zeroShifts[1] : 0) + _increment2;
     break;
   default:
     break;
@@ -548,7 +570,7 @@ float Indicator::calculateResult()
   float beforeSet = _inputIndicator->property("beforeSet").toFloat();
   if (_complexFormulaEnable)
   {
-    result = _complexFormulaComplete ? (_complexFormula->Get() / _divider + beforeSet) : 0;
+    result = _complexFormulaComplete ? (_complexFormula->Get(getMeasForTransform, static_cast<int>(_transGauge)) / _divider + beforeSet) : 0;
   }
   else
   {
@@ -1030,29 +1052,6 @@ void Indicator::setZeroShifts()
     _zeroShifts[0] = 0;
     _zeroShifts[1] = 0;
   }
-}
-
-
-float Indicator::getMeasForTransform(float mr)
-{
-    float result = 0;
-    switch (_transGauge)
-    {
-    case UnitMM: // мкм - мм
-        result = mr / 1000;
-        break;
-    case UnitInch: // мкм - дюйм
-        result = mr / 25400;
-        break;
-    case UnitAngleSec: // мкм/м -> угловая секунда
-        result = 3600 * atanf(mr / 1000000) * 180 / M_PI;
-        break;
-    default:
-        result = mr;
-
-        break;
-    }
-    return result;
 }
 
 

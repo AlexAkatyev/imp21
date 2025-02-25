@@ -26,7 +26,7 @@ public:
   void SetR(ImpAbstractDetect*);
   void SetOp(FormulaNodeOperator);
 
-  float Get();
+  float Get(std::function<float(float, int)>, int);
 
 private:
   FormulaNodeOperator _op;
