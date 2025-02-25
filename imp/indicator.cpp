@@ -316,6 +316,10 @@ void Indicator::changeIndication(void)
 // Установка новой формулы
 void Indicator::setFormula(void)
 {
+  if (_complexFormulaEnable)
+  {
+    return;
+  }
   QVariant varTemp;
   InputNumber inTemps1, inTemps2, inTempi1, inTempi2, inTempD;
   _formulaComplete = false; // Формула не готова
@@ -1099,4 +1103,6 @@ void Indicator::createComplexFormula(QString inputText)
 void Indicator::enableComplexFormula(bool en)
 {
   _complexFormulaEnable = en;
+  _inputIndicator->setProperty("messUnitDetect", "мкм");
+
 }
