@@ -101,7 +101,7 @@ private:
     float getMeasForTransform(float mr);
 
     // Флаг готовности функции
-    bool _formulaComlete;
+    bool _formulaComplete;
     // Входные параметры для формулы
     double _scale1;
     double _scale2;
@@ -114,6 +114,7 @@ private:
     TransToUnit _transGauge;
     FormulaNode* _complexFormula;
     bool _complexFormulaEnable;
+    bool _complexFormulaComplete;
 
     // Диапазон измерения датчиков
     int iRange1; // датчик 1
