@@ -412,8 +412,19 @@ void Indicator::RunButtonRelease()
 // Индикация работающих датчиков
 void Indicator::setWorkIndicators()
 {
-  _inputIndicator->setProperty("blDetect1EnableInput", _detect1 != nullptr);
-  _inputIndicator->setProperty("blDetect2EnableInput", _detect2 != nullptr);
+  bool en1 = false;
+  bool en2 = false;
+  if (_complexFormulaEnable)
+  {
+    en1 = true;
+  }
+  else
+  {
+    en1 = _detect1 != nullptr;
+    en2 = _detect2 != nullptr;
+  }
+  _inputIndicator->setProperty("blDetect1EnableInput", en1);
+  _inputIndicator->setProperty("blDetect2EnableInput", en2);
 }
 
 

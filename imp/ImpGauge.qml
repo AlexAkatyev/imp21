@@ -21,6 +21,7 @@ Item
     property int lowLimitg: inputIndicator.lowLimit
     property int highLimitg: inputIndicator.highLimit
     property real unitPointg: inputIndicator.unitPoint
+    property bool blComplexFormulaEnable: false
     property bool blDetect1Enable: inputIndicator.blDetect1EnableInput
     property bool blDetect2Enable: inputIndicator.blDetect2EnableInput
     property bool blDetect1Work: inputIndicator.blDetect1WorkInput
@@ -448,7 +449,7 @@ Item
                 id: txtD1
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                text: "1"
+                text: blComplexFormulaEnable ? "+" : "1"
                 color: blRect1Color ? impStyle.baseTextColor : impStyle.actionbarColor
                 font.pixelSize: Math.max(6, outerRadius * 0.07)
             }
