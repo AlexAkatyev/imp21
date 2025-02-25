@@ -124,9 +124,7 @@ Item
                     ToolTip.text: "Искать подключенные датчики"
                     onClicked:
                     {
-                        searchProgress.visible = true;
                         sigFindDetect();
-                        searchProgress.visible = false;
                     }
                 }
 

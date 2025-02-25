@@ -105,6 +105,7 @@ Item
     signal sigReleaseData();
     // передать текст формулы
     signal analyseComplexFormula(string inputText);
+    signal sigEnableComplexFormula(bool en);
 
     function toPixels(percentage) {
         return percentage * scaleBase / 100;
@@ -1238,9 +1239,15 @@ Item
                         CheckBox
                         {
                             id: cbComplexFormula
+                            objectName: "cbComplexFormula"
                             text: "Использовать сложную формулу"
                             anchors.horizontalCenter: parent.horizontalCenter
                             font.pixelSize: tfName.font.pixelSize
+                            onCheckedChanged:
+                            {
+                                sigEnableComplexFormula(checked);
+                                impGauge.blComplexFormulaEnable = checked;
+                            }
                         }
 
                         Grid {
@@ -1409,6 +1416,7 @@ Item
                                 TextArea.flickable: TextArea
                                 {
                                     id: complexFormula
+                                    objectName: "complexFormula"
                                     height: flItem.height
                                     width: flItem.width
                                     visible: parent.visible

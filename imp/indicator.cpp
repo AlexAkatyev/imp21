@@ -62,11 +62,13 @@ Indicator::Indicator
   , _parent(static_cast<Imp*>(parent))
   , _idIndicator(identificator)
   , _quickUi(new QQuickWidget)
-  , _formulaComlete(true)
+  , _formulaComplete(true)
   , _detect1(nullptr)
   , _detect2(nullptr)
   , _transGauge(UnitMKM)
   , _complexFormula(nullptr)
+  , _complexFormulaEnable(false)
+  , _complexFormulaComplete(false)
 {
   _zeroShifts = {0, 0};
   _settings = new IndSettings("indicator" + QString::number(_idIndicator) + ".ini", this);
@@ -140,6 +142,7 @@ Indicator::Indicator
   connect(_inputIndicator, SIGNAL(sigChangeTransGauge()), this, SLOT(changedTransGauge()));
   // изменения в сложной формуле
   connect(_quickUi->rootObject(), SIGNAL(analyseComplexFormula(QString)), this, SLOT(createComplexFormula(QString)));
+  connect(_quickUi->rootObject(), SIGNAL(sigEnableComplexFormula(bool)), this, SLOT(enableComplexFormula(bool)));
 
   // получение информиции о имеющихся датчиках от главного окна
   connect(_parent, SIGNAL(sigFindDetect()), this, SLOT(setComboListDetect()));
@@ -313,9 +316,13 @@ void Indicator::changeIndication(void)
 // Установка новой формулы
 void Indicator::setFormula(void)
 {
+  if (_complexFormulaEnable)
+  {
+    return;
+  }
   QVariant varTemp;
   InputNumber inTemps1, inTemps2, inTempi1, inTempi2, inTempD;
-  _formulaComlete = false; // Формула не готова
+  _formulaComplete = false; // Формула не готова
   bool error = false;
   // Множитель 1 ------------------------------------------------
   varTemp = _tfFactor1->property("text");
@@ -393,7 +400,7 @@ void Indicator::setFormula(void)
     _increment2 = inTempi2.fNumber;
     _divider = inTempD.fNumber;
     _inputIndicator->setProperty("messUnitDetect", unit1.isEmpty() ? unit2 : unit1);
-    _formulaComlete = true; // Формула готова
+    _formulaComplete = true; // Формула готова
     setWorkIndicators();
   }
 
@@ -409,8 +416,19 @@ void Indicator::RunButtonRelease()
 // Индикация работающих датчиков
 void Indicator::setWorkIndicators()
 {
-  _inputIndicator->setProperty("blDetect1EnableInput", _detect1 != nullptr);
-  _inputIndicator->setProperty("blDetect2EnableInput", _detect2 != nullptr);
+  bool en1 = false;
+  bool en2 = false;
+  if (_complexFormulaEnable)
+  {
+    en1 = true;
+  }
+  else
+  {
+    en1 = _detect1 != nullptr;
+    en2 = _detect2 != nullptr;
+  }
+  _inputIndicator->setProperty("blDetect1EnableInput", en1);
+  _inputIndicator->setProperty("blDetect2EnableInput", en2);
 }
 
 
@@ -526,16 +544,27 @@ float Indicator::calculateChannel(int number)
 // Расчет показаний датчиков по формуле
 float Indicator::calculateResult()
 {
-  return _formulaComlete
-        ? ((calculateChannel(1) + calculateChannel(2))/_divider + _inputIndicator->property("beforeSet").toFloat())
-        : 0;
+  float result = 0;
+  float beforeSet = _inputIndicator->property("beforeSet").toFloat();
+  if (_complexFormulaEnable)
+  {
+    result = _complexFormulaComplete ? (_complexFormula->Get() / _divider + beforeSet) : 0;
+  }
+  else
+  {
+    result = _formulaComplete
+           ? ((calculateChannel(1) + calculateChannel(2))/_divider + beforeSet)
+           : 0;
+  }
+
+  return result;
 }
 
 
 // Разрешение обнуления показаний
 void Indicator::enableSetZero()
 {
-  if (_formulaComlete)
+  if (_formulaComplete)
   {
     bool enableSetZero = true;
     for (auto detect : {_detect1, _detect2})
@@ -594,6 +623,7 @@ void Indicator::saveSettingsIndicator()
   _settings->SetValue(IndKeys::BEFORESET, _inputIndicator->property("beforeSet"));
   _settings->SetValue(IndKeys::DOPUSK, _inputIndicator->property("dopusk"));
   _settings->SetValue(IndKeys::PERIOD, _tfPeriod->property("text").toInt());
+  _settings->SetValue(IndKeys::COMPLEX_FORMULA_ENABLE, _complexFormulaEnable);
 
   // настройка шкалы
   _settings->SetValue(IndKeys::UNITPOINT, _inputIndicator->property("unitPoint"));
@@ -702,7 +732,6 @@ bool Indicator::loadSettingsIndicator(bool defOptions)
   v = _settings->Value(IndKeys::INCREMENT2);
   _increment2 = v.toDouble();
   _tfIncert2->setProperty("text", v);
-
   v = _settings->Value(IndKeys::DIVIDER);
   _divider = v.toFloat();
   _tfDivider->setProperty("text", v);
@@ -717,6 +746,16 @@ bool Indicator::loadSettingsIndicator(bool defOptions)
   _lenMean = _lenMean == 0 ? 1 : _lenMean; // Минимальное значение - 1
   for (int i=0; i<_lenMean; i++) flHistoryMean[i] = 0; // Очистка истории
   _tfPeriod->setProperty("text", QString::number(_periodMean));
+
+  QQuickItem* root = _quickUi->rootObject();
+  QObject* complexFormula = root->findChild<QObject*>("complexFormula");
+  v = _settings->Value(IndKeys::COMPLEX_FORMULA_EXPRESSION);
+  complexFormula->setProperty("text", v);
+  createComplexFormula(v.toString());
+  QObject* cbComplexFormula = root->findChild<QObject*>("cbComplexFormula");
+  v = _settings->Value(IndKeys::COMPLEX_FORMULA_ENABLE);
+  cbComplexFormula->setProperty("checked", v);
+  _complexFormulaEnable = v.toBool();
 
   _inputIndicator->setProperty("unitPoint", _settings->Value(IndKeys::UNITPOINT));
   _tfUnitPoint->setProperty("text", _settings->Value(IndKeys::UNITPOINT));
@@ -1025,6 +1064,8 @@ void Indicator::changedTransGauge()
 
 void Indicator::createComplexFormula(QString inputText)
 {
+  _settings->SetValue(IndKeys::COMPLEX_FORMULA_EXPRESSION, inputText);
+
   const int STATUS_FORMULA_EMPTY = 0;
   const int STATUS_FORMULA_OK = 1;
   const int STATUS_FORMULA_ERROR = 2;
@@ -1042,10 +1083,10 @@ void Indicator::createComplexFormula(QString inputText)
 
   bool error = false;
   QString textError;
-  FormulaNode* fNode = nullptr;
   if (status)
   {
-    fNode = FormulaFactory(this).Do(inputText, &error, &textError);
+    _complexFormula = FormulaFactory::Instance()->Do(inputText, &error, &textError);
+    _complexFormulaComplete = !error;
     status = error ? STATUS_FORMULA_ERROR : STATUS_FORMULA_OK;
     if (error)
     {
@@ -1057,6 +1098,14 @@ void Indicator::createComplexFormula(QString inputText)
   fMessage->setProperty("status", status);
   fMessage->setProperty("text", QVariant(statusMessage));
 }
+
+
+void Indicator::enableComplexFormula(bool en)
+{
+  _complexFormulaEnable = en;
+  _inputIndicator->setProperty("messUnitDetect", "мкм");
+}
+
 
 std::vector<int> Indicator::GetDefaultSize()
 {

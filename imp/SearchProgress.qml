@@ -2,9 +2,11 @@ import QtQuick 2.7
 import QtQuick.Controls 2.1
 import QtQml.Models 2.2
 
-Item {
-    height: 200
-    width: 300
+Item
+{
+    id: itFindProgress
+    height: 80
+    width: 500
 
     ImpStyle
     {
@@ -15,8 +17,7 @@ Item {
     {
         id: pbFind
         objectName: "pbFind"
-        height: 30
-        width: 210
+        anchors.fill: parent
         value: 0 // from 0 to 1
         background: Rectangle
         {
@@ -26,13 +27,14 @@ Item {
         contentItem: Item
         {
             anchors.fill: parent
+            anchors.leftMargin: height * 0.05
+            anchors.rightMargin: anchors.leftMargin
             Rectangle
             {
                 anchors.verticalCenter: parent.verticalCenter
                 width: pbFind.visualPosition * parent.width
-                height: parent.height * 0.8
-
-                radius: height/4
+                height: parent.height * 0.9
+                radius: height / 16
                 color: impStyle.chekedColor
             }
             Text {
@@ -40,13 +42,17 @@ Item {
                 objectName: "textComment"
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
+                anchors.leftMargin: parent.width / 20
                 text: " "
+                font.pixelSize: parent.height / 2
             }
             Text {
                 id: textPercent
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
-                text: String(Math.round(pbFind.value * 100)) + "%  "
+                anchors.rightMargin: textComment.anchors.leftMargin
+                text: String(Math.round(pbFind.value * 100)) + "%"
+                font.pixelSize: textComment.font.pixelSize
                 visible: ((pbFind.value === 1) | (pbFind.value === 0)) ? false : true
             }
         }

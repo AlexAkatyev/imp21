@@ -1,9 +1,67 @@
 #include "formulafactory.h"
 #include "formulanode.h"
+#include "imp.h"
 
-FormulaFactory::FormulaFactory(QObject *parent) : QObject(parent)
+const char BEGIN_STAPLE = '(';
+const char END_STAPLE = ')';
+
+bool isExpression(QString input)
 {
+  return input.contains('+')
+      || input.contains('-')
+      || input.contains('*')
+      || input.contains('/');
+}
 
+
+int getBeginForLastEndStaple(QString str)
+{
+  int lh = -1;
+  int rh = str.lastIndexOf(END_STAPLE);
+  if (rh == -1)
+  {
+    return lh;
+  }
+  int depth = 0;
+  for (int i = rh - 1; i > -1; --i)
+  {
+    if (str[i] == END_STAPLE)
+    {
+      ++depth;
+    }
+    else if (str[i] == BEGIN_STAPLE)
+    {
+      if (depth == 0)
+      {
+        lh = i;
+        break;
+      }
+      else
+      {
+        --depth;
+      }
+    }
+  }
+  return lh;
+}
+
+
+FormulaFactory* FormulaFactory::Instance(Imp* imp)
+{
+  static FormulaFactory* singleton = nullptr;
+  if (singleton == nullptr
+      && imp != nullptr)
+  {
+    singleton = new FormulaFactory(imp);
+  }
+  return singleton;
+}
+
+
+FormulaFactory::FormulaFactory(Imp* imp)
+  : QObject(imp)
+  , _imp(imp)
+{
 }
 
 
@@ -16,15 +74,23 @@ FormulaNode* FormulaFactory::Do(QString input, bool* error, QString* textError)
     return stapleDo(clInput, error, textError);
   }
   // скобок нет
-  return signDo(clInput, error, textError);
+  return getExpression(clInput, error, textError);
 }
 
 
 FormulaNode* FormulaFactory::stapleDo(QString clInput, bool* error, QString* textError)
 {
   FormulaNode* result = new FormulaNode(parent());
-  int ls = clInput.indexOf('(');
-  int rs = clInput.lastIndexOf(')');
+  int leftCount = clInput.count(BEGIN_STAPLE);
+  int rightCount = clInput.count(END_STAPLE);
+  if (leftCount != rightCount)
+  {
+    *textError = "Открывающие и закрывающие скобки не спарены";
+    *error = true;
+    return result;
+  }
+  int ls = getBeginForLastEndStaple(clInput);
+  int rs = clInput.lastIndexOf(END_STAPLE);
   if (rs != -1)
   {
     if (ls == -1)
@@ -121,7 +187,7 @@ FormulaNode* FormulaFactory::stapleDo(QString clInput, bool* error, QString* tex
 }
 
 
-FormulaNode* FormulaFactory::signDo(QString clInput, bool* error, QString* textError)
+FormulaNode* FormulaFactory::getExpression(QString clInput, bool* error, QString* textError)
 {
   FormulaNode* result = new FormulaNode(parent());
   QString strLH;
@@ -164,29 +230,108 @@ FormulaNode* FormulaFactory::signDo(QString clInput, bool* error, QString* textE
   }
   else
   {
-    *error = true;
-    *textError = "Не допустимые символы в формуле";
+    if (clInput.isEmpty())
+    {
+      *error = true;
+      *textError = "Некорректная запись формулы";
+    }
+    else
+    {
+      // возможно, здесь записан датчик
+      result->SetL(getDetect(clInput, error, textError));
+    }
   }
   if (!*error)
   {
     data = strLH.toFloat(&numeric);
-    if (numeric)
+    if (strLH.isEmpty())
+    {
+      *error = true;
+      *textError = "Некорректная запись формулы слева";
+    }
+    else if (numeric)
     {
       result->SetL(data);
     }
+    else if (isExpression(strLH))
+    {
+      result->SetL(getExpression(strLH, error, textError));
+    }
     else
     {
-      result->SetL(signDo(strLH, error, textError));
+      result->SetL(getDetect(strLH, error, textError));
     }
+
     data = strRH.toFloat(&numeric);
-    if (numeric)
+    if (strRH.isEmpty())
+    {
+      *error = true;
+      *textError = "Некорректная запись формулы справа";
+    }
+    else if (numeric)
     {
       result->SetR(data);
     }
+    else if (isExpression(strRH))
+    {
+      result->SetR(getExpression(strRH, error, textError));
+    }
     else
     {
-      result->SetR(signDo(strRH, error, textError));
+      result->SetR(getDetect(strRH, error, textError));
     }
   }
   return result;
+}
+
+
+ImpAbstractDetect* FormulaFactory::getDetect(QString clInput, bool* error, QString* textError)
+{
+  if (clInput.length() < 2)
+  {
+    *error = true;
+    *textError = "неверная запись датчика : " + clInput;
+    return nullptr;
+  }
+  else
+  {
+    if (clInput.at(0) == "#")
+    {
+      bool numeric;
+      int number = clInput.mid(1).toInt(&numeric);
+      if (!numeric)
+      {
+        *error = true;
+        *textError = "неверная запись датчика : " + clInput;
+        return nullptr;
+      }
+      if (_imp != nullptr)
+      {
+        ImpAbstractDetect* detect = _imp->DetectAtId(number);
+        if (detect)
+        {
+          return detect;
+        }
+        else
+        {
+          *error = true;
+          *textError = "датчик  " + clInput + " не обнаружен";
+          return nullptr;
+        }
+      }
+      else
+      {
+        *error = true;
+        *textError = "Не удается найти список датчиков";
+        return nullptr;
+      }
+    }
+    else
+    {
+      *error = true;
+      *textError = "неверная запись датчика : " + clInput;
+      return nullptr;
+    }
+  }
+  return nullptr;
 }

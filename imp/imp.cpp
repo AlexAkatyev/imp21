@@ -15,6 +15,9 @@
 #include <QHash>
 #include <QQuickWidget>
 #include <QVBoxLayout>
+#include <QApplication>
+#include <QScreen>
+#include <QWindow>
 
 #include "indicator.h"
 #include "versionNo.h"
@@ -22,9 +25,7 @@
 #include "Logger/logger.h"
 #include "impsettings.h"
 #include "impsettingsdialog.h"
-#include <QApplication>
-#include <QScreen>
-#include <QWindow>
+#include "formulatree/formulafactory.h"
 
 // Пауза после запуска программы перед поиском датчиков
 const int PAUSE_BEFORE_FIND_DETECT = 500;
@@ -58,6 +59,7 @@ Imp::Imp(QWidget* parent)
     , _indicateTimer(new QTimer(this))
 {
     Logger::GetInstance(this); // Запуск журнала
+    FormulaFactory::Instance(this);
 
     // Загрузка параметров из файла установок
     _useIndicators.clear(); // подготовка к загрузке множества индикаторов
@@ -195,6 +197,9 @@ void Imp::SaveSettingsGeneral()
 // Запуск поиска датчиков
 void Imp::findDetect()
 {
+    QObject* findProgressBar = pQuickUi->rootObject()->findChild<QObject*>("searchProgress");
+    findProgressBar->setProperty("visible", true);
+
     QVariant enableNewIndiator;
     _timerUpdaterActiveStatus->stop();
 
@@ -235,6 +240,8 @@ void Imp::findDetect()
     }
     emit sigFindDetect();
     _timerUpdaterActiveStatus->start();
+
+    findProgressBar->setProperty("visible", false);
 }
 
 
