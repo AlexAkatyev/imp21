@@ -852,6 +852,7 @@ void Indicator::watchDogControl(void)
     if (_complexFormulaComplete)
     {
       _inputIndicator->setProperty("blOverRange1", _complexFormula->HiOverRange() || _complexFormula->LoOverRange());
+      _inputIndicator->setProperty("blDetect1WorkInput", _complexFormula->DetectsReady());
       return;
     }
     else

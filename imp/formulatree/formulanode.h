@@ -29,6 +29,7 @@ public:
   float Get(std::function<float(float, int)>, int);
   bool HiOverRange();
   bool LoOverRange();
+  bool DetectsReady();
 
 private:
   FormulaNodeOperator _op;

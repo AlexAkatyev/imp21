@@ -152,3 +152,26 @@ bool FormulaNode::LoOverRange()
   }
   return loOverRange;
 }
+
+
+bool FormulaNode::DetectsReady()
+{
+  bool ready = true;
+  if (_lh)
+  {
+    ready &= _lh->DetectsReady();
+  }
+  else if (_lDetect)
+  {
+    ready &= _lDetect->Ready();
+  }
+  if (_rh)
+  {
+    ready &= _rh->DetectsReady();
+  }
+  else if (_rDetect)
+  {
+    ready &= _rDetect->Ready();
+  }
+  return ready;
+}
