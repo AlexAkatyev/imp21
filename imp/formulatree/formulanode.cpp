@@ -100,3 +100,55 @@ void FormulaNode::SetOp(FormulaNodeOperator d)
 {
   _op = d;
 }
+
+
+bool FormulaNode::HiOverRange()
+{
+  bool hiOverRange = false;
+  if (_lh)
+  {
+    hiOverRange |= _lh->HiOverRange();
+  }
+  else if (_lDetect)
+  {
+    hiOverRange |= _lDetect->CurrentMeasure() > _lDetect->HMeasureInterval();
+  }
+  if (!hiOverRange)
+  {
+    if (_rh)
+    {
+      hiOverRange |= _rh->HiOverRange();
+    }
+    else if (_rDetect)
+    {
+      hiOverRange |= _rDetect->CurrentMeasure() > _rDetect->HMeasureInterval();
+    }
+  }
+  return hiOverRange;
+}
+
+
+bool FormulaNode::LoOverRange()
+{
+  bool loOverRange = false;
+  if (_lh)
+  {
+    loOverRange |= _lh->HiOverRange();
+  }
+  else if (_lDetect)
+  {
+    loOverRange |= _lDetect->CurrentMeasure() < _lDetect->LMeasureInterval();
+  }
+  if (!loOverRange)
+  {
+    if (_rh)
+    {
+      loOverRange |= _rh->HiOverRange();
+    }
+    else if (_rDetect)
+    {
+      loOverRange |= _rDetect->CurrentMeasure() < _rDetect->LMeasureInterval();
+    }
+  }
+  return loOverRange;
+}

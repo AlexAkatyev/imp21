@@ -27,6 +27,8 @@ public:
   void SetOp(FormulaNodeOperator);
 
   float Get(std::function<float(float, int)>, int);
+  bool HiOverRange();
+  bool LoOverRange();
 
 private:
   FormulaNodeOperator _op;

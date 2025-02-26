@@ -847,6 +847,19 @@ void Indicator::setWindowTitleMain(QString name)
 // Периодическое чтение результата измерения датчика 1
 void Indicator::watchDogControl(void)
 {
+  if (_complexFormulaEnable)
+  {
+    if (_complexFormulaComplete)
+    {
+      _inputIndicator->setProperty("blOverRange1", _complexFormula->HiOverRange() || _complexFormula->LoOverRange());
+      return;
+    }
+    else
+    {
+      return;
+    }
+  }
+
   if (_detect1)
   {
     float meas1 = _detect1->CurrentMeasure();
