@@ -181,7 +181,7 @@ private slots:
     void autoSaveToXLSX();
 
     // сообщение в систему
-    void sendWmAppMessage();
+    void sendMessage();
 };
 
 #endif // INDICATOR_H

@@ -92,6 +92,7 @@ Indicator::Indicator
   , _complexFormulaEnable(false)
   , _complexFormulaComplete(false)
 {
+  PostMessageSender::Instance(parent);
   _zeroShifts = {0, 0};
   _settings = new IndSettings("indicator" + QString::number(_idIndicator) + ".ini", this);
 
@@ -159,7 +160,7 @@ Indicator::Indicator
   // отработка нажатия кнопки DATA
   connect(_quickUi->rootObject(), SIGNAL(sigReleaseData()), this, SIGNAL(sigDataPressed()));
   // передача измерения в Windows
-  connect(_quickUi->rootObject(), SIGNAL(sigSendMeasurementMessage()), this, SLOT(sendWmAppMessage()));
+  connect(_quickUi->rootObject(), SIGNAL(sigSendMeasurementMessage()), this, SLOT(sendMessage()));
   // изменения в единице измерения
   connect(_inputIndicator, SIGNAL(sigChangeTransGauge()), this, SLOT(changedTransGauge()));
   // изменения в сложной формуле
@@ -1042,14 +1043,14 @@ void Indicator::autoSaveToXLSX()
 }
 
 
-void Indicator::sendWmAppMessage()
+void Indicator::sendMessage()
 {
-  PostMessageSender::Instance(_parent)->Do
-      (
-        DataSender::Indicator
-        , _idIndicator + 1
-        , _quickUi->rootObject()->property("sendData").toFloat()
-      );
+  ImpMessage message = ImpMessage();
+  message.Sender = ImpMessageDataSender::Indicator;
+  message.SenderId = _idIndicator + 1;
+  message.Caption = ImpMessageDataCaption::Measure;
+  message.Measure = _quickUi->rootObject()->property("sendData").toFloat();
+  PostMessageSender::Instance(this->parent())->Do(message);
 }
 
 

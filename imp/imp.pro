@@ -47,6 +47,7 @@ SOURCES += main.cpp\
   Detects/serialportlocator.cpp \
   Detects/vt21detect.cpp \
   Detects/vtdetect.cpp \
+    ImpMessage/impmessagecreator.cpp \
   Logger/logger.cpp \
   UtilLib/modbus.cpp \
     UtilLib/utillib.cpp \
@@ -86,6 +87,7 @@ HEADERS  += imp.h \
     Detects/serialportlocator.h \
     Detects/vt21detect.h \
     Detects/vtdetect.h \
+    ImpMessage/impmessagecreator.h \
     Logger/logger.h \
     UtilLib/modbus.h \
     UtilLib/utillib.h \

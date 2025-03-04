@@ -1,20 +1,25 @@
+#include <QTcpServer>
+#include <QTcpSocket>
 #include <QTimer>
 #include <QDebug>
 
 #include "postmessagesender.h"
-#include <windows.h>
 
-const int WM_IMP_INDICATOR_MESSAGE_ID = WM_APP + 0x15;
-const int WM_IMP_METER_MESSAGE_ID = WM_IMP_INDICATOR_MESSAGE_ID + 10;
-const int ROUNDING = 1000;
+const int MESSAGE_PORT = 32789; // 0x8015
 const int SEND_INTERVAL = 100;
-const int DO_NOT_ACKNOWLEDGE = 1;
-const int ATTEMPTS_COUNT = 2;
+const int WAIT_ANSWER = 10000;
+const char ANSWER_PASSED = 0x01;
+const char ANSWER_ERROR = 0x02;
 
 PostMessageSender::PostMessageSender(QObject* parent)
   : QObject(parent)
+  , _mTcpServer(new QTcpServer(this))
   , _senderTimer(new QTimer(this))
-  , _sendData(std::list<sendData>())
+  , _waitingTimer(new QTimer(this))
+  , _sendData(std::list<ImpMessage>())
+  , _isListen(false)
+  , _mSocket(nullptr)
+  , _answer(ExcelAnswer::Passed)
 {
   _senderTimer->setInterval(SEND_INTERVAL);
   connect
@@ -24,6 +29,17 @@ PostMessageSender::PostMessageSender(QObject* parent)
         , this
         , &PostMessageSender::send
       );
+  _waitingTimer->setInterval(WAIT_ANSWER);
+  connect
+      (
+        _waitingTimer
+        , &QTimer::timeout
+        , this
+        , &PostMessageSender::writeTimeOut
+      );
+
+  isListening();
+  connect(_mTcpServer, &QTcpServer::newConnection, this, &PostMessageSender::doNewConnection);
 }
 
 
@@ -33,18 +49,28 @@ PostMessageSender* PostMessageSender::Instance(QObject* parent)
   if (instance == nullptr)
   {
     instance = new PostMessageSender(parent);
+    qDebug() << "create sender" << parent;
   }
   return instance;
 }
 
 
-void PostMessageSender::Do(DataSender sender, int id, float data)
+bool PostMessageSender::isListening()
 {
-  sendData d;
-  d.sender = sender;
-  d.id = id;
-  d.data = data;
-  _sendData.push_back(d);
+  if (!_isListen)
+  {
+
+    _isListen = _mTcpServer->listen(QHostAddress::LocalHost, MESSAGE_PORT);
+    qDebug() << "listen : " << _isListen;
+  }
+  return _isListen;
+}
+
+
+void PostMessageSender::Do(ImpMessage message)
+{
+  _sendData.push_back(message);
+  qDebug() << "add message";
   if (!_senderTimer->isActive())
   {
     _senderTimer->start();
@@ -52,64 +78,94 @@ void PostMessageSender::Do(DataSender sender, int id, float data)
 }
 
 
-int PostMessageSender::getMesId(DataSender sender, int repeater)
+void PostMessageSender::doNewConnection()
 {
-  auto fixId = [](int baseCode, int repeater)
+  if (_mSocket)
   {
-    return baseCode + repeater - 1;
-  };
-
-  if (sender == DataSender::Meter)
-  {
-    return fixId(WM_IMP_METER_MESSAGE_ID, repeater);
+    return;
   }
-  return fixId(WM_IMP_INDICATOR_MESSAGE_ID, repeater);
+  _mSocket = _mTcpServer->nextPendingConnection();
+  connect(_mSocket, &QTcpSocket::readyRead, this, &PostMessageSender::slotServerRead);
+  connect(_mSocket, &QTcpSocket::disconnected, this, &PostMessageSender::slotClientDisconnected);
+  qDebug() << "add socket";
+}
+
+
+void PostMessageSender::slotServerRead()
+{
+    while(_mSocket->bytesAvailable()>0)
+    {
+        QByteArray array = _mSocket->readAll();
+        if (_answer == ExcelAnswer::Waiting)
+        {
+          if (array.contains(ANSWER_PASSED))
+          {
+            _answer = ExcelAnswer::Passed;
+            _waitingTimer->stop();
+            if (!_sendData.empty())
+            {
+              _sendData.pop_front();
+              qDebug() << "delete message";
+            }
+          }
+          else if (array.contains(ANSWER_ERROR))
+          {
+            _answer = ExcelAnswer::Error;
+          }
+        }
+    }
+}
+
+
+void PostMessageSender::slotClientDisconnected()
+{
+    _mSocket->close();
+    _mSocket->deleteLater();
+    _mSocket = nullptr;
+    qDebug() << "socket disconnect";
 }
 
 
 void PostMessageSender::send()
 {
-  static int repeaterCount = 0;
   if (_sendData.empty())
   {
     _senderTimer->stop();
+    _waitingTimer->stop();
+    return;
+  }
+  if (!_mSocket
+      || !isListening())
+  {
     return;
   }
 
-  sendData d = *_sendData.begin();
-  int i = d.data * ROUNDING;
-  WPARAM wParam = d.id;
-  HWND wndHndl = FindWindow(L"XLMAIN", 0); // Notepad  XLMAIN
-  if (wndHndl == NULL)
+  if (_answer == ExcelAnswer::Passed)
   {
-    wndHndl = HWND_BROADCAST;
-    repeaterCount = DO_NOT_ACKNOWLEDGE;
-  }
-  else
-  {
-    if (repeaterCount == 0)
-    {
-      repeaterCount = ATTEMPTS_COUNT;
-    }
+    _answer = ExcelAnswer::Waiting;
+    _waitingTimer->start();
+    _mSocket->write(createPost(*_sendData.begin()));
   }
 
-  PostMessage
-      (
-        wndHndl
-        , getMesId(d.sender, repeaterCount)
-        , wParam
-        , (LPARAM)i
-      );
-  qDebug()
-      << "PostMessage"
-      << ((wndHndl == HWND_BROADCAST) ? "broadcast" : "xlmain")
-      << QString::number(getMesId(d.sender, repeaterCount))
-      << QString::number(wParam)
-      << QString::number((LPARAM)i);
-
-  --repeaterCount;
-  if (repeaterCount == 0)
+  if (_answer == ExcelAnswer::Error)
   {
-    _sendData.pop_front();
+    _answer = ExcelAnswer::Waiting;
+    _mSocket->write(createPost(*_sendData.begin()));
   }
+}
+
+
+QByteArray PostMessageSender::createPost(ImpMessage message)
+{
+  ImpMessageCreator creator(this);
+  return creator.Do(message);
+}
+
+
+void PostMessageSender::writeTimeOut()
+{
+  _sendData.pop_front();
+  qDebug() << "delete message after waiting";
+  _answer = ExcelAnswer::Passed;
+  _waitingTimer->stop();
 }

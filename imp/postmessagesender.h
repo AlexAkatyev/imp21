@@ -1,39 +1,48 @@
 #ifndef POSTMESSAGESENDER_H
 #define POSTMESSAGESENDER_H
-#include <QObject>
 #include <list>
 
+#include <QObject>
+
+#include "ImpMessage/impmessagecreator.h"
+
 class QTimer;
-
-enum DataSender
-{
-  Indicator
-  , Meter
-};
-
-
+class QTcpServer;
+class QTcpSocket;
 
 class PostMessageSender : public QObject
 {
 Q_OBJECT
-public:
-  static PostMessageSender* Instance(QObject* parent);
-  void Do(DataSender sender, int id, float data);
-
-private:
-  struct sendData
+  enum ExcelAnswer
   {
-    DataSender sender;
-    int id;
-    float data;
+    Passed
+    , Error
+    , Waiting
   };
 
-  PostMessageSender(QObject* parent);
-  int getMesId(DataSender sender, int repeater);
-  void send();
+public:
+  static PostMessageSender* Instance(QObject* parent);
+  void Do(ImpMessage message);
 
+private:
+  PostMessageSender(QObject* parent);
+
+  void doNewConnection();
+  bool isListening();
+  void slotServerRead();
+  void slotClientDisconnected();
+
+  void send();
+  void writeTimeOut();
+  QByteArray createPost(ImpMessage);
+
+  QTcpServer* _mTcpServer;
   QTimer* _senderTimer;
-  std::list<sendData> _sendData;
+  QTimer* _waitingTimer;
+  std::list<ImpMessage> _sendData;
+  bool _isListen;
+  QTcpSocket* _mSocket;
+  ExcelAnswer _answer;
 };
 
 #endif // POSTMESSAGESENDER_H

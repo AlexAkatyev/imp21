@@ -20,7 +20,7 @@ ImpAbstractDetect::ImpAbstractDetect(QObject *parent)
   , _activeStatusChanged(false)
   , _prevStateButton(false)
 {
-
+  PostMessageSender::Instance(parent);
 }
 
 
@@ -166,12 +166,12 @@ void ImpAbstractDetect::setStateButton(bool press)
   {
     if (press)
     {
-      PostMessageSender::Instance(this->parent())->Do
-          (
-            DataSender::Meter
-            , _serialNumber
-            , _measure
-          );
+      ImpMessage message = ImpMessage();
+      message.Sender = ImpMessageDataSender::Meter;
+      message.SenderId = _serialNumber;
+      message.Caption = ImpMessageDataCaption::Measure;
+      message.Measure = _measure;
+      PostMessageSender::Instance(this->parent())->Do(message);
       emit PressedButton();
     }
   }
