@@ -20,15 +20,15 @@ IDI_ICON1               ICON    DISCARDABLE     "imp_logo.ico"
          BEGIN
              VALUE "Comments", FILE_COMMENT_STR
              VALUE "CompanyName", FILE_COMPANY_STR
-             VALUE "FileDescription", "micromovings meter\0"
+             VALUE "FileDescription", "micromovings_meter\0"
              VALUE "FileVersion", FILE_VERSION_STR
-             VALUE "LegalCopyright",     "VIPP-Tehnika"
-             VALUE "LegalTrademarks",    "IMP"
+             VALUE "LegalCopyright", "Copyright © 2025 OOO NIR"
+             VALUE "LegalTrademarks", "IMP"
              VALUE "OriginalFilename", "imp.exe\0"
              VALUE "ProductName", FILE_PRODUCT_STR
              VALUE "ProductVersion", FILE_VERSION_STR
-             VALUE "SpecialBuild", "Индикация показаний датчиков, калибровка датчиков\0"
-             VALUE "Builder", "А.П. Акатьев"
+             VALUE "SpecialBuild", "Indication of sensor readings\0"
+             VALUE "Builder", "Alex Akatyev"
          END
      END
      BLOCK "VarFileInfo"

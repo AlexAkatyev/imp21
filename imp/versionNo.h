@@ -11,11 +11,11 @@
 
 #define FILE_VERSION_STR "21. 8. 4\0"
 
-#define FILE_COMMENT_STR "Телефон службы поддержки (812) 534-68-82\0"
+#define FILE_COMMENT_STR "Helpdesk phone number +7 812 534-68-82\0"
 
-#define FILE_COMPANY_STR "ООО ИМЦ Микро\0"
+#define FILE_COMPANY_STR "OOO IMC Micro\0"
 
-#define FILE_PRODUCT_STR "Измеритель микроперемещений\0"
+#define FILE_PRODUCT_STR "Micro displacement meter\0"
 
 #define ANOTHER_PRODUCT_STR "UV 21.8.4\0"
 
