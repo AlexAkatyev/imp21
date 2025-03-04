@@ -119,6 +119,7 @@ void DetectFactory::comVTDetects()
 
 
       // EmVTDetect
+      logger->WriteLnLog("Ищу измерительную головку ЭМ-08");
       VTDetect* em = new EmVTDetect(info, parent());
       em->Init();
       if (em->Id())

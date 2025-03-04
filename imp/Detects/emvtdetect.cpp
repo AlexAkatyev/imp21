@@ -6,6 +6,8 @@
 #include "emvtsettings.h"
 #include "Logger/logger.h"
 
+#define COMMAND_INIT_DETECT         "INIT"
+
 const int WAIT_FOR_READY_READ = 250;
 const int WAIT_START = 250;
 const int MAX_WAIT_INIT = WAIT_START + WAIT_FOR_READY_READ + 10;
@@ -65,6 +67,9 @@ void EmVTDetect::Init()
     _port->setReadBufferSize(bufferSize());
     _port->setFlowControl(flowControl());
 
+    _port->write(COMMAND_INIT_DETECT);
+    _port->flush();
+    Logger::GetInstance()->WriteLnLog("Отправил INIT");
     _port->waitForReadyRead(WAIT_FOR_READY_READ);
     {
       QElapsedTimer timeWait;
