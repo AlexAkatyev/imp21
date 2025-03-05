@@ -58,7 +58,7 @@ MeasServerDetect::MeasServerDetect(MBTcpLocator* locator, int countD, QObject* p
 void MeasServerDetect::Init()
 {
   _serialNumber = _locator->DetectId(_numberD);
-  _typeDetect = _locator->DetectType(_numberD);
+  _typeDetect = "Микрокатор с радиоканалом";
   _dateManuf = _locator->DetectDateManuf(_numberD);
   _unitMeasure = _locator->UnitMeasure(_numberD);
   _userName = _locator->NameDetect(_numberD);
