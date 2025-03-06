@@ -21,7 +21,7 @@
 const int BEP_WAIT_INIT = 1600;
 const int EM_WAIT_INIT = 1000;
 const int MODBUS_WAIT_INIT = 2000;
-const int MBTCP_WAIT_INIT = 5000;
+const int MBTCP_WAIT_INIT = 6000;
 const int MBTCDETECT_WAIT_INIT = 50;
 std::vector<int> V{BEP_WAIT_INIT, EM_WAIT_INIT, MODBUS_WAIT_INIT + 1000, MBTCP_WAIT_INIT};
 const int MAX_WAIT_INIT = *std::max_element(V.begin(), V.end());
@@ -241,6 +241,7 @@ void DetectFactory::tcpVTDetects()
   waitElapsed(MBTCP_WAIT_INIT);
 
   bool createdDetect = false;
+  int countTcpDetects = 0;
   for (MBTcpLocator* s : _mbTcpLocators)
     for (int i = 0; i < s->CountDetects(); ++i)
     {
@@ -248,9 +249,12 @@ void DetectFactory::tcpVTDetects()
       createdDetect = true;
       msd->Init();
       _detects.push_back(msd);
+      ++countTcpDetects;
     }
   if (createdDetect)
-    waitElapsed(MBTCDETECT_WAIT_INIT);
+  {
+    waitElapsed(std::max(MBTCDETECT_WAIT_INIT * countTcpDetects / 10, MBTCDETECT_WAIT_INIT));
+  }
 }
 
 
