@@ -112,7 +112,15 @@ QByteArray ImpMessageCreator::Do(ImpMessage message)
   }
   else
   {
-    result.push_back(ImpMessageDataSender::Incognito);
+    result.push_back(ImpMessageDataSender::DataEmpty);
   }
   return result + separator;
+}
+
+
+ImpMessage ImpMessageCreator::EmptyMessage()
+{
+  ImpMessage result;
+  result.Sender = ImpMessageDataSender::DataEmpty;
+  return result;
 }

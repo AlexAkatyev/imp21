@@ -13,11 +13,11 @@ class QTcpSocket;
 class PostMessageSender : public QObject
 {
 Q_OBJECT
-  enum ExcelAnswer
+  enum ExcelRequest
   {
-    Passed
-    , Error
-    , Waiting
+    Used = 0
+    , NotUsed = 1
+    , Empty = 2
   };
 
 public:
@@ -37,12 +37,11 @@ private:
   QByteArray createPost(ImpMessage);
 
   QTcpServer* _mTcpServer;
-  QTimer* _senderTimer;
   QTimer* _waitingTimer;
   std::list<ImpMessage> _sendData;
   bool _isListen;
   QTcpSocket* _mSocket;
-  ExcelAnswer _answer;
+  ExcelRequest _request;
 };
 
 #endif // POSTMESSAGESENDER_H

@@ -7,7 +7,7 @@ enum ImpMessageDataSender
 {
   Indicator = 0x00
   , Meter = 0x01
-  , Incognito = 0xFF
+  , DataEmpty = 0xFF
 };
 
 enum ImpMessageDataCaption
@@ -41,6 +41,8 @@ class ImpMessageCreator : public QObject
 public:
   explicit ImpMessageCreator(QObject *parent = nullptr);
   QByteArray Do(ImpMessage);
+
+  static ImpMessage EmptyMessage();
 };
 
 #endif // IMPMESSAGECREATOR_H

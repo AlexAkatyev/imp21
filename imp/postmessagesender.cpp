@@ -6,30 +6,18 @@
 #include "postmessagesender.h"
 
 const int MESSAGE_PORT = 32789; // 0x8015
-const int SEND_INTERVAL = 100;
-const int WAIT_ANSWER = 10000;
-const char ANSWER_PASSED = 0x01;
-const char ANSWER_ERROR = 0x02;
+const int WAIT_RECEIVER = 10000;
 
 PostMessageSender::PostMessageSender(QObject* parent)
   : QObject(parent)
   , _mTcpServer(new QTcpServer(this))
-  , _senderTimer(new QTimer(this))
   , _waitingTimer(new QTimer(this))
   , _sendData(std::list<ImpMessage>())
   , _isListen(false)
   , _mSocket(nullptr)
-  , _answer(ExcelAnswer::Passed)
+  , _request(ExcelRequest::Empty)
 {
-  _senderTimer->setInterval(SEND_INTERVAL);
-  connect
-      (
-        _senderTimer
-        , &QTimer::timeout
-        , this
-        , &PostMessageSender::send
-      );
-  _waitingTimer->setInterval(WAIT_ANSWER);
+  _waitingTimer->setInterval(WAIT_RECEIVER);
   connect
       (
         _waitingTimer
@@ -69,12 +57,12 @@ bool PostMessageSender::isListening()
 
 void PostMessageSender::Do(ImpMessage message)
 {
+  if (!_mSocket)
+  {
+    return;
+  }
   _sendData.push_back(message);
   qDebug() << "add message";
-  if (!_senderTimer->isActive())
-  {
-    _senderTimer->start();
-  }
 }
 
 
@@ -95,24 +83,9 @@ void PostMessageSender::slotServerRead()
 {
     while(_mSocket->bytesAvailable()>0)
     {
-        QByteArray array = _mSocket->readAll();
-        if (_answer == ExcelAnswer::Waiting)
-        {
-          if (array.contains(ANSWER_PASSED))
-          {
-            _answer = ExcelAnswer::Passed;
-            _waitingTimer->stop();
-            if (!_sendData.empty())
-            {
-              _sendData.pop_front();
-              qDebug() << "delete message";
-            }
-          }
-          else if (array.contains(ANSWER_ERROR))
-          {
-            _answer = ExcelAnswer::Error;
-          }
-        }
+      QByteArray array = _mSocket->readAll();
+      _request = static_cast<ExcelRequest>(array.at(0));
+      QTimer::singleShot(0, this, &PostMessageSender::send);
     }
 }
 
@@ -128,30 +101,27 @@ void PostMessageSender::slotClientDisconnected()
 
 void PostMessageSender::send()
 {
-  if (_sendData.empty())
-  {
-    _senderTimer->stop();
-    _waitingTimer->stop();
-    return;
-  }
+  _waitingTimer->start();
   if (!_mSocket
       || !isListening())
   {
     return;
   }
 
-  if (_answer == ExcelAnswer::Passed)
+  QByteArray toSend;
+  if (_sendData.empty())
   {
-    _answer = ExcelAnswer::Waiting;
-    _waitingTimer->start();
-    _mSocket->write(createPost(*_sendData.begin()));
+    toSend.push_back(createPost(ImpMessageCreator::EmptyMessage()));
   }
-
-  if (_answer == ExcelAnswer::Error)
+  else
   {
-    _answer = ExcelAnswer::Waiting;
-    _mSocket->write(createPost(*_sendData.begin()));
+    for (ImpMessage message : _sendData)
+    {
+      toSend.push_back(createPost(message));
+    }
+    _sendData.clear();
   }
+  _mSocket->write(toSend);
 }
 
 
@@ -164,8 +134,11 @@ QByteArray PostMessageSender::createPost(ImpMessage message)
 
 void PostMessageSender::writeTimeOut()
 {
-  _sendData.pop_front();
-  qDebug() << "delete message after waiting";
-  _answer = ExcelAnswer::Passed;
-  _waitingTimer->stop();
+  if (_sendData.empty())
+  {
+    return;
+  }
+  _sendData.clear();
+  qDebug() << "delete messages after waiting";
+  _request = ExcelRequest::Empty;
 }
