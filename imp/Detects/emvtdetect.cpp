@@ -19,11 +19,13 @@ const int DEF_PLUS = 43; // "+"
 const int DEF_EQ = 61; // "="
 const int DEF_H = 62; // ">"
 const int DEF_L = 60; // "<"
-const int AT_RES100 = AT_STATUS + 1;
+const int AT_RES1000 = AT_STATUS + 1;
+const int AT_RES100 = AT_RES1000 + 1;
 const int AT_RES10 = AT_RES100 + 1;
 const int AT_RES1 = AT_RES10 + 1;
 const int AT_RES01 = AT_RES1 + 1;
-const int AT_BUTTON = AT_RES01 + 1;
+const int AT_RES001 = AT_RES01 + 1;
+const int AT_BUTTON = AT_RES001 + 1;
 const int DEF_FIX = 70; // "F"
 const int AT_YEAR10 = AT_BUTTON + 1;
 const int AT_YEAR1 = AT_YEAR10 + 1;
@@ -31,7 +33,7 @@ const int AT_SN1000 = AT_YEAR1 + 1;
 const int AT_SN100 = AT_SN1000 + 1;
 const int AT_SN10 = AT_SN100 + 1;
 const int AT_SN1 = AT_SN10 + 1;
-const int LEN_DATA = 16;
+const int LEN_DATA = 22;
 
 
 inline int getNumberFromData(char dat, int scale = 1)
@@ -153,10 +155,12 @@ void EmVTDetect::routeInput()
     znak = -1;
   case DEF_H:
   case DEF_PLUS:
-    _measure = getNumberFromData(receiveData.at(AT_RES100), 100)
+    _measure = getNumberFromData(receiveData.at(AT_RES1000), 1000)
+        + getNumberFromData(receiveData.at(AT_RES100), 100)
         + getNumberFromData(receiveData.at(AT_RES10), 10)
         + getNumberFromData(receiveData.at(AT_RES1))
-        + getNumberFromData(receiveData.at(AT_RES01)) * 0.1;
+        + getNumberFromData(receiveData.at(AT_RES01)) * 0.1
+        + getNumberFromData(receiveData.at(AT_RES001)) * 0.01;
     _measure *= znak;
     emit NewMeasure(_measure);
     _flagReady = true;
