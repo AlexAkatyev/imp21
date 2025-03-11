@@ -20,6 +20,7 @@ Source: "..\..\build\1\imp.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\imp.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\imp_logo.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\ImpGauge.qml"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\build\1\ImpStyle.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\indicator.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\InputIndicator.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\libEGL.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -47,6 +48,8 @@ Source: "..\..\build\1\Qt5SerialBus.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\Qt5SerialPort.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\Qt5Svg.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\Qt5Widgets.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\build\1\SearchProgress.qml"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\build\1\settings.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\StatChart.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\audio\qtaudio_windows.dll"; DestDir: "{app}\audio"; Flags: ignoreversion
 Source: "..\..\build\1\bearer\qgenericbearer.dll"; DestDir: "{app}\bearer"; Flags: ignoreversion
