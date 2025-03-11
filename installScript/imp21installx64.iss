@@ -1,7 +1,7 @@
 
 [Setup]
 AppName=IMP
-AppVersion=21.8.4
+AppVersion=21.9.1
 WizardStyle=modern
 DefaultDirName={autopf}\..\ImcMikro\IMP
 DefaultGroupName=IMP
@@ -18,7 +18,7 @@ AppPublisherURL=ies-ltd.ru
 Source: "..\..\build\1\D3Dcompiler_47.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\imp.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\imp.qml"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\..\build\1\impclient.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\build\1\imp_logo.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\ImpGauge.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\indicator.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\InputIndicator.qml"; DestDir: "{app}"; Flags: ignoreversion
@@ -693,5 +693,5 @@ Source: "..\Documentation\pythonProject\build\html\_static\vendor\fontawesome\6.
 Name: "ruslng"; MessagesFile: "compiler:Languages\Russian.isl"
 
 [Icons]
-Name: "{group}\IMP"; Filename: "{app}\imp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\impclient.ico"; IconIndex: 0
-Name: "{autodesktop}\IMP"; Filename: "{app}\imp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\impclient.ico"; IconIndex: 0
+Name: "{group}\IMP"; Filename: "{app}\imp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\imp_logo.ico"; IconIndex: 0
+Name: "{autodesktop}\IMP"; Filename: "{app}\imp.exe"; WorkingDir: "{app}"; IconFilename: "{app}\imp_logo.ico"; IconIndex: 0
