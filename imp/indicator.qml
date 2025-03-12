@@ -259,7 +259,7 @@ Item
         else if (m < llevel)
             group = "БРАК-";
         else
-            group = numbers - Math.floor(numbers * (m - llevel) / (hlevel - llevel));
+            group = Math.floor(numbers * (m - llevel) / (hlevel - llevel)) + 1;
         return group;
     }
 
@@ -699,14 +699,14 @@ Item
                     text: "Количество групп"
                 }
                 Text {
-                    text: intervalF.text
+                    text: countGroupsF.value
                 }
                 // ----------------------------------
                 Text {
                     text: "Интервал"
                 }
                 Text {
-                    text: getInterval(tfHiLevelF.text, tfLoLevelF.text, countGroupsF.text)
+                    text: intervalF.text
                 }
                 // ----------------------------------
                 Text {
@@ -734,7 +734,7 @@ Item
                     onTextChanged: tGroupF.text = getSortGroup(inputIndicator.mTranformFormulaReal,
                                                                tfHiLevelF.text,
                                                                tfLoLevelF.text,
-                                                               countGroupsF.text);
+                                                               countGroupsF.value);
                 }
                 // ----------------------------------
                 Text {
@@ -1824,51 +1824,10 @@ Item
                             padding: 10
                             enabled: false
                         }
-
-
-
-                        /*Row {
-                            Button {
-                                id: btLeftInterval
-                                text: "<"
-                                height: 50
-                                background: Rectangle {
-                                    color: btLeftInterval.hovered ? impStyle.hoveredColor : impStyle.windowColor
-                                    border.color: impStyle.borderColor
-                                }
-                                onReleased: {
-                                    var groups = countGroupsF.text;
-                                    if (groups > 1)
-                                        groups = groups - 1;
-                                    countGroupsF.text = groups;
-                                }
-                            }
-                            Text {
-                                id: intervalF
-                                objectName: "intervalF"
-                                anchors.verticalCenter: btLeftInterval.verticalCenter
-                                text: getInterval(tfHiLevelF.text, tfLoLevelF.text, countGroupsF.text)
-                                font.pixelSize: tfName.font.pixelSize
-                                width: 70
-                            }
-                            Button {
-                                id: btRightInterval
-                                text: ">"
-                                height: 50
-                                background: Rectangle {
-                                    color: btRightInterval.hovered ? impStyle.hoveredColor : impStyle.windowColor
-                                    border.color: impStyle.borderColor
-                                }
-                                onReleased: {
-                                    var groups = countGroupsF.text - 1;
-                                    if (groups < 99)
-                                        groups = groups + 2;
-                                    countGroupsF.text = groups;
-                                }
-                            }
-                        }*/
                     }
                 }
+
+
                 // Страница кнопки СТАТИСТИКА
                 Item {
                     id: itStatistic
