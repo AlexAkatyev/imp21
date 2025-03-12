@@ -55,11 +55,11 @@ QByteArray getMinMax(ImpMessage message)
 }
 
 
-QByteArray getSelectGroup(ImpMessage message)
+QByteArray getGroupNumber(ImpMessage message)
 {
   QByteArray result;
   result.push_back(static_cast<char>(ImpMessageDataCaption::SelectGroup));
-  result.push_back(static_cast<char>(message.SelectGroup));
+  result.push_back(static_cast<char>(message.GroupNumber));
   return result;
 }
 
@@ -78,7 +78,7 @@ QByteArray indicatorMessage(ImpMessage message)
   }
   else if (message.Caption == ImpMessageDataCaption::SelectGroup)
   {
-    result.push_back(getSelectGroup(message));
+    result.push_back(getGroupNumber(message));
   }
   else
   {

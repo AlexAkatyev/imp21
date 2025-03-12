@@ -36,6 +36,7 @@ Item
     property real measMin: 0
     property real measMax: 0
     property real measDeviation: 0
+    property real groupNumber: 0
     property int  prevTabIndex: 0
     property bool stateMeasure: false // true - идет замер
     property bool pauseMeasure: false // true - пауза в измерении
@@ -255,11 +256,20 @@ Item
     {
         var group = "";
         if (m > hlevel )
+        {
             group = "БРАК+";
+            groupNumber = numbers + 1;
+        }
         else if (m < llevel)
+        {
             group = "БРАК-";
+            groupNumber = 0;
+        }
         else
-            group = Math.floor(numbers * (m - llevel) / (hlevel - llevel)) + 1;
+        {
+            groupNumber = Math.floor(numbers * (m - llevel) / (hlevel - llevel)) + 1;
+            group = groupNumber;
+        }
         return group;
     }
 

@@ -26,7 +26,7 @@ struct ImpMessage
   float Measure;
   float Max;
   float Min;
-  int SelectGroup;
+  int GroupNumber;
   ImpMessage()
   {
     Sender = ImpMessageDataSender::Meter;

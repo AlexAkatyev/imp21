@@ -1049,17 +1049,26 @@ void Indicator::sendMessage()
   message.Sender = ImpMessageDataSender::Indicator;
   message.SenderId = _idIndicator + 1;
   QObject* root = _quickUi->rootObject();
-  bool deviationMode = root->property("deviationMode").toBool();
-  if (deviationMode)
+  bool cbSortFormula = root->property("cbSortFormula").toBool();
+  if (cbSortFormula)
   {
-    message.Caption = ImpMessageDataCaption::MinMax;
-    message.Min = root->property("measMin").toFloat();
-    message.Max = root->property("measMax").toFloat();
+    message.Caption = ImpMessageDataCaption::SelectGroup;
+    message.GroupNumber = root->property("groupNumber").toInt();
   }
   else
   {
-    message.Caption = ImpMessageDataCaption::Measure;
-    message.Measure = root->property("sendData").toFloat();
+    bool deviationMode = root->property("deviationMode").toBool();
+    if (deviationMode)
+    {
+      message.Caption = ImpMessageDataCaption::MinMax;
+      message.Min = root->property("measMin").toFloat();
+      message.Max = root->property("measMax").toFloat();
+    }
+    else
+    {
+      message.Caption = ImpMessageDataCaption::Measure;
+      message.Measure = root->property("sendData").toFloat();
+    }
   }
   PostMessageSender::Instance(this->parent())->Do(message);
 }
