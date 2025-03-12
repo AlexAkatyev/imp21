@@ -1048,8 +1048,19 @@ void Indicator::sendMessage()
   ImpMessage message = ImpMessage();
   message.Sender = ImpMessageDataSender::Indicator;
   message.SenderId = _idIndicator + 1;
-  message.Caption = ImpMessageDataCaption::Measure;
-  message.Measure = _quickUi->rootObject()->property("sendData").toFloat();
+  QObject* root = _quickUi->rootObject();
+  bool deviationMode = root->property("deviationMode").toBool();
+  if (deviationMode)
+  {
+    message.Caption = ImpMessageDataCaption::MinMax;
+    message.Min = root->property("measMin").toFloat();
+    message.Max = root->property("measMax").toFloat();
+  }
+  else
+  {
+    message.Caption = ImpMessageDataCaption::Measure;
+    message.Measure = root->property("sendData").toFloat();
+  }
   PostMessageSender::Instance(this->parent())->Do(message);
 }
 

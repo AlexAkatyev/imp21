@@ -276,7 +276,10 @@ Item
                 measDeviation = 0;
             }
             else //замер окончен
+            {
                 appendMeasDataToModel(false);
+                sigSendMeasurementMessage();
+            }
         }
     }
 
