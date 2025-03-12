@@ -205,6 +205,9 @@ QVariant IndSettings::defaultValues(IndKeys c)
   case TRANS_GAUGE:
     return 0;
     break;
+  case GROUPSF:
+    return 1;
+    break;
   case PERIOD:
     return 0;
     break;

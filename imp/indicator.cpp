@@ -666,7 +666,7 @@ void Indicator::saveSettingsIndicator()
   QObject* qmlWidget = _quickUi->rootObject()->findChild<QObject*>("cbSortFormula");
   _settings->SetValue(IndKeys::SORT_CHF, qmlWidget->property("checked"));
   qmlWidget = _quickUi->rootObject()->findChild<QObject*>("countGroupsF");
-  _settings->SetValue(IndKeys::GROUPSF, qmlWidget->property("text").toString().toInt());
+  _settings->SetValue(IndKeys::GROUPSF, qmlWidget->property("value").toInt());
 
   // автосохранение
   qmlWidget = _quickUi->rootObject()->findChild<QObject*>("automaticSave");
@@ -807,7 +807,7 @@ bool Indicator::loadSettingsIndicator(bool defOptions)
   _inputIndicator->setProperty("transGauge", v);
 
   QObject* qmlWidget = _quickUi->rootObject()->findChild<QObject*>("countGroupsF");
-  qmlWidget->setProperty("text", _settings->Value(IndKeys::GROUPSF));
+  qmlWidget->setProperty("value", _settings->Value(IndKeys::GROUPSF));
   qmlWidget = _quickUi->rootObject()->findChild<QObject*>("cbSortFormula");
   qmlWidget->setProperty("checked", _settings->Value(IndKeys::SORT_CHF));
 
