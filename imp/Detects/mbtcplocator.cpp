@@ -199,6 +199,12 @@ QString MBTcpLocator::DetectType(int numberD)
   case 5:
     result = "Датчик для вискозиметра АКВ-2В";
     break;
+  case 6:
+    result = "Микрокатор с радиоканалом";
+    break;
+  case 7:
+    result = "Уровень с радиоканалом";
+    break;
   }
   return result;
 }
