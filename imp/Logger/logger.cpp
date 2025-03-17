@@ -38,7 +38,8 @@ void Logger::WriteLog(QString input)
 
 void Logger::WriteLnLog(QString input)
 {
-  WriteLog(input + "\n");
+  QString dateTime =QDateTime::currentDateTime().toString("HH:mm:zzz");
+  WriteLog(dateTime + " | " + input + "\n");
 }
 
 
