@@ -24,7 +24,6 @@
 #include "Detects/detectfactory.h"
 #include "Logger/logger.h"
 #include "impsettings.h"
-#include "impsettingsdialog.h"
 #include "formulatree/formulafactory.h"
 
 // Пауза после запуска программы перед поиском датчиков
@@ -89,9 +88,6 @@ Imp::Imp(QWidget* parent)
     // Отработка команды: Помощь/Справка
     connect(pQuickUi->rootObject(), SIGNAL(sigClickedbtHelp()), this, SLOT(showHelp()));
 
-    // Отработка команды: настройка рабочего места
-    connect(pQuickUi->rootObject(), SIGNAL(sigClickedGeneralSettings()), this, SLOT(showSettingsDialog()));
-
     // Отработка команды: Новый индикатор
     connect(pQuickUi->rootObject(), SIGNAL(sigNewIndicator(QString)), this, SLOT(createNewIndicator(QString)));
 
@@ -120,6 +116,7 @@ Imp::Imp(QWidget* parent)
     _timerUpdaterActiveStatus->setInterval(INTERVAL_UPDATE);
     connect(_timerUpdaterActiveStatus, &QTimer::timeout, this, &Imp::changeActiveStatusToTable);
 
+    linkIni(pQuickUi);
     if (ImpSettings::Instance(this)->Value(ImpKeys::DEBUG_GUI_MODE).toBool())
     {
       _flagRunIndicators = false;
@@ -191,6 +188,66 @@ void Imp::SaveSettingsGeneral()
     if (_useIndicators.contains(num) == true)
       indficators << QString::number(num);
   settings->SetValue(ImpKeys::INDICATORS, indficators);
+}
+
+
+void Imp::linkIni(QQuickWidget* ui)
+{
+  ImpSettings* settings = ImpSettings::Instance(this);
+  QObject* root = ui->rootObject();
+  QObject* impSettingsDialog = root->findChild<QObject*>("impSettingsDialog");
+
+  QObject* cbModBusSearch = root->findChild<QObject*>("cbModBusSearch");
+  cbModBusSearch->setProperty("checked", settings->Value(ImpKeys::EN_MODBUS_TCP).toBool());
+  connect(impSettingsDialog, SIGNAL(sigFindModbusTCP(bool)), this, SLOT(setIniFindModbusTCP(bool)));
+
+  QObject* cbSearch485 = root->findChild<QObject*>("cbSearch485");
+  cbSearch485->setProperty("checked", settings->Value(ImpKeys::EN_RS_485).toBool());
+  connect(impSettingsDialog, SIGNAL(sigFindModbus485(bool)), this, SLOT(setIniFindModbus485(bool)));
+
+  QObject* cbSimRec = root->findChild<QObject*>("cbSimRec");
+  cbSimRec->setProperty("checked", settings->Value(ImpKeys::RECORDING_IN_ALL_INDICATORS).toBool());
+  connect(impSettingsDialog, SIGNAL(sigSimRec(bool)), this, SLOT(setRecordingInAllIndicators(bool)));
+
+  QStringList sl = settings->Value(ImpKeys::LIST_MB_ADDR).toStringList();
+  impSettingsDialog->setProperty("iCommand", 1); // clear list of adresses
+  for (QString adress : sl)
+  {
+    impSettingsDialog->setProperty("tcpAdress", adress);
+    impSettingsDialog->setProperty("iCommand", 2); // Команда на добавление записи
+  }
+  connect(impSettingsDialog, SIGNAL(sigAdresses(QString)), this, SLOT(setModbusAdresses(QString)));
+  QObject* modelUpdater = root->findChild<QObject*>("modelUpdater");
+  modelUpdater->setProperty("running", true);
+}
+
+
+void Imp::setIniFindModbusTCP(bool en)
+{
+  ImpSettings* settings = ImpSettings::Instance(parent());
+  settings->SetValue(ImpKeys::EN_MODBUS_TCP, en);
+}
+
+
+void Imp::setIniFindModbus485(bool en)
+{
+  ImpSettings* settings = ImpSettings::Instance(parent());
+  settings->SetValue(ImpKeys::EN_RS_485, en);
+}
+
+
+void Imp::setRecordingInAllIndicators(bool en)
+{
+  ImpSettings* settings = ImpSettings::Instance(parent());
+  settings->SetValue(ImpKeys::RECORDING_IN_ALL_INDICATORS, en);
+}
+
+
+void Imp::setModbusAdresses(QString adresses)
+{
+  ImpSettings* settings = ImpSettings::Instance(parent());
+  QStringList sl = adresses.split("\n");
+  settings->SetValue(ImpKeys::LIST_MB_ADDR, sl);
 }
 
 
@@ -610,14 +667,6 @@ void Imp::showHelp()
   std::stringstream stream;
   stream << HELP_INFO;
   system(stream.str().c_str());
-}
-
-
-void Imp::showSettingsDialog()
-{
-  static ImpSettingsDialog* sDialog = new ImpSettingsDialog(this);
-  sDialog->UpdatePosition(geometry());
-  sDialog->show();
 }
 
 

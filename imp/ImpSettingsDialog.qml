@@ -7,7 +7,6 @@ import QtQuick.Layouts 1.3
 Item {
     height: 500
     width: 355
-    objectName: "ImpSettings"
 
     property string tcpAdress: ""
     property int iCommand: 0 // 0 - нет команды
@@ -24,6 +23,7 @@ Item {
             lmAddress.append({serverAddress : tcpAdress});
         }
         iCommand = 0; // 0 - нет команды
+
     }
     property string oldAdresses: ""
 
@@ -188,6 +188,11 @@ Item {
                             model: ListModel
                             { // Здесь будет содержаться список адресов
                                 id: lmAddress
+                                onCountChanged:
+                                {
+                                    lvAddresses.visible = count != 0;
+                                    emptyWidgets.visible = count == 0;
+                                }
                             }
 
                             delegate: TextField
@@ -207,18 +212,14 @@ Item {
                                     lmAddress.set(index, {serverAddress : text});
                                 }
                             }
-                            onCountChanged:
-                            {
-                                visible = count != 0;
-                                emptyWidgets.visible = !visible;
-                            }
-                            visible: count != 0
+                            visible: lmAddress.count != 0
                         }
 
                         Column
                         {
                             id: emptyWidgets
-                            visible: lvAddresses.count == 0
+                            objectName: "emptyWidgets"
+                            visible: lmAddress.count == 0
                             anchors.centerIn: parent
                             Text {
                                 id: txNoAddress

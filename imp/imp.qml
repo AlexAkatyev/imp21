@@ -71,7 +71,6 @@ Item
         iCommand = 0; // 0 - нет команды
     }
 
-    signal sigClickedGeneralSettings();
     signal sigClickedbtHelp();
     signal sigNewIndicator(string SerialNum); // Серийный номер индикатора, или "Нет", или "DEFAULT_INDICATOR"
     signal sigFillScreenWithIndicators();
@@ -240,12 +239,12 @@ Item
 
             Button
             {
-                id: btAbout
+                id: btImpSettingsDialog
                 height: 100
                 width: 110
                 hoverEnabled: true
                 background: Rectangle {
-                    color: btAbout.hovered ? impStyle.hoveredColor : impStyle.actionbarColor
+                    color: btImpSettingsDialog.hovered || impSettingsDialog.visible ? impStyle.hoveredColor : impStyle.actionbarColor
                 }
                 text: "Настройки\nрабочего места"
                 font.capitalization: Font.MixedCase
@@ -254,7 +253,11 @@ Item
                 display: Button.TextUnderIcon
                 ToolTip.visible: hovered
                 ToolTip.text: "Выбрать тип датчика и способ поиска"
-                onClicked: sigClickedGeneralSettings();
+                onClicked:
+                {
+                    lvDetect.visible = !lvDetect.visible
+                    impSettingsDialog.visible = !lvDetect.visible
+                }
             }
         }
 
@@ -447,5 +450,16 @@ Item
             }
         }
 
+    }
+
+    ImpSettingsDialog
+    {
+        id: impSettingsDialog
+        objectName: "impSettingsDialog"
+        anchors.top: lvDetect.top
+        anchors.left: lvDetect.left
+        anchors.right: lvDetect.right
+        anchors.bottom: lvDetect.bottom
+        visible: false
     }
 }

@@ -56,7 +56,6 @@ SOURCES += main.cpp\
     formulatree/formulanode.cpp \
         imp.cpp \
     impsettings.cpp \
-    impsettingsdialog.cpp \
     indicator.cpp \
     checkInputNumberIF/checkInputNumberIF.cpp \
   indsettings.cpp \
@@ -96,7 +95,6 @@ HEADERS  += imp.h \
     formulatree/formulanode.h \
     impdef.h \
     impsettings.h \
-    impsettingsdialog.h \
     indicator.h \
     checkInputNumberIF/checkInputNumberIF.h \
     indsettings.h \

@@ -44,10 +44,13 @@ private slots:
     void composeOpenWindowsInOrder();
     // Удаление индикатора из множества
     void deleteIndicator(int);
-    // Отработка команды: Помощь/О программе
-    void showSettingsDialog();
     // Отработка команды: Помощь/Справка
     void showHelp();
+    // чтение настроек
+    void setIniFindModbusTCP(bool en);
+    void setIniFindModbus485(bool en);
+    void setRecordingInAllIndicators(bool en);
+    void setModbusAdresses(QString adresses);
 
 private:
 
@@ -71,6 +74,7 @@ private:
     // Объект и файл для хранения установок главного окна
     bool LoadSettingsGeneral(); // Загрузка параметров из файла установок
     void SaveSettingsGeneral(); // Сохранение параметров установок в файл
+    void linkIni(QQuickWidget* ui);
     QSet<int> _useIndicators; // Множество используемых индикаторов
     std::vector<Indicator*> _indicators;
     bool _flagRunIndicators; // Флаг необходимости запускать индикаторы после запуска программы
