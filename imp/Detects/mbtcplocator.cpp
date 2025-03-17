@@ -349,7 +349,7 @@ void MBTcpLocator::ReportReadyWrite(int numberD, bool ready)
   {
       if(!lastRequest->isFinished())
       {
-          connect(lastRequest, &QModbusReply::finished, this, [this, lastRequest, logger, numberD]()
+          connect(lastRequest, &QModbusReply::finished, this, [this, lastRequest, logger, numberD, d]()
           {
               if (lastRequest->error() == QModbusDevice::ProtocolError)
               {
@@ -365,7 +365,13 @@ void MBTcpLocator::ReportReadyWrite(int numberD, bool ready)
               }
               else if (lastRequest->error() == QModbusDevice::NoError)
               {
-                  logger->WriteLnLog("modbus tcp write: " + QString::number( regData(REG_CAN_READY_WRITE, numberD)));
+                  logger->WriteLnLog
+                  (
+                      "modbus tcp write: ["
+                      + QString::number( regData(REG_CAN_READY_WRITE, numberD))
+                      + "] "
+                      + QString::number(d)
+                  );
               }
               lastRequest->deleteLater();
          });
