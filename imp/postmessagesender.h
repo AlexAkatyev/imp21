@@ -29,8 +29,6 @@ private:
 
   void doNewConnection();
   bool isListening();
-  void slotServerRead();
-  void slotClientDisconnected();
 
   void send();
   void writeTimeOut();
@@ -40,7 +38,7 @@ private:
   QTimer* _waitingTimer;
   std::list<ImpMessage> _sendData;
   bool _isListen;
-  QTcpSocket* _mSocket;
+  std::list<QTcpSocket*> _mSockets;
   ExcelRequest _request;
 };
 

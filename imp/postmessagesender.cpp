@@ -14,7 +14,7 @@ PostMessageSender::PostMessageSender(QObject* parent)
   , _waitingTimer(new QTimer(this))
   , _sendData(std::list<ImpMessage>())
   , _isListen(false)
-  , _mSocket(nullptr)
+  , _mSockets(std::list<QTcpSocket*>())
   , _request(ExcelRequest::Empty)
 {
   _waitingTimer->setInterval(WAIT_RECEIVER);
@@ -57,7 +57,7 @@ bool PostMessageSender::isListening()
 
 void PostMessageSender::Do(ImpMessage message)
 {
-  if (!_mSocket)
+  if (_mSockets.empty())
   {
     return;
   }
@@ -68,41 +68,33 @@ void PostMessageSender::Do(ImpMessage message)
 
 void PostMessageSender::doNewConnection()
 {
-  if (_mSocket)
+  QTcpSocket* mSocket = _mTcpServer->nextPendingConnection();
+  connect(mSocket, &QTcpSocket::readyRead, this, [=]()
   {
-    return;
-  }
-  _mSocket = _mTcpServer->nextPendingConnection();
-  connect(_mSocket, &QTcpSocket::readyRead, this, &PostMessageSender::slotServerRead);
-  connect(_mSocket, &QTcpSocket::disconnected, this, &PostMessageSender::slotClientDisconnected);
-  qDebug() << "add socket";
-}
-
-
-void PostMessageSender::slotServerRead()
-{
-    while(_mSocket->bytesAvailable()>0)
+    while(mSocket->bytesAvailable()>0)
     {
-      QByteArray array = _mSocket->readAll();
+      QByteArray array = mSocket->readAll();
       _request = static_cast<ExcelRequest>(array.at(0));
       QTimer::singleShot(0, this, &PostMessageSender::send);
     }
-}
+  });
+  connect(mSocket, &QTcpSocket::disconnected, this, [=]()
+  {
+    _mSockets.remove(mSocket);
+    mSocket->close();
+    mSocket->deleteLater();
+    qDebug() << "socket disconnect : " << mSocket;
+  });
 
-
-void PostMessageSender::slotClientDisconnected()
-{
-    _mSocket->close();
-    _mSocket->deleteLater();
-    _mSocket = nullptr;
-    qDebug() << "socket disconnect";
+  _mSockets.push_back(mSocket);
+  qDebug() << "add socket : " << mSocket;
 }
 
 
 void PostMessageSender::send()
 {
   _waitingTimer->start();
-  if (!_mSocket
+  if (_mSockets.empty()
       || !isListening())
   {
     return;
@@ -121,7 +113,15 @@ void PostMessageSender::send()
     }
     _sendData.clear();
   }
-  _mSocket->write(toSend);
+
+  for (QTcpSocket* socket : _mSockets)
+  {
+    if (socket->isValid()
+        && socket->state() == QAbstractSocket::SocketState::ConnectedState)
+    {
+      socket->write(toSend);
+    }
+  }
 }
 
 
