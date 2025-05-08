@@ -89,8 +89,6 @@ Item
     signal sigChangeIndication();
     // Сигнал нажатия кнопки открытия графика
     signal sigOpenChart();
-    // Сигнал сохранения измерений
-    signal sigClickedSave();
     // Сигнал ввода имени измерения
     signal sigNameEntered();
     // Сигнал изменения общего делителя формулы
@@ -178,7 +176,6 @@ Item
         if (lmMeasData.count === 0)
             return 0;
         fillTxtCsvForSave();
-        sigClickedSave();
         return 1;
     }
 
@@ -319,27 +316,6 @@ Item
     }
 
 
-    function setStatMode()
-    {
-        if (cbHand.checked)
-        {
-            statChart.blMode = false;
-            statChart.enabled = true;
-        }
-        else if (cbAutomatic.checked)
-        {
-            statChart.blMode = true;
-            statChart.enabled = true;
-        }
-        else
-        {
-            statChart.enabled = false;
-            statChart.blRun = false;
-        }
-        statChart.clearModel();
-        cbStatistic.checked = statChart.enabled;
-    }
-
     property real mybeforeset: inputIndicator.beforeSet
     onMybeforesetChanged: {
         setTextBeforeSet();
@@ -358,34 +334,25 @@ Item
         var mesSize = stroka;
         if (mesSize < 10)
         {
-            statChart.period_ms = 10;
             tfStatPeriod.text = "10";
         }
         else if (mesSize > 10000)
         {
-            statChart.period_ms = 10000;
             tfStatPeriod.text = "10000";
         }
-        else
-            statChart.period_ms = mesSize;
     }
 
     function receiptSumPoint(stroka)
     {
-        statChart.clearModel();
         var mesSize = stroka;
         if (mesSize < 10)
         {
-            statChart.maxSizeMess = 10;
             tfSumPoint.text = "10";
         }
         else if (mesSize > 1000)
         {
-            statChart.maxSizeMess = 1000;
             tfSumPoint.text = "1000";
         }
-        else
-            statChart.maxSizeMess = mesSize;
     }
 
     function getNumberCharPointModel(theme)
@@ -857,7 +824,7 @@ Item
                 anchors.top: parent.top
                 anchors.right: parent.right
                 anchors.bottom: itMin.top
-                visible:  !itSortDisplay.visible & !statChart.visible
+                visible:  !itSortDisplay.visible
                 Item {
                     id: itStrelka
                     anchors.fill: parent
@@ -937,36 +904,6 @@ Item
                 }
             }
         }
-        // График
-        StatChart {
-            id: statChart
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: btMenu.top
-            visible: cbStatistic.checked
-            dbHiLimit: Math.round(tfHiLimit.text);
-            dbLoLimit: Math.round(tfLoLimit.text);
-            iGaugeUnit: Math.round(tfUnitPoint.text);
-            strMessUnit: inputIndicator.messUnit;
-            txFormula: getFormula();
-            enabled: false;
-            opacity: 0.5;
-            onEnabledChanged: opacity = enabled ? 1 : 0.5;
-            maxSizeMess: tfSumPoint.text
-            period_ms: tfStatPeriod.text
-            maxLenMess: tfMeasLen.text * 1000
-        }
-        Text {
-            anchors.horizontalCenter: statChart.horizontalCenter
-            anchors.bottom: statChart.bottom
-            anchors.bottomMargin: 80
-            visible: statChart.visible
-            opacity: 0.7
-            font.pixelSize: 32
-            text: impGauge.exorbitantFilter(impGauge.round10(inputIndicator.mess, inputIndicator.accuracy))
-            color: impGauge.getColorMessText()
-        }
     }
 
     Item {
@@ -995,7 +932,7 @@ Item
                             {text:"ДОПУСК", image:"./icons/tolerance.png"},
                             {text:"ДИСПЛЕЙ", image:"./icons/display.png"},
                             {text:"СОРТИРОВКА", image:"./icons/sort.png"},
-                            {text:"СТАТИСТИКА", image:"./icons/statistics.png"}]
+                           ]
                     TabButton
                     {
                         id: tbInd
@@ -1024,26 +961,18 @@ Item
                     {
                     case 1:
                     case 2: sigChangeFormula();
-                            statChart.strMessUnit = inputIndicator.messUnit;
-                            statChart.txFormula = getFormula();
                             break;
                     case 3: sigChangeLimit();
-                            statChart.dbHiLimit = tfHiLimit.text;
-                            statChart.dbLoLimit = tfLoLimit.text;
                             sigChangeIndication();
                             break;
                     case 4: sigGetDivisionValue();
-                            statChart.iGaugeUnit = Math.round(tfUnitPoint.text);
                             setTextBeforeSet();
                             setIndicatorAccuracy();
                             break;
                     case 5: sigChangeLimit();
-                            statChart.dbHiLimit = tfHiLimit.text;
-                            statChart.dbLoLimit = tfLoLimit.text;
                             break;
                     case 6: receiptStatPeriod(tfStatPeriod.text);
                             receiptSumPoint(tfSumPoint.text);
-                            statChart.blRun = false;
                             break;
                     default:
                     }
@@ -1703,7 +1632,6 @@ Item
                                 tfPriemka.text = 0;
                                 inputIndicator.priemka = 0;
                                 cbSortFormula.checked = false; // no sort
-                                cbStatistic.checked = false; // no grafic
                                 cbMode.checked = false; // no max-min
                                 deviationMode = false;
                                 statChart.blRun = false;
@@ -1733,10 +1661,6 @@ Item
                             objectName: "cbSortFormula"
                             padding: 5
                             checked: false
-                            onCheckedChanged: {
-                                if (checked)
-                                    cbStatistic.checked = false;
-                            }
                         }
                         // row 2
                         Text {
@@ -1816,134 +1740,6 @@ Item
                 }
 
 
-                // Страница кнопки СТАТИСТИКА
-                Item {
-                    id: itStatistic
-                    Column {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        CheckBox {
-                            id: cbStatistic
-                            text: "Режим отображения графика"
-                            font.pixelSize: tfName.font.pixelSize
-                            enabled: false
-                            checked: false
-                            onCheckedChanged: {
-                                if (checked)
-                                    cbSortFormula.checked = false;
-                            }
-                        }
-                        CheckBox {
-                            id: cbHand
-                            text: "Ручная фиксация измерений"
-                            font.pixelSize: tfName.font.pixelSize
-                            onCheckedChanged: {
-                                if (checked)
-                                    cbAutomatic.checked = false;
-                                setStatMode();
-                            }
-                        }
-                        CheckBox {
-                            id: cbAutomatic
-                            text: "Автоматическая фиксация измерений"
-                            font.pixelSize: tfName.font.pixelSize
-                            onCheckedChanged: {
-                                if (checked)
-                                    cbHand.checked = false;
-                                setStatMode();
-                            }
-                        }
-                        Grid {
-                            rows: 4
-                            columns: 2
-                            spacing: 2
-                            Text
-                            {
-                                text: "\nШирина окна графика, с"
-                                font.pixelSize: tfName.font.pixelSize
-                            }
-                            TextField
-                            {
-                                id: tfSumPoint
-                                objectName: "tfSumPoint"
-                                enabled: cbAutomatic.checked | cbHand.checked
-                                validator: IntValidator{bottom: 10; top: 1000;}
-                                text: "100"
-                                font.pixelSize: tfName.font.pixelSize
-                                width: tfName.width
-                                padding: 10
-                                onTextChanged: statChart.maxSizeMess = text
-                            }
-                            Text
-                            {
-                                text: "\nКоличество точек"
-                                font.pixelSize: tfName.font.pixelSize
-                            }
-                            TextField
-                            {
-                                id: tfPointCount
-                                enabled: cbAutomatic.checked
-                                validator: IntValidator{bottom: 10; top: 1000000;}
-                                text: "1000"
-                                font.pixelSize: tfName.font.pixelSize
-                                width: tfName.width
-                                padding: 10
-                                onTextEdited: {
-                                    if (cbAutomatic.checked)
-                                    {
-                                        var data = tfPointCount.text * tfStatPeriod.text;
-                                        tfMeasLen.text = (data / 1000).toString();
-                                    }
-                                }
-                            }
-                            Text
-                            {
-                                text: "\nИнтервал измерений, мс"
-                                font.pixelSize: tfName.font.pixelSize
-                            }
-                            TextField
-                            {
-                                id: tfStatPeriod
-                                objectName: "tfStatPeriod"
-                                enabled: cbAutomatic.checked
-                                validator: IntValidator{bottom: 100; top: 10000;}
-                                text: "100"
-                                font.pixelSize: tfName.font.pixelSize
-                                width: tfName.width
-                                padding: 10
-                                onTextEdited: {
-                                    if (cbAutomatic.checked)
-                                    {
-                                        var data = tfMeasLen.text / tfStatPeriod.text;
-                                        tfPointCount.text = Math.round(data * 1000).toString();
-                                    }
-                                }
-                            }
-                            Text
-                            {
-                                text: "\nПродолжительность измерений, с  "
-                                font.pixelSize: tfName.font.pixelSize
-                            }
-                            TextField
-                            {
-                                id: tfMeasLen
-                                enabled: cbAutomatic.checked
-                                validator: IntValidator{bottom: 10; top: 90000;}
-                                text: "100"
-                                font.pixelSize: tfName.font.pixelSize
-                                width: tfName.width
-                                padding: 10
-                                onTextEdited: {
-                                    if (cbAutomatic.checked)
-                                    {
-                                        var data = tfMeasLen.text / tfStatPeriod.text;
-                                        tfPointCount.text = Math.round(data * 1000).toString();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
     }

@@ -17,9 +17,6 @@
 #include "formulatree/formulafactory.h"
 #include "formulatree/formulanode.h"
 
-#include <Xlsx/Workbook.h>
-using namespace SimpleXlsx;
-
 // Время ожидания ответа датчиков
 #define TIME_OF_WAIT_DETECT 5000
 
@@ -129,7 +126,6 @@ Indicator::Indicator
   _rbHandMode = _quickUi->rootObject()->findChild<QObject*>("rbHandMode");
   _rbAutoMode = _quickUi->rootObject()->findChild<QObject*>("rbAutoMode");
   _tfStatPeriod = _quickUi->rootObject()->findChild<QObject*>("tfStatPeriod");
-  _tStatChart = _quickUi->rootObject()->findChild<QObject*>("statChart");
 
   // Указатель для входных данных индикатора
   _inputIndicator = _quickUi->rootObject()->findChild<QObject*>("inputIndicator");
@@ -142,19 +138,11 @@ Indicator::Indicator
   connect(_quickUi->rootObject(), SIGNAL(sigChangeLimit()), this, SLOT(changeLimit()));
   // Обновление характера показаний на индикаторе
   connect(_quickUi->rootObject(), SIGNAL(sigChangeIndication()), this, SLOT(changeIndication()));
-  // Сохранение измерений
-  connect(_quickUi->rootObject(), SIGNAL(sigClickedSave()), this, SLOT(saveMeas()));
   // Установка 0 значения датчиков
   connect(_quickUi->rootObject(), SIGNAL(sigSetZeroShift()), this, SLOT(setZeroShifts()));
   // выбор файла автосохранения
   // Установка имени
   connect(_quickUi->rootObject(), SIGNAL(sigNameEntered()), this, SLOT(setWindowName()));
-  // отработка нажатия кнопки печати
-  connect(_tStatChart, SIGNAL(sigClickedPrint()), this, SLOT(printChart()));
-  // отработка нажатия кнопки сохранение CSV
-  connect(_tStatChart, SIGNAL(sigClickedSaveCSV()), this, SLOT(saveChartToCSV()));
-  // отработка нажатия кнопки сохранение XLS
-  connect(_tStatChart, SIGNAL(sigClickedSaveXLS()), this, SLOT(saveChartToXLS()));
   // отработка нажатия кнопки DATA
   connect(_quickUi->rootObject(), SIGNAL(sigReleaseData()), this, SIGNAL(sigDataPressed()));
   // передача измерения в Windows
@@ -876,148 +864,6 @@ void Indicator::watchDogControl(void)
     _inputIndicator->setProperty("blOverRange2", false);
     _inputIndicator->setProperty("blDetect2EnableInput", false);
   }
-}
-
-
-// сохранение графика
-void Indicator::saveMeas(void)
-{
-    QString strFileName;
-    QFileDialog fdCreateTable(this);
-    fdCreateTable.setAcceptMode(QFileDialog::AcceptSave); // Для сохранения файла
-    fdCreateTable.setFileMode(QFileDialog::AnyFile); // Для выбора несуществующего файла
-    fdCreateTable.setNameFilters({"Таблица XLSX (*.xlsx)"
-                                  , "Таблица CSV (*.csv)"});
-    //fdCreateTable.setDefaultSuffix("csv");
-    fdCreateTable.setViewMode(QFileDialog::List); // Файлы представляются в виде списка
-    if (fdCreateTable.exec() == QDialog::Accepted) //Файл выбран
-    {
-      strFileName = fdCreateTable.selectedFiles().first();
-      _measuredLogs.push_back(_quickUi->rootObject()->property("textcsv").toString());
-      if (strFileName.contains(".csv", Qt::CaseInsensitive))
-        saveToCSV(strFileName);
-      else if (strFileName.contains(".xls", Qt::CaseInsensitive))
-        saveToXLS(strFileName);
-       _quickUi->rootObject()->setProperty("clearMeasdata", true);
-    }
-}
-
-
-// печать графика
-void Indicator::printChart(void)
-{
-    QPrinter* pprinter = new QPrinter;
-    QPrintDialog printDialog(pprinter, this);
-    printDialog.setMinMax(1, 1); // печать будет только на одном листе
-    if (printDialog.exec() == QDialog::Accepted)
-    {
-        QPainter painter(pprinter);
-        QRect rectPrint = painter.viewport(); // Определение области печати принтера
-        QPixmap pix(_quickUi->size()); // Определяем размер печатаемого объекта
-        QSize sizePix = pix.size();
-        sizePix.scale(rectPrint.size(), Qt::KeepAspectRatio); // масштабируем размер изображения под область печати
-        painter.setViewport(rectPrint.x(), rectPrint.y()+((rectPrint.height()-sizePix.height())/2), sizePix.width(), sizePix.height()); // устанавливаем область печати
-        _quickUi->render(&pix); // скидываем изображение виджета в pixmap
-        painter.setWindow(pix.rect());// устанавливаем размер объекта для печати
-        painter.drawPixmap(0, 0, pix);
-    }
-    delete pprinter; // удаление объекта
-}
-
-
-// сохранение графика
-void Indicator::saveChartToCSV()
-{
-    QFileDialog fdCreateCSV(this);
-    fdCreateCSV.setAcceptMode(QFileDialog::AcceptSave); // Для сохранения файла
-    fdCreateCSV.setFileMode(QFileDialog::AnyFile); // Для выбора несуществующего файла
-    fdCreateCSV.setNameFilter("Таблица (*.csv)");
-    fdCreateCSV.setDefaultSuffix("csv");
-    fdCreateCSV.setViewMode(QFileDialog::List); // Файлы представляются в виде списка
-    if (fdCreateCSV.exec() == QDialog::Accepted) //Файл выбран
-    {
-      _measuredLogs.push_back(_tStatChart->property("textcsv").toString());
-      saveToCSV(fdCreateCSV.selectedFiles().first());
-    }
-}
-
-
-void Indicator::saveToCSV(QString fileName)
-{
-  QFile file(fileName);
-  if (file.open(QFile::WriteOnly | QFile::Text))
-  {
-      QTextStream out(&file);
-      for (QString text : _measuredLogs)
-        out << convertStringToCorrectCSV(text + "\n\n");
-      file.close();
-      _measuredLogs.clear();
-  }
-  else
-    QMessageBox::warning(this,
-                         "Проблема записи",
-                         QString("Невозможна запись в файл %1:\n%2.").arg(QDir::toNativeSeparators(fileName), file.errorString()));
-}
-
-
-void Indicator::saveChartToXLS()
-{
-  QFileDialog fdCreateXLS(this);
-  fdCreateXLS.setAcceptMode(QFileDialog::AcceptSave); // Для сохранения файла
-  fdCreateXLS.setFileMode(QFileDialog::AnyFile); // Для выбора несуществующего файла
-  fdCreateXLS.setNameFilter("Таблица (*.xlsx)");
-  fdCreateXLS.setDefaultSuffix("xlsx");
-  fdCreateXLS.setViewMode(QFileDialog::List); // Файлы представляются в виде списка
-  if (fdCreateXLS.exec() == QDialog::Accepted) //Файл выбран
-  {
-    _measuredLogs.push_back(_tStatChart->property("textcsv").toString());
-    saveToXLS(fdCreateXLS.selectedFiles().first());
-  }
-}
-
-
-void Indicator::saveToXLS(QString fileName)
-{
-  if (QFile::exists(fileName))
-    if (!QFile::remove(fileName))
-      return;
-
-  if (_measuredLogs.empty())
-    return;
-
-  CWorkbook book( "Imp21" );
-  std::vector<ColumnWidth> ColWidth;
-  ColWidth.push_back(ColumnWidth(0, 0, 30));
-
-  int pageNumber = 1;
-  for (QString text : _measuredLogs)
-  {
-    QString out = text;
-    QStringList linen = out.split("\n");
-    if (linen.size() == 0)
-      continue;
-
-    QString pageName = "Лист " + QString::number(pageNumber++);
-    CWorksheet& sheet = book.AddSheet(pageName.toStdString(), ColWidth);
-
-    int row = 1;
-    for (auto& line : linen)
-    {
-      int col = 1;
-      QStringList cells = line.split(QLatin1Char(';'));
-      sheet.BeginRow();
-      for (auto& cell : cells)
-        if (row > 9 && col > 1)
-          sheet.AddCell(cell.toFloat());
-        else
-          sheet.AddCell(cell.toStdString());
-      sheet.EndRow();
-      ++row;
-    }
-  }
-
-  book.Save(fileName.toStdString());
-  _measuredLogs.clear();
 }
 
 

@@ -82,9 +82,6 @@ private:
     QObject* _rbAutoMode; // Выбор автоматического режима
     QObject* _tfStatPeriod; // Период измерения, мс
 
-    // Страница кнопки СТАТИСТИКА ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    QObject* _tStatChart; // Указатель на график
-
     // Входные данные для индикатора +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     QObject* _inputIndicator;
 
@@ -165,16 +162,6 @@ private slots:
     // Для работы с виджетом QML
     void setComboListDetect(void); // отработка сигнала об изменении списка датчиков от главного окна
     void setWindowName(void);
-
-    // печать графика
-    void printChart();
-    void saveChartToCSV();
-    void saveChartToXLS();
-
-    // запись в файл
-    void saveMeas(void); // сохранение измерений
-    void saveToCSV(QString fileName);
-    void saveToXLS(QString fileName);
 
     // сообщение в систему
     void sendMessage();
