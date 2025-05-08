@@ -31,7 +31,6 @@ enum IndKeys {WIN_X
               , SORT_CHF
               , NUMBER_CHAR_POINT
               , AUTO_SAVE_ENABLE
-              , AUTO_SAVE_FILE
               , AUTO_SAVE_PERIOD
               , COMPLEX_FORMULA_ENABLE
               , COMPLEX_FORMULA_EXPRESSION

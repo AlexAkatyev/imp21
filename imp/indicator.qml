@@ -91,7 +91,6 @@ Item
     signal sigOpenChart();
     // Сигнал сохранения измерений
     signal sigClickedSave();
-    signal sigAutoSave();
     // Сигнал ввода имени измерения
     signal sigNameEntered();
     // Сигнал изменения общего делителя формулы
@@ -180,16 +179,6 @@ Item
             return 0;
         fillTxtCsvForSave();
         sigClickedSave();
-        return 1;
-    }
-
-    function autoSaveMeasData()
-    {
-        if (lmMeasData.count === 0)
-            return 0;
-        fillTxtCsvForSave();
-        sigAutoSave();
-        lmMeasData.clear();
         return 1;
     }
 
@@ -479,8 +468,12 @@ Item
         id: timerSave
         objectName: "timerSave"
         repeat: true
-        interval: tfAutoSave.text * 60 * 1000
-        onTriggered: autoSaveMeasData();
+        interval: tfAutoSave.text * 1000
+        onTriggered:
+        {
+            releaseData();
+            sigReleaseData();
+        }
     }
 
     Audio
@@ -1191,17 +1184,15 @@ Item
                                     onReleased: {
                                         if (checked) {
                                             timerSave.start();
-                                            //btSaveOption.text = "Выбрать файл выгрузки"
                                         }
                                         else {
                                             timerSave.stop();
-                                            //btSaveOption.text = "  Сохранить измерения  "
                                         }
                                     }
                                 }
 
                                 Text { // row 4
-                                    text: "Частота сохранения, мин"
+                                    text: "Частота сохранения, сек"
                                     font.pixelSize: tfName.font.pixelSize
                                 }
                                 TextField {
@@ -1216,24 +1207,11 @@ Item
                                     {
                                         if (text < 1)
                                             text = 1;
-                                        timerSave.interval = text * 60 * 1000;
+                                        timerSave.interval = text * 1000;
                                     }
                                     enabled: automaticSave.checked
                                     width: tfName.width
                                 }
-                                /*Button // row 5
-                                {
-                                    id: btSaveOption
-                                    text: automaticSave.checked ? "Выбрать файл выгрузки" : "  Сохранить измерения  "
-                                    font.pixelSize: tfName.font.pixelSize
-                                    enabled: automaticSave.checked || lmMeasData.count > 0
-                                    onReleased: {
-                                        if (automaticSave.checked)
-                                            sigPeekFile();
-                                        else
-                                            saveMeasData();
-                                    }
-                                }*/
                             }
 
                         }

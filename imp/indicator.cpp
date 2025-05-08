@@ -144,11 +144,9 @@ Indicator::Indicator
   connect(_quickUi->rootObject(), SIGNAL(sigChangeIndication()), this, SLOT(changeIndication()));
   // Сохранение измерений
   connect(_quickUi->rootObject(), SIGNAL(sigClickedSave()), this, SLOT(saveMeas()));
-  connect(_quickUi->rootObject(), SIGNAL(sigAutoSave()), this, SLOT(autoSaveToXLSX()));
   // Установка 0 значения датчиков
   connect(_quickUi->rootObject(), SIGNAL(sigSetZeroShift()), this, SLOT(setZeroShifts()));
   // выбор файла автосохранения
-  connect(_quickUi->rootObject(), SIGNAL(sigPeekFile()), this, SLOT(selectAutoSaveFile()));
   // Установка имени
   connect(_quickUi->rootObject(), SIGNAL(sigNameEntered()), this, SLOT(setWindowName()));
   // отработка нажатия кнопки печати
@@ -673,7 +671,6 @@ void Indicator::saveSettingsIndicator()
   _settings->SetValue(IndKeys::AUTO_SAVE_ENABLE,  qmlWidget->property("checked").toBool());
   qmlWidget = _quickUi->rootObject()->findChild<QObject*>("tfAutoSave");
   _settings->SetValue(IndKeys::AUTO_SAVE_PERIOD,  qmlWidget->property("text").toInt());
-  _settings->SetValue(IndKeys::AUTO_SAVE_FILE,  _autoSaveFile);
 }
 
 
@@ -818,7 +815,6 @@ bool Indicator::loadSettingsIndicator(bool defOptions)
   qmlWidget->setProperty("running",  _settings->Value(IndKeys::AUTO_SAVE_ENABLE));
   qmlWidget = _quickUi->rootObject()->findChild<QObject*>("tfAutoSave");
   qmlWidget->setProperty("text",  _settings->Value(IndKeys::AUTO_SAVE_PERIOD));
-  _autoSaveFile = _settings->Value(IndKeys::AUTO_SAVE_FILE).toString();
 
   _settings->UnlockDefaultValues();
   return true;
@@ -1022,24 +1018,6 @@ void Indicator::saveToXLS(QString fileName)
 
   book.Save(fileName.toStdString());
   _measuredLogs.clear();
-}
-
-
-void Indicator::selectAutoSaveFile()
-{
-  QString autoSaveFile = QFileDialog::getSaveFileName(this
-                                                      , "Выберите файл для автосохранения"
-                                                      , _autoSaveFile
-                                                      , "Excel file (*.xlsx)");
-  if (!autoSaveFile.isEmpty())
-    _autoSaveFile = autoSaveFile;
-}
-
-
-void Indicator::autoSaveToXLSX()
-{
-  _measuredLogs.push_back(_quickUi->rootObject()->property("textcsv").toString());
-  saveToXLS(_autoSaveFile);
 }
 
 

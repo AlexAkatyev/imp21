@@ -127,8 +127,6 @@ private:
 
     QTimer* _timerWatchDog;  // Таймер чтения показаний датчиков для контроля работоспособноси
 
-    QString _autoSaveFile;
-
     // Объект для хранения установок окна
     IndSettings* _settings;
     // сохранение настроек
@@ -177,8 +175,6 @@ private slots:
     void saveMeas(void); // сохранение измерений
     void saveToCSV(QString fileName);
     void saveToXLS(QString fileName);
-    void selectAutoSaveFile();
-    void autoSaveToXLSX();
 
     // сообщение в систему
     void sendMessage();
