@@ -26,6 +26,26 @@ Item
         paintIndicate();
     }
 
+    property real hLimit: 0
+    onHLimitChanged:
+    {
+        paintIndicate();
+    }
+    property real lLimit: 0
+    onLLimitChanged:
+    {
+        paintIndicate();
+    }
+    property real priemka: 0
+    onPriemkaChanged:
+    {
+        paintIndicate();
+    }
+    property color badColor: "red"
+    property color priemkaColor: "orange"
+    property color passedColor: "green"
+
+
     property int sumGauge: 51 // Размах индикатора в делениях в одну сторону
     property real unitPoint: 1
     onUnitPointChanged:
@@ -56,12 +76,24 @@ Item
             lh.width = 0;
             rh.width = 0;
         }
+        setColor();
     }
 
 
-    function paintScale()
+    function setColor()
     {
-
+        var c = passedColor;
+        if (indication >= hLimit || indication <= lLimit)
+        {
+            c = badColor;
+        }
+        else if (indication >= (hLimit - priemka) || indication <= (lLimit + priemka))
+        {
+            c = priemkaColor;
+        }
+        rh.color = c;
+        lh.color = c;
+        zero.color = c;
     }
 
     // Базовые элементы
@@ -79,7 +111,6 @@ Item
         id: zero
         height: parent.height - scaleXLine.anchors.bottomMargin
         width: scaleThickness
-        color: scaleColor
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
     }
@@ -92,7 +123,6 @@ Item
         anchors.right: zero.left
         anchors.top: parent.top
         anchors.bottom: scaleXLine.top
-        color: "red"
     }
     Rectangle
     {
@@ -101,7 +131,6 @@ Item
         anchors.top: parent.top
         anchors.bottom: scaleXLine.top
         anchors.left: zero.right
-        color: "light blue"
     }
 
     // Шкала

@@ -877,6 +877,9 @@ Item
                             width: itZifra.width * 0.95
                             indication: inputIndicator.mess
                             unitPoint: inputIndicator.unitPoint
+                            hLimit: inputIndicator.highLimit
+                            lLimit: inputIndicator.lowLimit
+                            priemka: inputIndicator.priemka
                         }
 
                         Text {
