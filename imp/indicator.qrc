@@ -24,5 +24,6 @@
         <file>ImpStyle.qml</file>
         <file>icons/indicator.png</file>
         <file>icons/palette.png</file>
+        <file>LinearScale.qml</file>
     </qresource>
 </RCC>

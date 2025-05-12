@@ -870,6 +870,15 @@ Item
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 5
+                        LinearScale
+                        {
+                            id: linearScale
+                            height: 20
+                            width: itZifra.width * 0.95
+                            indication: inputIndicator.mess
+                            unitPoint: inputIndicator.unitPoint
+                        }
+
                         Text {
                             id: mUnit
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -1488,6 +1497,7 @@ Item
 
                         CheckBox {
                             id: cbStrelka
+                            objectName: "cbStrelka"
                             text: "Цифровое и стрелочное отображение показаний"
                             font.pixelSize: tfName.font.pixelSize
                             padding: 0
@@ -1496,6 +1506,7 @@ Item
                         }
                         CheckBox {
                             id: cbZifra
+                            objectName: "cbZifra"
                             text: "Цифровое и линейное отображение показаний"
                             font.pixelSize: tfName.font.pixelSize
                             padding: 0
