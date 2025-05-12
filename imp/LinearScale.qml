@@ -1,25 +1,40 @@
 import QtQuick 2.0
+import QtQuick.Controls 2.12
 
 Item
 {
     height: 30
+    onHeightChanged:
+    {
+        paintIndicate();
+    }
+
     width: 100
+    onWidthChanged:
+    {
+        paintIndicate();
+    }
+
+    // scale
+    property color scaleColor: "black"
+    property int scaleThickness: 1
+    property int scaleWThickness: 3
 
     property real indication: 0
     onIndicationChanged:
     {
-        paintScale();
+        paintIndicate();
     }
 
     property int sumGauge: 51 // Размах индикатора в делениях в одну сторону
     property real unitPoint: 1
     onUnitPointChanged:
     {
-        paintScale();
+        paintIndicate();
     }
 
 
-    function paintScale()
+    function paintIndicate()
     {
         var maxWidth = width / 2;
         var divisionPrice = maxWidth / sumGauge / unitPoint;
@@ -43,30 +58,104 @@ Item
         }
     }
 
+
+    function paintScale()
+    {
+
+    }
+
+    // Базовые элементы
+    Rectangle
+    {
+        id: scaleXLine
+        height: scaleWThickness
+        width: parent.width
+        color: scaleColor
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: parent.height / 5
+    }
     Rectangle
     {
         id: zero
-        height: parent.height
-        width: 1
-        color: "black"
+        height: parent.height - scaleXLine.anchors.bottomMargin
+        width: scaleThickness
+        color: scaleColor
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.top: parent.top
     }
 
+    // Индикатор
     Rectangle
     {
         id: lh
         height: zero.height
-        anchors.verticalCenter: parent.verticalCenter
         anchors.right: zero.left
+        anchors.top: parent.top
+        anchors.bottom: scaleXLine.top
         color: "red"
     }
     Rectangle
     {
         id: rh
         height: zero.height
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.top: parent.top
+        anchors.bottom: scaleXLine.top
         anchors.left: zero.right
-        color: "blue"
+        color: "light blue"
     }
+
+    // Шкала
+    Rectangle
+    {
+        height: scaleWThickness
+        width: parent.width
+        color: scaleColor
+        anchors.top: parent.top
+    }
+    Item
+    {
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: scaleXLine.anchors.bottomMargin
+        Repeater
+        {
+            model: 11
+            Item
+            {
+                Rectangle
+                {
+                    id: marker
+                    width: scaleWThickness
+                    height: scaleXLine.anchors.bottomMargin / 2
+                    x: scaleXLine.width / 2 + scaleXLine.width * (index - 5) * 10 / (2 * sumGauge) - 1
+                    anchors.top: parent.top
+                    color: scaleColor
+                }
+                Label
+                {
+                    text: (index - 5) * unitPoint * 10
+                    font.pixelSize: scaleXLine.anchors.bottomMargin * 0.5
+                    anchors.top: marker.bottom
+                    anchors.horizontalCenter: marker.horizontalCenter
+                }
+            }
+        }
+        Repeater
+        {
+            model: sumGauge * 2 + 1
+            Item
+            {
+                Rectangle
+                {
+                    width: scaleThickness
+                    height: scaleXLine.anchors.bottomMargin / 4 * (index % 2 != 0 ? 1.5 : 1)
+                    x: scaleXLine.width / 2 + scaleXLine.width * (index - sumGauge) / (2 * sumGauge)
+                    anchors.top: parent.top
+                    color: scaleColor
+                }
+            }
+        }
+    }
+
 }

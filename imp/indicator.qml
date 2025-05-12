@@ -873,7 +873,7 @@ Item
                         LinearScale
                         {
                             id: linearScale
-                            height: 20
+                            height: itZifra.height / 3
                             width: itZifra.width * 0.95
                             indication: inputIndicator.mess
                             unitPoint: inputIndicator.unitPoint
@@ -890,24 +890,6 @@ Item
                             text: impGauge.exorbitantFilter(impGauge.round10(inputIndicator.mess, inputIndicator.accuracy))
                             color: impGauge.getColorMessText()
                             font.pixelSize: toPixels(18)
-                        }
-                        Grid {
-                            columns: 2
-                            rows: 2
-                            spacing: 10
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            Text {
-                                text: "ВПО      "
-                            }
-                            Text {
-                                text: impGauge.round10(inputIndicator.highLimit, inputIndicator.accuracy)
-                            }
-                            Text {
-                                text: "НПО      "
-                            }
-                            Text {
-                                text: impGauge.round10(inputIndicator.lowLimit, inputIndicator.accuracy)
-                            }
                         }
                     }
                 }
