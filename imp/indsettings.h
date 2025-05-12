@@ -27,6 +27,7 @@ enum IndKeys {WIN_X
               , ACCUR_DIVISION
               , IND_MEAS_MODE
               , TRANS_GAUGE
+              , STRELKA
               , GROUPSF
               , SORT_CHF
               , NUMBER_CHAR_POINT

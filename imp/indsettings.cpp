@@ -110,6 +110,9 @@ QString IndSettings::keyFromCode(IndKeys c)
   case TRANS_GAUGE:
     return "transGauge";
     break;
+  case STRELKA:
+    return "strelka";
+    break;
   case GROUPSF:
     return "groupsf";
     break;
@@ -201,6 +204,9 @@ QVariant IndSettings::defaultValues(IndKeys c)
     break;
   case TRANS_GAUGE:
     return 0;
+    break;
+  case STRELKA:
+    return true;
     break;
   case GROUPSF:
     return 1;

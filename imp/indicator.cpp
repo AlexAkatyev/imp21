@@ -654,6 +654,10 @@ void Indicator::saveSettingsIndicator()
   qmlWidget = _quickUi->rootObject()->findChild<QObject*>("countGroupsF");
   _settings->SetValue(IndKeys::GROUPSF, qmlWidget->property("value").toInt());
 
+  // способ отображения показаний
+  qmlWidget = _quickUi->rootObject()->findChild<QObject*>("cbStrelka");
+  _settings->SetValue(IndKeys::STRELKA, qmlWidget->property("checked"));
+
   // автосохранение
   qmlWidget = _quickUi->rootObject()->findChild<QObject*>("automaticSave");
   _settings->SetValue(IndKeys::AUTO_SAVE_ENABLE,  qmlWidget->property("checked").toBool());
@@ -790,6 +794,10 @@ bool Indicator::loadSettingsIndicator(bool defOptions)
   v = _settings->Value(IndKeys::TRANS_GAUGE);
   _transGauge = static_cast<TransToUnit>(v.toInt());
   _inputIndicator->setProperty("transGauge", v);
+
+  v = _settings->Value(IndKeys::STRELKA);
+   _quickUi->rootObject()->findChild<QObject*>("cbStrelka")->setProperty("checked", v);
+   _quickUi->rootObject()->findChild<QObject*>("cbZifra")->setProperty("checked", !v.toBool());
 
   QObject* qmlWidget = _quickUi->rootObject()->findChild<QObject*>("countGroupsF");
   qmlWidget->setProperty("value", _settings->Value(IndKeys::GROUPSF));
