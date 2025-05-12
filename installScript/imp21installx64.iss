@@ -36,7 +36,6 @@ Source: "..\..\build\1\Qt5Gui.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\Qt5Multimedia.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\Qt5MultimediaQuick.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\Qt5Network.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\..\build\1\Qt5PrintSupport.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\Qt5Qml.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\Qt5QmlModels.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\Qt5QmlWorkerScript.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -50,7 +49,6 @@ Source: "..\..\build\1\Qt5SerialPort.dll"; DestDir: "{app}"; Flags: ignoreversio
 Source: "..\..\build\1\Qt5Svg.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\Qt5Widgets.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\SearchProgress.qml"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\..\build\1\StatChart.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\audio\qtaudio_windows.dll"; DestDir: "{app}\audio"; Flags: ignoreversion
 Source: "..\..\build\1\bearer\qgenericbearer.dll"; DestDir: "{app}\bearer"; Flags: ignoreversion
 Source: "..\..\build\1\canbus\qtpassthrucanbus.dll"; DestDir: "{app}\canbus"; Flags: ignoreversion
@@ -73,7 +71,6 @@ Source: "..\..\build\1\mediaservice\dsengine.dll"; DestDir: "{app}\mediaservice"
 Source: "..\..\build\1\mediaservice\qtmedia_audioengine.dll"; DestDir: "{app}\mediaservice"; Flags: ignoreversion
 Source: "..\..\build\1\platforms\qwindows.dll"; DestDir: "{app}\platforms"; Flags: ignoreversion
 Source: "..\..\build\1\playlistformats\qtmultimedia_m3u.dll"; DestDir: "{app}\playlistformats"; Flags: ignoreversion
-Source: "..\..\build\1\printsupport\windowsprintersupport.dll"; DestDir: "{app}\printsupport"; Flags: ignoreversion
 Source: "..\..\build\1\qmltooling\qmldbg_debugger.dll"; DestDir: "{app}\qmltooling"; Flags: ignoreversion
 Source: "..\..\build\1\qmltooling\qmldbg_inspector.dll"; DestDir: "{app}\qmltooling"; Flags: ignoreversion
 Source: "..\..\build\1\qmltooling\qmldbg_local.dll"; DestDir: "{app}\qmltooling"; Flags: ignoreversion
