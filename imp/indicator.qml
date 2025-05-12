@@ -1484,7 +1484,7 @@ Item
                     Column{
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
-                        spacing: 20
+                        spacing: 10
 
                         CheckBox {
                             id: cbStrelka
@@ -1496,10 +1496,9 @@ Item
                         }
                         CheckBox {
                             id: cbZifra
-                            text: "Цифровое отображение показаний"
+                            text: "Цифровое и линейное отображение показаний"
                             font.pixelSize: tfName.font.pixelSize
                             padding: 0
-                            topPadding: -15
                             checked: false
                             onCheckedChanged: cbStrelka.checked = !checked
                         }
@@ -1507,7 +1506,7 @@ Item
                         Grid {
                             columns: 2
                             rows: 2
-                            spacing: 20
+                            spacing: 10
                             verticalItemAlignment: Grid.AlignVCenter
 
                             Text {
