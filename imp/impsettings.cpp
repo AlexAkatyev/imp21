@@ -24,6 +24,11 @@ ImpSettings::ImpSettings(QString setFileName, QObject* parent)
   , _settings(new QSettings(setFileName, QSettings::IniFormat, this))
   , _setModel(new WorkPlacesModel(parent))
 {
+    QStringList names = Value(ImpKeys::WORKPLACE_NAMES).toStringList();
+    for(QString name : names)
+    {
+        _setModel->AddRecord(name);
+    }
 }
 
 
@@ -73,6 +78,9 @@ QString ImpSettings::keyFromCode(ImpKeys c)
   case DEBUG_GUI_MODE:
     return "debug_gui_mode";
     break;
+  case WORKPLACE_NAMES:
+      return "workplaces_names";
+      break;
   default:
     return "";
   }
@@ -126,6 +134,9 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
   case DEBUG_GUI_MODE:
     return false;
     break;
+  case WORKPLACE_NAMES:
+      return QStringList();
+      break;
   default:
     return QVariant();
   }
@@ -140,5 +151,5 @@ WorkPlacesModel* ImpSettings::GetWorkPlacesModel()
 
 void ImpSettings::SaveWorkPlacesModel()
 {
-
+    SetValue(WORKPLACE_NAMES, _setModel->WorkPlacesNames());
 }

@@ -25,6 +25,7 @@
 #include "Logger/logger.h"
 #include "impsettings.h"
 #include "formulatree/formulafactory.h"
+#include "workplacesmodel.h"
 
 // Пауза после запуска программы перед поиском датчиков
 const int PAUSE_BEFORE_FIND_DETECT = 500;
@@ -103,6 +104,10 @@ Imp::Imp(QWidget* parent)
     //Отработка команды: Разместить отрытые окна по порядку
     connect(pQuickUi->rootObject(), SIGNAL(sigComposeOpenWindowsInOrder()), this, SLOT(composeOpenWindowsInOrder()));
 
+    // Загрузка рабочего места
+    QObject* cbWorkPlaces = pQuickUi->rootObject()->findChild<QObject*>("cbWorkspace");
+    cbWorkPlaces->setProperty("model", ImpSettings::Instance(this)->GetWorkPlacesModel()->WorkPlacesNames());
+
     // Поиск датчиков при запуске программы через паузу
     TimerBeforeFound = new QTimer(this);
     TimerBeforeFound->setSingleShot(true);
@@ -178,6 +183,7 @@ bool Imp::LoadSettingsGeneral()
 void Imp::SaveSettingsGeneral()
 {
   ImpSettings* settings = ImpSettings::Instance(this);
+  settings->SaveWorkPlacesModel();
   QRect winGeometry = geometry();
   settings->SetValue(ImpKeys::WIN_X, winGeometry.x());
   settings->SetValue(ImpKeys::WIN_Y, winGeometry.y());

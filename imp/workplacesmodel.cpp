@@ -2,15 +2,17 @@
 
 WorkPlacesModel::WorkPlacesModel(QObject* parent)
     : QAbstractItemModel(parent)
+    , _workPlacesNames(QStringList())
+    , _uids(std::vector<QString>())
+    , _indicatorsVec(std::vector<QStringList>())
 {
-
 }
 
 
 int WorkPlacesModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return 5;
+    return _workPlacesNames.size();
 }
 
 
@@ -33,6 +35,7 @@ QVariant WorkPlacesModel::data(const QModelIndex &index, int role) const
 
 QModelIndex WorkPlacesModel::parent(const QModelIndex &index) const
 {
+    Q_UNUSED(index);
     return QModelIndex();
 }
 
@@ -65,3 +68,17 @@ bool WorkPlacesModel::setData(const QModelIndex &index, const QVariant &value, i
      }
      return false;
  }
+
+
+QStringList WorkPlacesModel::WorkPlacesNames()
+{
+    return _workPlacesNames;
+}
+
+
+void WorkPlacesModel::AddRecord(QString name)
+{
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    _workPlacesNames.push_back(name);
+    endInsertRows();
+}
