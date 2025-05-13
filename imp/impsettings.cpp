@@ -5,6 +5,7 @@
 
 #include "impsettings.h"
 #include "impdef.h"
+#include "workplacesmodel.h"
 
 // Исходные размеры окна
 const int SIZE_WINDOW_WIDTH = 320;
@@ -21,6 +22,7 @@ ImpSettings* ImpSettings::Instance(QObject* parent)
 ImpSettings::ImpSettings(QString setFileName, QObject* parent)
   : QObject(parent)
   , _settings(new QSettings(setFileName, QSettings::IniFormat, this))
+  , _setModel(new WorkPlacesModel(parent))
 {
 }
 
@@ -129,3 +131,14 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
   }
 }
 
+
+WorkPlacesModel* ImpSettings::GetWorkPlacesModel()
+{
+    return _setModel;
+}
+
+
+void ImpSettings::SaveWorkPlacesModel()
+{
+
+}

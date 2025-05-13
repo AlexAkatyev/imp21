@@ -54,7 +54,8 @@ SOURCES += main.cpp\
     indicator.cpp \
     checkInputNumberIF/checkInputNumberIF.cpp \
   indsettings.cpp \
-  postmessagesender.cpp
+  postmessagesender.cpp \
+    workplacesmodel.cpp
 
 HEADERS  += imp.h \
     Detects/bepvtdetect.h \
@@ -83,7 +84,8 @@ HEADERS  += imp.h \
     checkInputNumberIF/checkInputNumberIF.h \
     indsettings.h \
     postmessagesender.h \
-    versionNo.h
+    versionNo.h \
+    workplacesmodel.h
 
 RESOURCES += \
     Detects/bepvtsettings.qrc \

@@ -3,6 +3,7 @@
 #include <QObject>
 
 class QSettings;
+class WorkPlacesModel;
 
 enum ImpKeys {WIN_X
               , WIN_Y
@@ -22,10 +23,13 @@ public:
   static ImpSettings* Instance(QObject* parent = nullptr);
   void SetValue(ImpKeys key, QVariant data);
   QVariant Value(ImpKeys key);
+  WorkPlacesModel* GetWorkPlacesModel();
+  void SaveWorkPlacesModel();
 
 private:
   ImpSettings(QString setFileName, QObject* parent);
   QSettings* _settings;
+  WorkPlacesModel* _setModel;
 
   QString keyFromCode(ImpKeys c);
   QVariant defaultValues(ImpKeys c);
