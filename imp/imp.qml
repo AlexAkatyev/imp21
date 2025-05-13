@@ -223,18 +223,18 @@ Item
                 display: Button.TextUnderIcon
             }
 
-            Column {
-                topPadding: 25
-
-                ComboBox {
-                    id: cbWorkspace
-                    height: 50
-                    width: 250
-                    background: Rectangle {
-                        color: cbWorkspace.hovered ? impStyle.hoveredColor : impStyle.windowColor
-                        border.color: impStyle.borderColor
-                    }
-                    }
+            ComboBox
+            {
+                id: cbWorkspace
+                objectName: "cbWorkspace"
+                height: 50
+                width: 250
+                anchors.verticalCenter: parent.verticalCenter
+                background: Rectangle
+                {
+                    color: cbWorkspace.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                    border.color: impStyle.borderColor
+                }
             }
 
             Button
