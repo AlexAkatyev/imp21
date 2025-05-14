@@ -7,6 +7,8 @@ namespace Ui {
 class SettingsEditorDialog;
 }
 
+class QAbstractItemModel;
+
 class SettingsEditorDialog : public QDialog
 {
     Q_OBJECT
@@ -14,6 +16,7 @@ class SettingsEditorDialog : public QDialog
 public:
     explicit SettingsEditorDialog(QWidget *parent = nullptr);
     ~SettingsEditorDialog();
+    void SetModel(QAbstractItemModel* model);
 
 private slots:
     void on_closeButton_clicked();

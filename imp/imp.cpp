@@ -106,8 +106,7 @@ Imp::Imp(QWidget* parent)
     connect(pQuickUi->rootObject(), SIGNAL(sigComposeOpenWindowsInOrder()), this, SLOT(composeOpenWindowsInOrder()));
 
     // Загрузка рабочего места
-    QObject* cbWorkPlaces = pQuickUi->rootObject()->findChild<QObject*>("cbWorkspace");
-    cbWorkPlaces->setProperty("model", ImpSettings::Instance(this)->GetWorkPlacesModel()->WorkPlacesNames());
+    updateCbWorkPlaces();
     connect(pQuickUi->rootObject(), SIGNAL(sigOpenWorkPlaces()), this, SLOT(openWorkPlacesEditor()));
 
     // Поиск датчиков при запуске программы через паузу
@@ -716,5 +715,14 @@ ImpAbstractDetect* Imp::DetectAtName(QString idName)
 void Imp::openWorkPlacesEditor()
 {
     SettingsEditorDialog* editor = new SettingsEditorDialog(this);
+    connect(editor, &QWidget::destroyed, this, &Imp::updateCbWorkPlaces);
+    editor->SetModel(ImpSettings::Instance()->GetWorkPlacesModel());
     editor->show();
+}
+
+
+void Imp::updateCbWorkPlaces()
+{
+    QObject* cbWorkPlaces = pQuickUi->rootObject()->findChild<QObject*>("cbWorkspace");
+    cbWorkPlaces->setProperty("model", ImpSettings::Instance(this)->GetWorkPlacesModel()->WorkPlacesNames());
 }

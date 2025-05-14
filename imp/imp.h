@@ -52,6 +52,7 @@ private slots:
     void setRecordingInAllIndicators(bool en);
     void setModbusAdresses(QString adresses);
     void openWorkPlacesEditor();
+    void updateCbWorkPlaces();
 
 private:
 

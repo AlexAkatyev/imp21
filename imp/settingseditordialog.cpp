@@ -18,4 +18,11 @@ SettingsEditorDialog::~SettingsEditorDialog()
 void SettingsEditorDialog::on_closeButton_clicked()
 {
     close();
+    deleteLater();
+}
+
+
+void SettingsEditorDialog::SetModel(QAbstractItemModel* model)
+{
+    ui->tableView->setModel(model);
 }
