@@ -10,6 +10,7 @@ public:
     WorkPlacesModel(QObject* parent);
     QStringList WorkPlacesNames();
     void AddRecord(QString name);
+    void RemoveRecord(int row);
 
 private:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;

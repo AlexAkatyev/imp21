@@ -34,3 +34,15 @@ void SettingsEditorDialog::on_addButton_clicked()
     WorkPlacesModel* model = static_cast<WorkPlacesModel*>(ui->tableView->model());
     model->AddRecord("Новое рабочее место");
 }
+
+
+void SettingsEditorDialog::on_removeButton_clicked()
+{
+    WorkPlacesModel* model = static_cast<WorkPlacesModel*>(ui->tableView->model());
+    QModelIndex index = ui->tableView->currentIndex();
+    if (index == QModelIndex())
+    {
+        return;
+    }
+    model->RemoveRecord(index.row());
+}

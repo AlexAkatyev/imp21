@@ -82,3 +82,15 @@ void WorkPlacesModel::AddRecord(QString name)
     _workPlacesNames.push_back(name);
     endInsertRows();
 }
+
+
+void WorkPlacesModel::RemoveRecord(int row)
+{
+    if (row < 0 || row >= _workPlacesNames.size())
+    {
+        return;
+    }
+    beginRemoveRows(QModelIndex(), row, row);
+    _workPlacesNames.removeAt(row);
+    endRemoveRows();
+}

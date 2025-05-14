@@ -23,6 +23,8 @@ private slots:
 
     void on_addButton_clicked();
 
+    void on_removeButton_clicked();
+
 private:
     Ui::SettingsEditorDialog *ui;
 };
