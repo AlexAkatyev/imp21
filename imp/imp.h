@@ -57,13 +57,13 @@ private slots:
 private:
 
     // Указатель на виджет qml в окне класса
-    QQuickWidget* pQuickUi;
+    QQuickWidget* _pQuickUi;
     // Указатели на объекты QML виджета
-    QObject* pitWin; // указатель на свойства для списка датчиков
-    QObject* ppbFind; // ход поиска датчиков
-    QObject* ptextComment; // статус поиска датчиков
-    QObject* pbtFind; // кнопка поиска датчиков
-    QObject* pbtIndicator; // кнопка открытия нового индикатора
+    QObject* _pitWin; // указатель на свойства для списка датчиков
+    QObject* _ppbFind; // ход поиска датчиков
+    QObject* _ptextComment; // статус поиска датчиков
+    QObject* _pbtFind; // кнопка поиска датчиков
+    QObject* _pbtIndicator; // кнопка открытия нового индикатора
 
     // переопределение события изменения окна
     void resizeEvent(QResizeEvent*);
@@ -87,8 +87,8 @@ private:
     // Количество найденых датчиков
     int _uiCounter; // для отображения прогресса поиска датчиков
     int _uiLength;
-    uint uiModbusAddressCounter; // Счетчик применяется при индикации поиска датчиков в IndicateFindRS485Detect
-    uint uiModbusAddress; // Счетчик адресов Modbus
+    uint _uiModbusAddressCounter; // Счетчик применяется при индикации поиска датчиков в IndicateFindRS485Detect
+    uint _uiModbusAddress; // Счетчик адресов Modbus
 
     std::vector<ImpAbstractDetect*> _detects;
 

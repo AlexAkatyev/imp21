@@ -56,7 +56,7 @@ const QString KEY_DEF_OPTIONS = "DEFAULT_INDICATOR";
 // Конструктор главного окна
 Imp::Imp(QWidget* parent)
     : QWidget(parent)
-    , pQuickUi(new QQuickWidget)
+    , _pQuickUi(new QQuickWidget)
     , _indicateTimer(new QTimer(this))
 {
     Logger::GetInstance(this); // Запуск журнала
@@ -72,42 +72,42 @@ Imp::Imp(QWidget* parent)
     // Присвоение имени окну
     this->setWindowTitle(QString("ИМП  v.%1.%2.%3").arg(DEF_VERSION_MAJOR).arg(DEF_VERSION_MINOR).arg(DEF_VERSION_PATCH));
     QUrl source("qrc:/imp.qml");
-    pQuickUi->setSource(source);
+    _pQuickUi->setSource(source);
 
     QVBoxLayout* pvbx = new QVBoxLayout();
 
-    pvbx->addWidget(pQuickUi); // Вставляем QML виджет в лайоут окна
+    pvbx->addWidget(_pQuickUi); // Вставляем QML виджет в лайоут окна
     pvbx->setMargin(0); // Толщина рамки
     setLayout(pvbx); //  Установка лайоута в окно
 
     // Установка указателей на объекты виджета QML
-    pitWin = pQuickUi->rootObject();
-    ppbFind = pQuickUi->rootObject()->findChild<QObject*>("pbFind");
-    ptextComment = pQuickUi->rootObject()->findChild<QObject*>("textComment");
-    pbtFind = pQuickUi->rootObject()->findChild<QObject*>("btFind");
-    pbtIndicator = pQuickUi->rootObject()->findChild<QObject*>("btIndicator");
+    _pitWin = _pQuickUi->rootObject();
+    _ppbFind = _pQuickUi->rootObject()->findChild<QObject*>("pbFind");
+    _ptextComment = _pQuickUi->rootObject()->findChild<QObject*>("textComment");
+    _pbtFind = _pQuickUi->rootObject()->findChild<QObject*>("btFind");
+    _pbtIndicator = _pQuickUi->rootObject()->findChild<QObject*>("btIndicator");
 
     // Отработка команды: Помощь/Справка
-    connect(pQuickUi->rootObject(), SIGNAL(sigClickedbtHelp()), this, SLOT(showHelp()));
+    connect(_pQuickUi->rootObject(), SIGNAL(sigClickedbtHelp()), this, SLOT(showHelp()));
 
     // Отработка команды: Новый индикатор
-    connect(pQuickUi->rootObject(), SIGNAL(sigNewIndicator(QString)), this, SLOT(createNewIndicator(QString)));
+    connect(_pQuickUi->rootObject(), SIGNAL(sigNewIndicator(QString)), this, SLOT(createNewIndicator(QString)));
 
     // Отработка двойного щелчка по записи датчика, открытие окна установок датчика
-    connect(pQuickUi->rootObject(), SIGNAL(sigSelectDetectToInit(QString)), this, SLOT(createNewSettings(QString)));
+    connect(_pQuickUi->rootObject(), SIGNAL(sigSelectDetectToInit(QString)), this, SLOT(createNewSettings(QString)));
 
     // Отработка команды: Поиск датчиков
-    connect(pQuickUi->rootObject(), SIGNAL(sigFindDetect()), this, SLOT(findDetect()));
+    connect(_pQuickUi->rootObject(), SIGNAL(sigFindDetect()), this, SLOT(findDetect()));
 
     //Отработка команды: Заполнить экран окнами индикаторов
-    connect(pQuickUi->rootObject(), SIGNAL(sigFillScreenWithIndicators()), this, SLOT(fillScreenWithIndicators()));
+    connect(_pQuickUi->rootObject(), SIGNAL(sigFillScreenWithIndicators()), this, SLOT(fillScreenWithIndicators()));
 
     //Отработка команды: Разместить отрытые окна по порядку
-    connect(pQuickUi->rootObject(), SIGNAL(sigComposeOpenWindowsInOrder()), this, SLOT(composeOpenWindowsInOrder()));
+    connect(_pQuickUi->rootObject(), SIGNAL(sigComposeOpenWindowsInOrder()), this, SLOT(composeOpenWindowsInOrder()));
 
     // Загрузка рабочего места
     updateCbWorkPlaces();
-    connect(pQuickUi->rootObject(), SIGNAL(sigOpenWorkPlaces()), this, SLOT(openWorkPlacesEditor()));
+    connect(_pQuickUi->rootObject(), SIGNAL(sigOpenWorkPlaces()), this, SLOT(openWorkPlacesEditor()));
 
     // Поиск датчиков при запуске программы через паузу
     TimerBeforeFound = new QTimer(this);
@@ -122,13 +122,13 @@ Imp::Imp(QWidget* parent)
     _timerUpdaterActiveStatus->setInterval(INTERVAL_UPDATE);
     connect(_timerUpdaterActiveStatus, &QTimer::timeout, this, &Imp::changeActiveStatusToTable);
 
-    linkIni(pQuickUi);
+    linkIni(_pQuickUi);
     if (ImpSettings::Instance(this)->Value(ImpKeys::DEBUG_GUI_MODE).toBool())
     {
       _flagRunIndicators = false;
       _detects = DetectFactory::Instance(this)->TestDetects();
       reWriteDetectsToTable();
-      pitWin->setProperty("iCommand", 4);
+      _pitWin->setProperty("iCommand", 4);
     }
     else
     {
@@ -142,8 +142,8 @@ Imp::Imp(QWidget* parent)
 void Imp::resizeEvent(QResizeEvent* event)
 {
     // Масштабирование QML виджета под размер окна
-    pQuickUi->rootObject()->setProperty("scaleX", QVariant(this->width()));
-    pQuickUi->rootObject()->setProperty("scaleY", QVariant(this->height()));
+    _pQuickUi->rootObject()->setProperty("scaleX", QVariant(this->width()));
+    _pQuickUi->rootObject()->setProperty("scaleY", QVariant(this->height()));
     event->accept();
 }
 
@@ -261,29 +261,29 @@ void Imp::setModbusAdresses(QString adresses)
 // Запуск поиска датчиков
 void Imp::findDetect()
 {
-    QObject* findProgressBar = pQuickUi->rootObject()->findChild<QObject*>("searchProgress");
+    QObject* findProgressBar = _pQuickUi->rootObject()->findChild<QObject*>("searchProgress");
     findProgressBar->setProperty("visible", true);
 
     QVariant enableNewIndiator;
     _timerUpdaterActiveStatus->stop();
 
-    pbtFind->setProperty("enabled", false); // Чтобы не было накладывающихся поисков
+    _pbtFind->setProperty("enabled", false); // Чтобы не было накладывающихся поисков
     if(_flagRunIndicators)
     {
-        enableNewIndiator = pbtIndicator->property("enabled");
-        pbtIndicator->setProperty("enabled", false); // при первом поиске датчиков индикаторы не создавать
+        enableNewIndiator = _pbtIndicator->property("enabled");
+        _pbtIndicator->setProperty("enabled", false); // при первом поиске датчиков индикаторы не создавать
     }
 
-    pitWin->setProperty("iCommand", 1); // Команда очистки таблицы
-    ptextComment->setProperty("text", "Найдено датчиков: " + QString::number(0));
+    _pitWin->setProperty("iCommand", 1); // Команда очистки таблицы
+    _ptextComment->setProperty("text", "Найдено датчиков: " + QString::number(0));
 
     FindDetects();
 
-    pbtFind->setProperty("enabled", true); // Разрешаем повторный поиск датчиков
-    ptextComment->setProperty("text", " Найдено датчиков: " + QString::number(_detects.size()));
+    _pbtFind->setProperty("enabled", true); // Разрешаем повторный поиск датчиков
+    _ptextComment->setProperty("text", " Найдено датчиков: " + QString::number(_detects.size()));
 
     if(_flagRunIndicators)
-        pbtIndicator->setProperty("enabled", enableNewIndiator); // первый поиск датчиков завершен
+        _pbtIndicator->setProperty("enabled", enableNewIndiator); // первый поиск датчиков завершен
 
     reWriteDetectsToTable();
     for (auto detect : _detects)
@@ -313,26 +313,26 @@ void Imp::findDetect()
 void Imp::indicateFindCOMDetect()
 {
   _uiCounter = _uiCounter + INTERVAL_TIMER;
-  ptextComment->setProperty("text", "Поиск датчиков");
-  ppbFind->setProperty("value", (static_cast<float>(_uiCounter))/(_uiLength));
+  _ptextComment->setProperty("text", "Поиск датчиков");
+  _ppbFind->setProperty("value", (static_cast<float>(_uiCounter))/(_uiLength));
 }
 
 
 void Imp::reWriteDetectsToTable()
 {
-  pitWin->setProperty("iCommand", 1); // clear list of detects
+  _pitWin->setProperty("iCommand", 1); // clear list of detects
 
   for (ImpAbstractDetect* detect : _detects)
   {
     // Передача описания найденного датчика в графический интерфейс
-    pitWin->setProperty("strSerialNumber", QString::number(detect->Id()));
-    pitWin->setProperty("strNameDetect", detect->UserName());
-    pitWin->setProperty("strActive", detect->ActiveStateInfo());
-    pitWin->setProperty("strTypeDetect", detect->TypeDetect());
-    pitWin->setProperty("strDataManuf", detect->DateManuf().toString("dd.MM.yyyy"));
-    pitWin->setProperty("strPort", detect->PortName());
-    pitWin->setProperty("strModbusAddress", detect->Address());
-    pitWin->setProperty("iCommand", 2); // Команда на добавление записи
+    _pitWin->setProperty("strSerialNumber", QString::number(detect->Id()));
+    _pitWin->setProperty("strNameDetect", detect->UserName());
+    _pitWin->setProperty("strActive", detect->ActiveStateInfo());
+    _pitWin->setProperty("strTypeDetect", detect->TypeDetect());
+    _pitWin->setProperty("strDataManuf", detect->DateManuf().toString("dd.MM.yyyy"));
+    _pitWin->setProperty("strPort", detect->PortName());
+    _pitWin->setProperty("strModbusAddress", detect->Address());
+    _pitWin->setProperty("iCommand", 2); // Команда на добавление записи
   }
 }
 
@@ -343,9 +343,9 @@ void Imp::changeActiveStatusToTable()
   {
     if (d->ActiveStatusChanged())
     {
-      pitWin->setProperty("strSerialNumber", QString::number(d->Id()));
-      pitWin->setProperty("strActive", d->ActiveStateInfo());
-      pitWin->setProperty("iCommand", 4); // Команда на коррекцию записи
+      _pitWin->setProperty("strSerialNumber", QString::number(d->Id()));
+      _pitWin->setProperty("strActive", d->ActiveStateInfo());
+      _pitWin->setProperty("iCommand", 4); // Команда на коррекцию записи
     }
   }
 }
@@ -394,8 +394,8 @@ void Imp::FindDetects(void)
       }
 
       _indicateTimer->stop();
-      ptextComment->setProperty("text", "");
-      ppbFind->setProperty("value", 1);
+      _ptextComment->setProperty("text", "");
+      _ppbFind->setProperty("value", 1);
     });
 
     setConnect = true;
@@ -407,8 +407,8 @@ void Imp::FindDetects(void)
     // Индикация времени поиска USB датчиков
     _uiCounter = 0;
     _uiLength = dfactory->FindingTime();
-    ptextComment->setProperty("text", "Поиск датчиков");
-    ppbFind->setProperty("value", _uiCounter);
+    _ptextComment->setProperty("text", "Поиск датчиков");
+    _ppbFind->setProperty("value", _uiCounter);
     _indicateTimer->start();
 
     dfactory->StartFindOfDetects();
@@ -723,6 +723,6 @@ void Imp::openWorkPlacesEditor()
 
 void Imp::updateCbWorkPlaces()
 {
-    QObject* cbWorkPlaces = pQuickUi->rootObject()->findChild<QObject*>("cbWorkspace");
+    QObject* cbWorkPlaces = _pQuickUi->rootObject()->findChild<QObject*>("cbWorkspace");
     cbWorkPlaces->setProperty("model", ImpSettings::Instance(this)->GetWorkPlacesModel()->WorkPlacesNames());
 }
