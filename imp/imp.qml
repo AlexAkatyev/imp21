@@ -78,6 +78,7 @@ Item
     signal sigFindDetect();
     signal sigSelectDetectToInit(string SerialNum);
     signal sigOpenWorkPlaces();
+    signal sigWorkPlaceChanged();
 
     ImpStyle
     {
@@ -240,6 +241,7 @@ Item
                     color: cbWorkspace.hovered ? impStyle.hoveredColor : impStyle.windowColor
                     border.color: impStyle.borderColor
                 }
+                onCurrentIndexChanged: sigWorkPlaceChanged()
             }
 
             Button

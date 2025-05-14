@@ -81,6 +81,9 @@ QString ImpSettings::keyFromCode(ImpKeys c)
   case WORKPLACE_NAMES:
       return "workplaces_names";
       break;
+  case ACTIVE_WORKPLACE:
+      return "active_workplace";
+      break;
   default:
     return "";
   }
@@ -136,6 +139,9 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
     break;
   case WORKPLACE_NAMES:
       return QStringList();
+      break;
+  case ACTIVE_WORKPLACE:
+      return 0;
       break;
   default:
     return QVariant();

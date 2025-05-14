@@ -53,6 +53,7 @@ private slots:
     void setModbusAdresses(QString adresses);
     void openWorkPlacesEditor();
     void updateCbWorkPlaces();
+    void workPlaceChanged();
 
 private:
 

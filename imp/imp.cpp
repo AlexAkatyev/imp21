@@ -723,6 +723,18 @@ void Imp::openWorkPlacesEditor()
 
 void Imp::updateCbWorkPlaces()
 {
+    disconnect(_pQuickUi->rootObject(), SIGNAL(sigWorkPlaceChanged()), this, SLOT(workPlaceChanged()));
     QObject* cbWorkPlaces = _pQuickUi->rootObject()->findChild<QObject*>("cbWorkspace");
-    cbWorkPlaces->setProperty("model", ImpSettings::Instance(this)->GetWorkPlacesModel()->WorkPlacesNames());
+    ImpSettings* settings = ImpSettings::Instance(this);
+    cbWorkPlaces->setProperty("model", settings->GetWorkPlacesModel()->WorkPlacesNames());
+    cbWorkPlaces->setProperty("currentIndex", settings->Value(ImpKeys::ACTIVE_WORKPLACE));
+    connect(_pQuickUi->rootObject(), SIGNAL(sigWorkPlaceChanged()), this, SLOT(workPlaceChanged()));
+}
+
+
+void Imp::workPlaceChanged()
+{
+    QObject* cbWorkPlaces = _pQuickUi->rootObject()->findChild<QObject*>("cbWorkspace");
+    ImpSettings* settings = ImpSettings::Instance(this);
+    settings->SetValue(ImpKeys::ACTIVE_WORKPLACE, cbWorkPlaces->property("currentIndex").toInt());
 }

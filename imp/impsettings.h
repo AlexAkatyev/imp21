@@ -16,6 +16,7 @@ enum ImpKeys {WIN_X
               , RECORDING_IN_ALL_INDICATORS
               , DEBUG_GUI_MODE
               , WORKPLACE_NAMES
+              , ACTIVE_WORKPLACE
              };
 
 class ImpSettings : public QObject
