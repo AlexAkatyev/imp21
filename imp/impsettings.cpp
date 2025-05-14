@@ -2,6 +2,10 @@
 #include <QSettings>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 #include "impsettings.h"
 #include "impdef.h"
@@ -10,25 +14,38 @@
 // Исходные размеры окна
 const int SIZE_WINDOW_WIDTH = 320;
 const int SIZE_WINDOW_HEIGTH = 480;
+const QString WP_NAME = "wpname";
+const QString WP_UUID = "uuid";
+const QString WP_ARRAY = "workplaces";
 
 
 ImpSettings* ImpSettings::Instance(QObject* parent)
 {
-  static ImpSettings* s = new ImpSettings("imp.ini", parent);
+  static ImpSettings* s = new ImpSettings("imp.ini", "impini.json", parent);
   return s;
 }
 
 
-ImpSettings::ImpSettings(QString setFileName, QObject* parent)
+ImpSettings::ImpSettings(QString setFileName, QString setJsonFileName, QObject* parent)
   : QObject(parent)
   , _settings(new QSettings(setFileName, QSettings::IniFormat, this))
   , _setModel(new WorkPlacesModel(parent))
+  , _jsonIniFile(setJsonFileName)
 {
-    QStringList names = Value(ImpKeys::WORKPLACE_NAMES).toStringList();
-    QStringList uuids = Value(ImpKeys::UUIDS).toStringList();
-    for(int i = 0; i < names.size(); ++i)
+    QFile file(_jsonIniFile);
+    if (file.open(QIODevice::ReadOnly|QIODevice::Text))
     {
-        _setModel->AddRecord(names[i], uuids[i]);
+        QByteArray data = file.readAll();
+        file.close();
+        QJsonDocument jDoc(QJsonDocument::fromJson(data));
+        QJsonObject jobj = jDoc.object();
+        QJsonArray array = jobj.value(WP_ARRAY).toArray();
+        for (int i = 0; i < array.size(); ++i)
+        {
+            QJsonValue v = array[i];
+            _setModel->AddRecord(v[WP_NAME].toString(), v[WP_UUID].toString());
+        }
+
     }
 }
 
@@ -79,14 +96,8 @@ QString ImpSettings::keyFromCode(ImpKeys c)
   case DEBUG_GUI_MODE:
     return "debug_gui_mode";
     break;
-  case WORKPLACE_NAMES:
-      return "workplaces_names";
-      break;
   case ACTIVE_WORKPLACE:
       return "active_workplace";
-      break;
-  case UUIDS:
-      return "uuids";
       break;
   default:
     return "";
@@ -141,14 +152,8 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
   case DEBUG_GUI_MODE:
     return false;
     break;
-  case WORKPLACE_NAMES:
-      return QStringList();
-      break;
   case ACTIVE_WORKPLACE:
       return 0;
-      break;
-  case UUIDS:
-      return "defaultUuid";
       break;
   default:
     return QVariant();
@@ -164,6 +169,22 @@ WorkPlacesModel* ImpSettings::GetWorkPlacesModel()
 
 void ImpSettings::SaveWorkPlacesModel()
 {
-    SetValue(ImpKeys::WORKPLACE_NAMES, _setModel->WorkPlacesNames());
-    SetValue(ImpKeys::UUIDS, _setModel->Uuids());
+    QFile file(_jsonIniFile);
+    if (file.open(QIODevice::WriteOnly|QIODevice::Text))
+    {
+        QJsonArray wpArray = QJsonArray();
+        QStringList names = _setModel->WorkPlacesNames();
+        QStringList uuids = _setModel->Uuids();
+        for (int i = 0; i < names.length(); ++i)
+        {
+            QJsonObject textObject;
+            textObject[WP_NAME] = names[i];
+            textObject[WP_UUID] = uuids[i];
+            wpArray.append(textObject);
+        }
+        QJsonObject wpObj = QJsonObject();
+        wpObj[WP_ARRAY] = wpArray;
+        file.write(QJsonDocument(wpObj).toJson(QJsonDocument::Indented));
+        file.close();
+    }
 }

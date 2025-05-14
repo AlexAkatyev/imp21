@@ -15,9 +15,7 @@ enum ImpKeys {WIN_X
               , LIST_MB_ADDR
               , RECORDING_IN_ALL_INDICATORS
               , DEBUG_GUI_MODE
-              , WORKPLACE_NAMES
               , ACTIVE_WORKPLACE
-              , UUIDS
              };
 
 class ImpSettings : public QObject
@@ -30,9 +28,10 @@ public:
   void SaveWorkPlacesModel();
 
 private:
-  ImpSettings(QString setFileName, QObject* parent);
+  ImpSettings(QString setFileName, QString setJsonFileName, QObject* parent);
   QSettings* _settings;
   WorkPlacesModel* _setModel;
+  QString _jsonIniFile;
 
   QString keyFromCode(ImpKeys c);
   QVariant defaultValues(ImpKeys c);
