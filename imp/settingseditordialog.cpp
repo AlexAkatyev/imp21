@@ -9,6 +9,8 @@ SettingsEditorDialog::SettingsEditorDialog(QWidget *parent) :
     ui(new Ui::SettingsEditorDialog)
 {
     ui->setupUi(this);
+    ui->tableView->horizontalHeader()->setStretchLastSection(true);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
 
