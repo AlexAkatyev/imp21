@@ -17,6 +17,7 @@ enum ImpKeys {WIN_X
               , DEBUG_GUI_MODE
               , WORKPLACE_NAMES
               , ACTIVE_WORKPLACE
+              , UUIDS
              };
 
 class ImpSettings : public QObject

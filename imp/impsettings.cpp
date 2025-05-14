@@ -25,9 +25,10 @@ ImpSettings::ImpSettings(QString setFileName, QObject* parent)
   , _setModel(new WorkPlacesModel(parent))
 {
     QStringList names = Value(ImpKeys::WORKPLACE_NAMES).toStringList();
-    for(QString name : names)
+    QStringList uuids = Value(ImpKeys::UUIDS).toStringList();
+    for(int i = 0; i < names.size(); ++i)
     {
-        _setModel->AddRecord(name);
+        _setModel->AddRecord(names[i], uuids[i]);
     }
 }
 
@@ -83,6 +84,9 @@ QString ImpSettings::keyFromCode(ImpKeys c)
       break;
   case ACTIVE_WORKPLACE:
       return "active_workplace";
+      break;
+  case UUIDS:
+      return "uuids";
       break;
   default:
     return "";
@@ -143,6 +147,9 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
   case ACTIVE_WORKPLACE:
       return 0;
       break;
+  case UUIDS:
+      return "defaultUuid";
+      break;
   default:
     return QVariant();
   }
@@ -157,5 +164,6 @@ WorkPlacesModel* ImpSettings::GetWorkPlacesModel()
 
 void ImpSettings::SaveWorkPlacesModel()
 {
-    SetValue(WORKPLACE_NAMES, _setModel->WorkPlacesNames());
+    SetValue(ImpKeys::WORKPLACE_NAMES, _setModel->WorkPlacesNames());
+    SetValue(ImpKeys::UUIDS, _setModel->Uuids());
 }

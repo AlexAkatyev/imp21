@@ -1,3 +1,5 @@
+#include <QUuid>
+
 #include "settingseditordialog.h"
 #include "ui_settingseditordialog.h"
 #include "workplacesmodel.h"
@@ -32,7 +34,7 @@ void SettingsEditorDialog::SetModel(QAbstractItemModel* model)
 void SettingsEditorDialog::on_addButton_clicked()
 {
     WorkPlacesModel* model = static_cast<WorkPlacesModel*>(ui->tableView->model());
-    model->AddRecord("Новое рабочее место");
+    model->AddRecord("Новое рабочее место", QUuid::createUuid().toString());
 }
 
 

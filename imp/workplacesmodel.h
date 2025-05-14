@@ -9,7 +9,8 @@ class WorkPlacesModel : public QAbstractItemModel
 public:
     WorkPlacesModel(QObject* parent);
     QStringList WorkPlacesNames();
-    void AddRecord(QString name);
+    QStringList Uuids();
+    void AddRecord(QString name, QString uuid);
     void RemoveRecord(int row);
 
 private:
@@ -22,7 +23,7 @@ private:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
     QStringList _workPlacesNames;
-    std::vector<QString> _uids;
+    QStringList _uuids;
     std::vector<QStringList> _indicatorsVec;
 };
 
