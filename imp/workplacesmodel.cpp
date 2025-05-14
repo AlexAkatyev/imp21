@@ -82,6 +82,34 @@ bool WorkPlacesModel::setData(const QModelIndex &index, const QVariant &value, i
  }
 
 
+QVariant WorkPlacesModel::headerData
+(
+    int section
+    , Qt::Orientation orientation
+    , int role
+) const
+{
+    if (role != Qt::DisplayRole)
+        return QVariant();
+
+    if (orientation == Qt::Horizontal)
+    {
+        if (section == 0)
+        {
+            return "Имя";
+        }
+        else
+        {
+            return "Идентификатор";
+        }
+    }
+    else
+    {
+        return QVariant();
+    }
+}
+
+
 QStringList WorkPlacesModel::WorkPlacesNames()
 {
     return _workPlacesNames;
