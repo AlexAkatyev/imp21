@@ -26,6 +26,7 @@
 #include "impsettings.h"
 #include "formulatree/formulafactory.h"
 #include "workplacesmodel.h"
+#include "settingseditordialog.h"
 
 // Пауза после запуска программы перед поиском датчиков
 const int PAUSE_BEFORE_FIND_DETECT = 500;
@@ -107,6 +108,7 @@ Imp::Imp(QWidget* parent)
     // Загрузка рабочего места
     QObject* cbWorkPlaces = pQuickUi->rootObject()->findChild<QObject*>("cbWorkspace");
     cbWorkPlaces->setProperty("model", ImpSettings::Instance(this)->GetWorkPlacesModel()->WorkPlacesNames());
+    connect(pQuickUi->rootObject(), SIGNAL(sigOpenWorkPlaces()), this, SLOT(openWorkPlacesEditor()));
 
     // Поиск датчиков при запуске программы через паузу
     TimerBeforeFound = new QTimer(this);
@@ -710,3 +712,9 @@ ImpAbstractDetect* Imp::DetectAtName(QString idName)
   return result;
 }
 
+
+void Imp::openWorkPlacesEditor()
+{
+    SettingsEditorDialog* editor = new SettingsEditorDialog(this);
+    editor->show();
+}

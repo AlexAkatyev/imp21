@@ -51,6 +51,7 @@ private slots:
     void setIniFindModbus485(bool en);
     void setRecordingInAllIndicators(bool en);
     void setModbusAdresses(QString adresses);
+    void openWorkPlacesEditor();
 
 private:
 

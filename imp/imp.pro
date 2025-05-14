@@ -55,6 +55,7 @@ SOURCES += main.cpp\
     checkInputNumberIF/checkInputNumberIF.cpp \
   indsettings.cpp \
   postmessagesender.cpp \
+    settingseditordialog.cpp \
     workplacesmodel.cpp
 
 HEADERS  += imp.h \
@@ -84,6 +85,7 @@ HEADERS  += imp.h \
     checkInputNumberIF/checkInputNumberIF.h \
     indsettings.h \
     postmessagesender.h \
+    settingseditordialog.h \
     versionNo.h \
     workplacesmodel.h
 
@@ -117,3 +119,6 @@ RC_FILE = imp.rc
 include($$PWD/../qBreakpad/qBreakpad.pri)
 QMAKE_LIBDIR += $$PWD/../qBreakpad/handler
 LIBS += -lqBreakpad
+
+FORMS += \
+    settingseditordialog.ui

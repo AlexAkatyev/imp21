@@ -77,6 +77,7 @@ Item
     signal sigComposeOpenWindowsInOrder();
     signal sigFindDetect();
     signal sigSelectDetectToInit(string SerialNum);
+    signal sigOpenWorkPlaces();
 
     ImpStyle
     {
@@ -221,6 +222,10 @@ Item
                 icon.name: "workspace"
                 icon.source: "icons/workspace.png"
                 display: Button.TextUnderIcon
+                onClicked:
+                {
+                    sigOpenWorkPlaces();
+                }
             }
 
             ComboBox
