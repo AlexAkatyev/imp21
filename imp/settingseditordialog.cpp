@@ -1,5 +1,6 @@
 #include "settingseditordialog.h"
 #include "ui_settingseditordialog.h"
+#include "workplacesmodel.h"
 
 SettingsEditorDialog::SettingsEditorDialog(QWidget *parent) :
     QDialog(parent),
@@ -25,4 +26,11 @@ void SettingsEditorDialog::on_closeButton_clicked()
 void SettingsEditorDialog::SetModel(QAbstractItemModel* model)
 {
     ui->tableView->setModel(model);
+}
+
+
+void SettingsEditorDialog::on_addButton_clicked()
+{
+    WorkPlacesModel* model = static_cast<WorkPlacesModel*>(ui->tableView->model());
+    model->AddRecord("Новое рабочее место");
 }
