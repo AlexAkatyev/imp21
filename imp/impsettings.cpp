@@ -16,6 +16,7 @@ const int SIZE_WINDOW_WIDTH = 320;
 const int SIZE_WINDOW_HEIGTH = 480;
 const QString WP_NAME = "wpname";
 const QString WP_UUID = "uuid";
+const QString WP_RECI = "recording_in_all_indicators";
 const QString WP_ARRAY = "workplaces";
 
 
@@ -43,7 +44,7 @@ ImpSettings::ImpSettings(QString setFileName, QString setJsonFileName, QObject* 
         for (int i = 0; i < array.size(); ++i)
         {
             QJsonValue v = array[i];
-            _setModel->AddRecord(v[WP_NAME].toString(), v[WP_UUID].toString());
+            _setModel->AddRecord(v[WP_NAME].toString(), v[WP_RECI].toBool(), v[WP_UUID].toString());
         }
 
     }
@@ -89,9 +90,6 @@ QString ImpSettings::keyFromCode(ImpKeys c)
     break;
   case LIST_MB_ADDR:
     return "list_mb_addr";
-    break;
-  case RECORDING_IN_ALL_INDICATORS:
-    return "recording_in_all_indicators";
     break;
   case DEBUG_GUI_MODE:
     return "debug_gui_mode";
@@ -146,9 +144,6 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
     return sl;
     break;
   }
-  case RECORDING_IN_ALL_INDICATORS:
-    return false;
-    break;
   case DEBUG_GUI_MODE:
     return false;
     break;
@@ -175,10 +170,12 @@ void ImpSettings::SaveWorkPlacesModel()
         QJsonArray wpArray = QJsonArray();
         QStringList names = _setModel->WorkPlacesNames();
         QStringList uuids = _setModel->Uuids();
+        QList<bool> recAI = _setModel->RecordingInAllIndicatorsArr();
         for (int i = 0; i < names.length(); ++i)
         {
             QJsonObject textObject;
             textObject[WP_NAME] = names[i];
+            textObject[WP_RECI] = recAI[i];
             textObject[WP_UUID] = uuids[i];
             wpArray.append(textObject);
         }

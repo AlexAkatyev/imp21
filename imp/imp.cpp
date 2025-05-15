@@ -122,7 +122,6 @@ Imp::Imp(QWidget* parent)
     _timerUpdaterActiveStatus->setInterval(INTERVAL_UPDATE);
     connect(_timerUpdaterActiveStatus, &QTimer::timeout, this, &Imp::changeActiveStatusToTable);
 
-    linkIni(_pQuickUi);
     if (ImpSettings::Instance(this)->Value(ImpKeys::DEBUG_GUI_MODE).toBool())
     {
       _flagRunIndicators = false;
@@ -198,10 +197,10 @@ void Imp::SaveSettingsGeneral()
 }
 
 
-void Imp::linkIni(QQuickWidget* ui)
+void Imp::linkIni()
 {
   ImpSettings* settings = ImpSettings::Instance(this);
-  QObject* root = ui->rootObject();
+  QObject* root = _pQuickUi->rootObject();
   QObject* impSettingsDialog = root->findChild<QObject*>("impSettingsDialog");
 
   QObject* cbModBusSearch = root->findChild<QObject*>("cbModBusSearch");
@@ -213,7 +212,7 @@ void Imp::linkIni(QQuickWidget* ui)
   connect(impSettingsDialog, SIGNAL(sigFindModbus485(bool)), this, SLOT(setIniFindModbus485(bool)));
 
   QObject* cbSimRec = root->findChild<QObject*>("cbSimRec");
-  cbSimRec->setProperty("checked", settings->Value(ImpKeys::RECORDING_IN_ALL_INDICATORS).toBool());
+  cbSimRec->setProperty("checked", settings->GetWorkPlacesModel()->RecordingInAllIndicators(settings->Value(ImpKeys::ACTIVE_WORKPLACE).toInt()));
   connect(impSettingsDialog, SIGNAL(sigSimRec(bool)), this, SLOT(setRecordingInAllIndicators(bool)));
 
   QStringList sl = settings->Value(ImpKeys::LIST_MB_ADDR).toStringList();
@@ -246,7 +245,7 @@ void Imp::setIniFindModbus485(bool en)
 void Imp::setRecordingInAllIndicators(bool en)
 {
   ImpSettings* settings = ImpSettings::Instance(parent());
-  settings->SetValue(ImpKeys::RECORDING_IN_ALL_INDICATORS, en);
+  settings->GetWorkPlacesModel()->SetRecordingInAllIndicators(settings->Value(ImpKeys::ACTIVE_WORKPLACE).toInt(), en);
 }
 
 
@@ -556,7 +555,7 @@ void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect, bool defOpti
     connect(ind, &Indicator::sigDataPressed, this, [=]()
     {
       ImpSettings* settings = ImpSettings::Instance(this);
-      bool translate = settings->Value(ImpKeys::RECORDING_IN_ALL_INDICATORS).toBool();
+      bool translate = settings->GetWorkPlacesModel()->RecordingInAllIndicators(settings->Value(ImpKeys::ACTIVE_WORKPLACE).toInt());
       if (!translate)
       {
         return;
@@ -735,6 +734,7 @@ void Imp::updateCbWorkPlaces()
         settings->SetValue(ImpKeys::ACTIVE_WORKPLACE, activeRow);
     }
     cbWorkPlaces->setProperty("currentIndex", activeRow);
+    linkIni();
     connect(_pQuickUi->rootObject(), SIGNAL(sigWorkPlaceChanged()), this, SLOT(workPlaceChanged()));
 }
 
@@ -744,4 +744,5 @@ void Imp::workPlaceChanged()
     QObject* cbWorkPlaces = _pQuickUi->rootObject()->findChild<QObject*>("cbWorkspace");
     ImpSettings* settings = ImpSettings::Instance(this);
     settings->SetValue(ImpKeys::ACTIVE_WORKPLACE, cbWorkPlaces->property("currentIndex").toInt());
+    linkIni();
 }

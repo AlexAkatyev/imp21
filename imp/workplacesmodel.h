@@ -9,8 +9,11 @@ class WorkPlacesModel : public QAbstractItemModel
 public:
     WorkPlacesModel(QObject* parent);
     QStringList WorkPlacesNames();
+    bool RecordingInAllIndicators(int active);
+    void SetRecordingInAllIndicators(int active, bool en);
+    QList<bool> RecordingInAllIndicatorsArr();
     QStringList Uuids();
-    void AddRecord(QString name, QString uuid);
+    void AddRecord(QString name, bool recInAll, QString uuid);
     void RemoveRecord(int row);
 
 private:
@@ -24,6 +27,7 @@ private:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
     QStringList _workPlacesNames;
+    QList<bool> _recordingInAllIndicators;
     QStringList _uuids;
     std::vector<QStringList> _indicatorsVec;
 };

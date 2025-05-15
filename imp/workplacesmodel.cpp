@@ -3,6 +3,7 @@
 enum WPMColumn
 {
     Name
+    , RecordingInAllIndicators
     , Uuid
     , Count
 };
@@ -11,6 +12,7 @@ enum WPMColumn
 WorkPlacesModel::WorkPlacesModel(QObject* parent)
     : QAbstractItemModel(parent)
     , _workPlacesNames(QStringList())
+    , _recordingInAllIndicators(QList<bool>())
     , _uuids(QStringList())
     , _indicatorsVec(std::vector<QStringList>())
 {
@@ -39,6 +41,9 @@ QVariant WorkPlacesModel::data(const QModelIndex &index, int role) const
        {
        case WPMColumn::Name:
            return _workPlacesNames.at(index.row());
+           break;
+       case WPMColumn::RecordingInAllIndicators:
+           return _recordingInAllIndicators.at(index.row());
            break;
        case WPMColumn::Uuid:
            return _uuids.at(index.row());
@@ -74,9 +79,13 @@ Qt::ItemFlags WorkPlacesModel::flags(const QModelIndex &index) const
         return Qt::ItemIsEnabled;
     }
     Qt::ItemFlags mflags = QAbstractItemModel::flags(index);
-    if (index.column() == WPMColumn::Name)
+    switch (index.column())
     {
+    case WPMColumn::Name:
         mflags |= Qt::ItemIsEditable;
+        break;
+    default:
+        break;
     }
     return  mflags;
 }
@@ -86,11 +95,20 @@ bool WorkPlacesModel::setData(const QModelIndex &index, const QVariant &value, i
  {
      if (index.isValid() && role == Qt::EditRole)
      {
-         if (index.column() == WPMColumn::Name)
+         switch (index.column())
          {
+         case WPMColumn::Name:
              _workPlacesNames.replace(index.row(), value.toString());
              emit dataChanged(index, index);
              return true;
+             break;
+         case WPMColumn::RecordingInAllIndicators:
+             _recordingInAllIndicators.replace(index.row(), value.toBool());
+             emit dataChanged(index, index);
+             return true;
+             break;
+         default:
+             break;
          }
      }
      return false;
@@ -114,6 +132,9 @@ QVariant WorkPlacesModel::headerData
         case WPMColumn::Name:
             return "Имя";
             break;
+        case WPMColumn::RecordingInAllIndicators:
+            return "Запись во все\nиндикаторы";
+            break;
         case WPMColumn::Uuid:
             return "Идентификатор";
             break;
@@ -135,16 +156,40 @@ QStringList WorkPlacesModel::WorkPlacesNames()
 }
 
 
+bool WorkPlacesModel::RecordingInAllIndicators(int active)
+{
+    if (active < 0 || active >= _recordingInAllIndicators.size())
+    {
+        return false;
+    }
+    return _recordingInAllIndicators.at(active);
+}
+
+
+void WorkPlacesModel::SetRecordingInAllIndicators(int active, bool en)
+{
+    QModelIndex index = QAbstractItemModel::createIndex(active, WPMColumn::RecordingInAllIndicators);
+    setData(index, en);
+}
+
+
+QList<bool> WorkPlacesModel::RecordingInAllIndicatorsArr()
+{
+    return _recordingInAllIndicators;
+}
+
+
 QStringList WorkPlacesModel::Uuids()
 {
     return _uuids;
 }
 
 
-void WorkPlacesModel::AddRecord(QString name, QString uuid)
+void WorkPlacesModel::AddRecord(QString name, bool recInAll, QString uuid)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     _workPlacesNames.push_back(name);
+    _recordingInAllIndicators.push_back(recInAll);
     _uuids.push_back(uuid);
     endInsertRows();
 }
@@ -162,6 +207,7 @@ void WorkPlacesModel::RemoveRecord(int row)
     }
     beginRemoveRows(QModelIndex(), row, row);
     _workPlacesNames.removeAt(row);
+    _recordingInAllIndicators.removeAt(row);
     _uuids.removeAt(row);
     endRemoveRows();
 }

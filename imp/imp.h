@@ -77,7 +77,7 @@ private:
     // Объект и файл для хранения установок главного окна
     bool LoadSettingsGeneral(); // Загрузка параметров из файла установок
     void SaveSettingsGeneral(); // Сохранение параметров установок в файл
-    void linkIni(QQuickWidget* ui);
+    void linkIni();
     QSet<int> _useIndicators; // Множество используемых индикаторов
     std::vector<Indicator*> _indicators;
     bool _flagRunIndicators; // Флаг необходимости запускать индикаторы после запуска программы

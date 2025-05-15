@@ -36,7 +36,12 @@ void SettingsEditorDialog::SetModel(QAbstractItemModel* model)
 void SettingsEditorDialog::on_addButton_clicked()
 {
     WorkPlacesModel* model = static_cast<WorkPlacesModel*>(ui->tableView->model());
-    model->AddRecord("Новое рабочее место", QUuid::createUuid().toString());
+    model->AddRecord
+            (
+                "Новое рабочее место"
+                , false
+                , QUuid::createUuid().toString()
+            );
 }
 
 
