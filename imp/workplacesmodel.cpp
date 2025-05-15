@@ -1,5 +1,13 @@
 #include "workplacesmodel.h"
 
+enum WPMColumn
+{
+    Name
+    , Uuid
+    , Count
+};
+
+
 WorkPlacesModel::WorkPlacesModel(QObject* parent)
     : QAbstractItemModel(parent)
     , _workPlacesNames(QStringList())
@@ -19,19 +27,26 @@ int WorkPlacesModel::rowCount(const QModelIndex &parent) const
 int WorkPlacesModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return 2;
+    return WPMColumn::Count;
 }
 
 
 QVariant WorkPlacesModel::data(const QModelIndex &index, int role) const
 {
-   if (role == Qt::DisplayRole && index.column() == 0)
+   if (role == Qt::DisplayRole)
    {
-       return _workPlacesNames.at(index.row());
-   }
-   if (role == Qt::DisplayRole && index.column() == 1)
-   {
-       return _uuids.at(index.row());
+       switch (index.column())
+       {
+       case WPMColumn::Name:
+           return _workPlacesNames.at(index.row());
+           break;
+       case WPMColumn::Uuid:
+           return _uuids.at(index.row());
+           break;
+       default:
+           return QVariant();
+           break;
+       }
    }
    return QVariant();
 }
@@ -59,7 +74,7 @@ Qt::ItemFlags WorkPlacesModel::flags(const QModelIndex &index) const
         return Qt::ItemIsEnabled;
     }
     Qt::ItemFlags mflags = QAbstractItemModel::flags(index);
-    if (index.column() == 0)
+    if (index.column() == WPMColumn::Name)
     {
         mflags |= Qt::ItemIsEditable;
     }
@@ -71,7 +86,7 @@ bool WorkPlacesModel::setData(const QModelIndex &index, const QVariant &value, i
  {
      if (index.isValid() && role == Qt::EditRole)
      {
-         if (index.column() == 0)
+         if (index.column() == WPMColumn::Name)
          {
              _workPlacesNames.replace(index.row(), value.toString());
              emit dataChanged(index, index);
@@ -94,13 +109,17 @@ QVariant WorkPlacesModel::headerData
 
     if (orientation == Qt::Horizontal)
     {
-        if (section == 0)
+        switch (section)
         {
+        case WPMColumn::Name:
             return "Имя";
-        }
-        else
-        {
+            break;
+        case WPMColumn::Uuid:
             return "Идентификатор";
+            break;
+        default:
+            return QVariant();
+            break;
         }
     }
     else
