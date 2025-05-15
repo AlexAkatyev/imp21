@@ -17,6 +17,7 @@ const int SIZE_WINDOW_HEIGTH = 480;
 const QString WP_NAME = "wpname";
 const QString WP_UUID = "uuid";
 const QString WP_MB_ADDRESSES = "list_mb_addr";
+const QString WP_INDICATORS = "indicators";
 const QString WP_RECI = "recording_in_all_indicators";
 const QString WP_ENMBTCP = "en_modbus_tcp";
 const QString WP_ENRS485 = "en_rs_485";
@@ -54,6 +55,7 @@ ImpSettings::ImpSettings(QString setFileName, QString setJsonFileName, QObject* 
                         , v[WP_ENMBTCP].toBool()
                         , v[WP_ENRS485].toBool()
                         , v[WP_MB_ADDRESSES].toVariant().toStringList()
+                        , v[WP_INDICATORS].toVariant().toStringList()
                         , v[WP_UUID].toString()
                     );
         }
@@ -78,6 +80,9 @@ void ImpSettings::SetValue(ImpKeys key, QVariant data)
     case LIST_MB_ADDR:
         _setModel->SetModbusAddresses(Value(ImpKeys::ACTIVE_WORKPLACE).toInt(), data.toStringList());
         break;
+    case INDICATORS:
+        _setModel->SetIndicators(Value(ImpKeys::ACTIVE_WORKPLACE).toInt(), data.toStringList());
+        break;
     default:
         _settings->setValue(keyFromCode(key), data);
         break;
@@ -101,6 +106,9 @@ QVariant ImpSettings::Value(ImpKeys key)
     case LIST_MB_ADDR:
         return _setModel->ModbusAddresses(Value(ImpKeys::ACTIVE_WORKPLACE).toInt());
         break;
+    case INDICATORS:
+        return _setModel->Indicators(Value(ImpKeys::ACTIVE_WORKPLACE).toInt());
+        break;
     default:
         return _settings->value(keyFromCode(key), defaultValues(key));
         break;
@@ -123,9 +131,6 @@ QString ImpSettings::keyFromCode(ImpKeys c)
     break;
   case WIN_HEIGHT:
     return "height";
-    break;
-  case INDICATORS:
-    return "indicators";
     break;
   case DEBUG_GUI_MODE:
     return "debug_gui_mode";
@@ -163,9 +168,6 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
     break;
   case WIN_HEIGHT:
     return SIZE_WINDOW_HEIGTH;
-    break;
-  case INDICATORS:
-    return QStringList();
     break;
   case DEBUG_GUI_MODE:
     return false;
@@ -206,6 +208,12 @@ void ImpSettings::SaveWorkPlacesModel()
                 mba.append(adr);
             }
             textObject[WP_MB_ADDRESSES] = mba;
+            QJsonArray ind = QJsonArray();
+            for (QString i : _setModel->Indicators(i))
+            {
+                ind.append(i);
+            }
+            textObject[WP_INDICATORS] = ind;
             wpArray.append(textObject);
         }
         QJsonObject wpObj = QJsonObject();

@@ -17,6 +17,8 @@ public:
     void SetEnRS485(int row, bool en);
     QStringList ModbusAddresses(int row);
     void SetModbusAddresses(int row, QStringList sl);
+    QStringList Indicators(int row);
+    void SetIndicators(int row, QStringList sl);
     QString GetUuid(int row);
     void AddRecord
         (
@@ -25,6 +27,7 @@ public:
             , bool enModbusTCP
             , bool enRS485
             , QStringList modbusAddresses
+            , QStringList indicators
             , QString uuid
         );
     void RemoveRecord(int row);
@@ -45,7 +48,7 @@ private:
     QList<bool> _enRS485;
     QStringList _uuids;
     QList<QStringList> _modbusAddresses;
-    std::vector<QStringList> _indicatorsVec;
+    QList<QStringList> _indicatorsList;
 };
 
 #endif // WORKPLACESMODEL_H

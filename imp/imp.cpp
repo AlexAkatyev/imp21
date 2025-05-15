@@ -183,17 +183,17 @@ bool Imp::LoadSettingsGeneral()
 void Imp::SaveSettingsGeneral()
 {
   ImpSettings* settings = ImpSettings::Instance(this);
+  QStringList indficators;
+  for (int num = 0; num < MAX_INDICATOR; num++)
+    if (_useIndicators.contains(num) == true)
+      indficators << QString::number(num);
+  settings->SetValue(ImpKeys::INDICATORS, indficators);
   settings->SaveWorkPlacesModel();
   QRect winGeometry = geometry();
   settings->SetValue(ImpKeys::WIN_X, winGeometry.x());
   settings->SetValue(ImpKeys::WIN_Y, winGeometry.y());
   settings->SetValue(ImpKeys::WIN_WIDTH, winGeometry.width());
   settings->SetValue(ImpKeys::WIN_HEIGHT, winGeometry.height());
-  QStringList indficators;
-  for (int num = 0; num < MAX_INDICATOR; num++)
-    if (_useIndicators.contains(num) == true)
-      indficators << QString::number(num);
-  settings->SetValue(ImpKeys::INDICATORS, indficators);
 }
 
 
