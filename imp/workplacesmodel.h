@@ -9,17 +9,18 @@ class WorkPlacesModel : public QAbstractItemModel
 public:
     WorkPlacesModel(QObject* parent);
     QStringList WorkPlacesNames();
-    bool RecordingInAllIndicators(int active);
-    void SetRecordingInAllIndicators(int active, bool en);
-    QList<bool> RecordingInAllIndicatorsArr();
-    bool EnRS485(int active);
-    void SetEnRS485(int active, bool en);
-    QList<bool> EnRS485Arr();
-    QStringList Uuids();
+    bool RecordingInAllIndicators(int row);
+    void SetRecordingInAllIndicators(int row, bool en);
+    bool EnModbusTCP(int row);
+    void SetEnModbusTCP(int row, bool en);
+    bool EnRS485(int row);
+    void SetEnRS485(int row, bool en);
+    QString GetUuid(int row);
     void AddRecord
         (
             QString name
             , bool recInAll
+            , bool enModbusTCP
             , bool enRS485
             , QString uuid
         );
@@ -37,6 +38,7 @@ private:
 
     QStringList _workPlacesNames;
     QList<bool> _recordingInAllIndicators;
+    QList<bool> _enModbusTCP;
     QList<bool> _enRS485;
     QStringList _uuids;
     std::vector<QStringList> _indicatorsVec;

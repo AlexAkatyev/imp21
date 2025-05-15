@@ -17,6 +17,7 @@ const int SIZE_WINDOW_HEIGTH = 480;
 const QString WP_NAME = "wpname";
 const QString WP_UUID = "uuid";
 const QString WP_RECI = "recording_in_all_indicators";
+const QString WP_ENMBTCP = "en_modbus_tcp";
 const QString WP_ENRS485 = "en_rs_485";
 const QString WP_ARRAY = "workplaces";
 
@@ -49,6 +50,7 @@ ImpSettings::ImpSettings(QString setFileName, QString setJsonFileName, QObject* 
                     (
                         v[WP_NAME].toString()
                         , v[WP_RECI].toBool()
+                        , v[WP_ENMBTCP].toBool()
                         , v[WP_ENRS485].toBool()
                         , v[WP_UUID].toString()
                     );
@@ -62,6 +64,9 @@ void ImpSettings::SetValue(ImpKeys key, QVariant data)
 {
     switch (key)
     {
+    case ImpKeys::EN_MODBUS_TCP:
+        _setModel->SetEnModbusTCP(Value(ImpKeys::ACTIVE_WORKPLACE).toInt(), data.toBool());
+        break;
     case ImpKeys::EN_RS_485:
         _setModel->SetEnRS485(Value(ImpKeys::ACTIVE_WORKPLACE).toInt(), data.toBool());
         break;
@@ -79,6 +84,9 @@ QVariant ImpSettings::Value(ImpKeys key)
 {
     switch (key)
     {
+    case ImpKeys::EN_MODBUS_TCP:
+        return _setModel->EnModbusTCP(Value(ImpKeys::ACTIVE_WORKPLACE).toInt());
+        break;
     case ImpKeys::EN_RS_485:
         return _setModel->EnRS485(Value(ImpKeys::ACTIVE_WORKPLACE).toInt());
         break;
@@ -110,9 +118,6 @@ QString ImpSettings::keyFromCode(ImpKeys c)
     break;
   case INDICATORS:
     return "indicators";
-    break;
-  case EN_MODBUS_TCP:
-    return "en_modbus_tcp";
     break;
   case LIST_MB_ADDR:
     return "list_mb_addr";
@@ -157,9 +162,6 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
   case INDICATORS:
     return QStringList();
     break;
-  case EN_MODBUS_TCP:
-    return false;
-    break;
   case LIST_MB_ADDR:
   {
     QStringList sl;
@@ -192,16 +194,14 @@ void ImpSettings::SaveWorkPlacesModel()
     {
         QJsonArray wpArray = QJsonArray();
         QStringList names = _setModel->WorkPlacesNames();
-        QStringList uuids = _setModel->Uuids();
-        QList<bool> recAI = _setModel->RecordingInAllIndicatorsArr();
-        QList<bool> enRS485 = _setModel->EnRS485Arr();
         for (int i = 0; i < names.length(); ++i)
         {
             QJsonObject textObject;
             textObject[WP_NAME] = names[i];
-            textObject[WP_RECI] = recAI[i];
-            textObject[WP_ENRS485] = recAI[i];
-            textObject[WP_UUID] = uuids[i];
+            textObject[WP_RECI] = _setModel->RecordingInAllIndicators(i);
+            textObject[WP_ENRS485] = _setModel->EnRS485(i);
+            textObject[WP_ENMBTCP] = _setModel->EnModbusTCP(i);
+            textObject[WP_UUID] = _setModel->GetUuid(i);
             wpArray.append(textObject);
         }
         QJsonObject wpObj = QJsonObject();

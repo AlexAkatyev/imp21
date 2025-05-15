@@ -4,6 +4,7 @@ enum WPMColumn
 {
     Name
     , RecordingInAllIndicators
+    , EnModbusTCP
     , EnRS485
     , Uuid
     , Count
@@ -14,6 +15,7 @@ WorkPlacesModel::WorkPlacesModel(QObject* parent)
     : QAbstractItemModel(parent)
     , _workPlacesNames(QStringList())
     , _recordingInAllIndicators(QList<bool>())
+    , _enModbusTCP(QList<bool>())
     , _enRS485(QList<bool>())
     , _uuids(QStringList())
     , _indicatorsVec(std::vector<QStringList>())
@@ -46,6 +48,9 @@ QVariant WorkPlacesModel::data(const QModelIndex &index, int role) const
            break;
        case WPMColumn::RecordingInAllIndicators:
            return _recordingInAllIndicators.at(index.row());
+           break;
+       case WPMColumn::EnModbusTCP:
+           return _enModbusTCP.at(index.row());
            break;
        case WPMColumn::EnRS485:
            return _enRS485.at(index.row());
@@ -112,6 +117,11 @@ bool WorkPlacesModel::setData(const QModelIndex &index, const QVariant &value, i
              emit dataChanged(index, index);
              return true;
              break;
+         case WPMColumn::EnModbusTCP:
+             _enModbusTCP.replace(index.row(), value.toBool());
+             emit dataChanged(index, index);
+             return true;
+             break;
          case WPMColumn::EnRS485:
              _enRS485.replace(index.row(), value.toBool());
              emit dataChanged(index, index);
@@ -145,6 +155,9 @@ QVariant WorkPlacesModel::headerData
         case WPMColumn::RecordingInAllIndicators:
             return "Запись во все\nиндикаторы";
             break;
+        case WPMColumn::EnModbusTCP:
+            return "Искать датчики\nModbus TCP";
+            break;
         case WPMColumn::EnRS485:
             return "Искать датчики\nRS-485";
             break;
@@ -169,13 +182,13 @@ QStringList WorkPlacesModel::WorkPlacesNames()
 }
 
 
-bool WorkPlacesModel::RecordingInAllIndicators(int active)
+bool WorkPlacesModel::RecordingInAllIndicators(int row)
 {
-    if (active < 0 || active >= _recordingInAllIndicators.size())
+    if (row < 0 || row >= _recordingInAllIndicators.size())
     {
         return false;
     }
-    return _recordingInAllIndicators.at(active);
+    return _recordingInAllIndicators.at(row);
 }
 
 
@@ -186,38 +199,47 @@ void WorkPlacesModel::SetRecordingInAllIndicators(int active, bool en)
 }
 
 
-QList<bool> WorkPlacesModel::RecordingInAllIndicatorsArr()
+bool WorkPlacesModel::EnModbusTCP(int row)
 {
-    return _recordingInAllIndicators;
-}
-
-
-bool WorkPlacesModel::EnRS485(int active)
-{
-    if (active < 0 || active >= _enRS485.size())
+    if (row < 0 || row >= _enModbusTCP.size())
     {
         return false;
     }
-    return _enRS485.at(active);
+    return _enModbusTCP.at(row);
 }
 
 
-void WorkPlacesModel::SetEnRS485(int active, bool en)
+void WorkPlacesModel::SetEnModbusTCP(int row, bool en)
 {
-    QModelIndex index = QAbstractItemModel::createIndex(active, WPMColumn::EnRS485);
+    QModelIndex index = QAbstractItemModel::createIndex(row, WPMColumn::EnModbusTCP);
     setData(index, en);
 }
 
 
-QList<bool> WorkPlacesModel::EnRS485Arr()
+bool WorkPlacesModel::EnRS485(int row)
 {
-    return _enRS485;
+    if (row < 0 || row >= _enRS485.size())
+    {
+        return false;
+    }
+    return _enRS485.at(row);
 }
 
 
-QStringList WorkPlacesModel::Uuids()
+QString WorkPlacesModel::GetUuid(int row)
 {
-    return _uuids;
+    if (row < 0 || row >= _uuids.size())
+    {
+        return "";
+    }
+    return _uuids.at(row);
+}
+
+
+void WorkPlacesModel::SetEnRS485(int row, bool en)
+{
+    QModelIndex index = QAbstractItemModel::createIndex(row, WPMColumn::EnRS485);
+    setData(index, en);
 }
 
 
@@ -225,6 +247,7 @@ void WorkPlacesModel::AddRecord
 (
     QString name
     , bool recInAll
+    , bool enModbusTCP
     , bool enRS485
     , QString uuid
 )
@@ -232,6 +255,7 @@ void WorkPlacesModel::AddRecord
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     _workPlacesNames.push_back(name);
     _recordingInAllIndicators.push_back(recInAll);
+    _enModbusTCP.push_back(enModbusTCP);
     _enRS485.push_back(enRS485);
     _uuids.push_back(uuid);
     endInsertRows();
@@ -251,6 +275,7 @@ void WorkPlacesModel::RemoveRecord(int row)
     beginRemoveRows(QModelIndex(), row, row);
     _workPlacesNames.removeAt(row);
     _recordingInAllIndicators.removeAt(row);
+    _enModbusTCP.removeAt(row);
     _enRS485.removeAt(row);
     _uuids.removeAt(row);
     endRemoveRows();
