@@ -7,8 +7,8 @@ enum WPMColumn
     , EnModbusTCP
     , EnRS485
     , Uuid
-    , ModbusAddresses
     , Count
+    , ModbusAddresses
 };
 
 
