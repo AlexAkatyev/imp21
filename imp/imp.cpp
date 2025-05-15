@@ -212,7 +212,7 @@ void Imp::linkIni()
   connect(impSettingsDialog, SIGNAL(sigFindModbus485(bool)), this, SLOT(setIniFindModbus485(bool)));
 
   QObject* cbSimRec = root->findChild<QObject*>("cbSimRec");
-  cbSimRec->setProperty("checked", settings->GetWorkPlacesModel()->RecordingInAllIndicators(settings->Value(ImpKeys::ACTIVE_WORKPLACE).toInt()));
+  cbSimRec->setProperty("checked", settings->Value(ImpKeys::RECORDING_IN_ALL_INDICATORS).toBool());
   connect(impSettingsDialog, SIGNAL(sigSimRec(bool)), this, SLOT(setRecordingInAllIndicators(bool)));
 
   QStringList sl = settings->Value(ImpKeys::LIST_MB_ADDR).toStringList();
@@ -245,7 +245,7 @@ void Imp::setIniFindModbus485(bool en)
 void Imp::setRecordingInAllIndicators(bool en)
 {
   ImpSettings* settings = ImpSettings::Instance(parent());
-  settings->GetWorkPlacesModel()->SetRecordingInAllIndicators(settings->Value(ImpKeys::ACTIVE_WORKPLACE).toInt(), en);
+  settings->SetValue(ImpKeys::RECORDING_IN_ALL_INDICATORS, en);
 }
 
 

@@ -4,6 +4,7 @@ enum WPMColumn
 {
     Name
     , RecordingInAllIndicators
+    , EnRS485
     , Uuid
     , Count
 };
@@ -13,6 +14,7 @@ WorkPlacesModel::WorkPlacesModel(QObject* parent)
     : QAbstractItemModel(parent)
     , _workPlacesNames(QStringList())
     , _recordingInAllIndicators(QList<bool>())
+    , _enRS485(QList<bool>())
     , _uuids(QStringList())
     , _indicatorsVec(std::vector<QStringList>())
 {
@@ -44,6 +46,9 @@ QVariant WorkPlacesModel::data(const QModelIndex &index, int role) const
            break;
        case WPMColumn::RecordingInAllIndicators:
            return _recordingInAllIndicators.at(index.row());
+           break;
+       case WPMColumn::EnRS485:
+           return _enRS485.at(index.row());
            break;
        case WPMColumn::Uuid:
            return _uuids.at(index.row());
@@ -107,6 +112,11 @@ bool WorkPlacesModel::setData(const QModelIndex &index, const QVariant &value, i
              emit dataChanged(index, index);
              return true;
              break;
+         case WPMColumn::EnRS485:
+             _enRS485.replace(index.row(), value.toBool());
+             emit dataChanged(index, index);
+             return true;
+             break;
          default:
              break;
          }
@@ -134,6 +144,9 @@ QVariant WorkPlacesModel::headerData
             break;
         case WPMColumn::RecordingInAllIndicators:
             return "Запись во все\nиндикаторы";
+            break;
+        case WPMColumn::EnRS485:
+            return "Искать датчики\nRS-485";
             break;
         case WPMColumn::Uuid:
             return "Идентификатор";
@@ -179,17 +192,47 @@ QList<bool> WorkPlacesModel::RecordingInAllIndicatorsArr()
 }
 
 
+bool WorkPlacesModel::EnRS485(int active)
+{
+    if (active < 0 || active >= _enRS485.size())
+    {
+        return false;
+    }
+    return _enRS485.at(active);
+}
+
+
+void WorkPlacesModel::SetEnRS485(int active, bool en)
+{
+    QModelIndex index = QAbstractItemModel::createIndex(active, WPMColumn::EnRS485);
+    setData(index, en);
+}
+
+
+QList<bool> WorkPlacesModel::EnRS485Arr()
+{
+    return _enRS485;
+}
+
+
 QStringList WorkPlacesModel::Uuids()
 {
     return _uuids;
 }
 
 
-void WorkPlacesModel::AddRecord(QString name, bool recInAll, QString uuid)
+void WorkPlacesModel::AddRecord
+(
+    QString name
+    , bool recInAll
+    , bool enRS485
+    , QString uuid
+)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     _workPlacesNames.push_back(name);
     _recordingInAllIndicators.push_back(recInAll);
+    _enRS485.push_back(enRS485);
     _uuids.push_back(uuid);
     endInsertRows();
 }
@@ -208,6 +251,7 @@ void WorkPlacesModel::RemoveRecord(int row)
     beginRemoveRows(QModelIndex(), row, row);
     _workPlacesNames.removeAt(row);
     _recordingInAllIndicators.removeAt(row);
+    _enRS485.removeAt(row);
     _uuids.removeAt(row);
     endRemoveRows();
 }

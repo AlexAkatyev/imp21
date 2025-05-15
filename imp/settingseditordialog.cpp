@@ -40,6 +40,7 @@ void SettingsEditorDialog::on_addButton_clicked()
             (
                 "Новое рабочее место"
                 , false
+                , false
                 , QUuid::createUuid().toString()
             );
 }

@@ -17,6 +17,7 @@ const int SIZE_WINDOW_HEIGTH = 480;
 const QString WP_NAME = "wpname";
 const QString WP_UUID = "uuid";
 const QString WP_RECI = "recording_in_all_indicators";
+const QString WP_ENRS485 = "en_rs_485";
 const QString WP_ARRAY = "workplaces";
 
 
@@ -44,7 +45,13 @@ ImpSettings::ImpSettings(QString setFileName, QString setJsonFileName, QObject* 
         for (int i = 0; i < array.size(); ++i)
         {
             QJsonValue v = array[i];
-            _setModel->AddRecord(v[WP_NAME].toString(), v[WP_RECI].toBool(), v[WP_UUID].toString());
+            _setModel->AddRecord
+                    (
+                        v[WP_NAME].toString()
+                        , v[WP_RECI].toBool()
+                        , v[WP_ENRS485].toBool()
+                        , v[WP_UUID].toString()
+                    );
         }
 
     }
@@ -53,13 +60,35 @@ ImpSettings::ImpSettings(QString setFileName, QString setJsonFileName, QObject* 
 
 void ImpSettings::SetValue(ImpKeys key, QVariant data)
 {
-  _settings->setValue(keyFromCode(key), data);
+    switch (key)
+    {
+    case ImpKeys::EN_RS_485:
+        _setModel->SetEnRS485(Value(ImpKeys::ACTIVE_WORKPLACE).toInt(), data.toBool());
+        break;
+    case ImpKeys::RECORDING_IN_ALL_INDICATORS:
+        _setModel->SetRecordingInAllIndicators(Value(ImpKeys::ACTIVE_WORKPLACE).toInt(), data.toBool());
+        break;
+    default:
+        _settings->setValue(keyFromCode(key), data);
+        break;
+    }
 }
 
 
 QVariant ImpSettings::Value(ImpKeys key)
 {
-  return _settings->value(keyFromCode(key), defaultValues(key));
+    switch (key)
+    {
+    case ImpKeys::EN_RS_485:
+        return _setModel->EnRS485(Value(ImpKeys::ACTIVE_WORKPLACE).toInt());
+        break;
+    case ImpKeys::RECORDING_IN_ALL_INDICATORS:
+        return _setModel->RecordingInAllIndicators(Value(ImpKeys::ACTIVE_WORKPLACE).toInt());
+        break;
+    default:
+        return _settings->value(keyFromCode(key), defaultValues(key));
+        break;
+    }
 }
 
 
@@ -81,9 +110,6 @@ QString ImpSettings::keyFromCode(ImpKeys c)
     break;
   case INDICATORS:
     return "indicators";
-    break;
-  case EN_RS_485:
-    return "en_rs_485";
     break;
   case EN_MODBUS_TCP:
     return "en_modbus_tcp";
@@ -131,9 +157,6 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
   case INDICATORS:
     return QStringList();
     break;
-  case EN_RS_485:
-    return false;
-    break;
   case EN_MODBUS_TCP:
     return false;
     break;
@@ -171,11 +194,13 @@ void ImpSettings::SaveWorkPlacesModel()
         QStringList names = _setModel->WorkPlacesNames();
         QStringList uuids = _setModel->Uuids();
         QList<bool> recAI = _setModel->RecordingInAllIndicatorsArr();
+        QList<bool> enRS485 = _setModel->EnRS485Arr();
         for (int i = 0; i < names.length(); ++i)
         {
             QJsonObject textObject;
             textObject[WP_NAME] = names[i];
             textObject[WP_RECI] = recAI[i];
+            textObject[WP_ENRS485] = recAI[i];
             textObject[WP_UUID] = uuids[i];
             wpArray.append(textObject);
         }

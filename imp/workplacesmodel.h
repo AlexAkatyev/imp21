@@ -12,8 +12,17 @@ public:
     bool RecordingInAllIndicators(int active);
     void SetRecordingInAllIndicators(int active, bool en);
     QList<bool> RecordingInAllIndicatorsArr();
+    bool EnRS485(int active);
+    void SetEnRS485(int active, bool en);
+    QList<bool> EnRS485Arr();
     QStringList Uuids();
-    void AddRecord(QString name, bool recInAll, QString uuid);
+    void AddRecord
+        (
+            QString name
+            , bool recInAll
+            , bool enRS485
+            , QString uuid
+        );
     void RemoveRecord(int row);
 
 private:
@@ -28,6 +37,7 @@ private:
 
     QStringList _workPlacesNames;
     QList<bool> _recordingInAllIndicators;
+    QList<bool> _enRS485;
     QStringList _uuids;
     std::vector<QStringList> _indicatorsVec;
 };
