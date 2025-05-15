@@ -722,7 +722,11 @@ void Imp::openWorkPlacesEditor()
 
 void Imp::updateCbWorkPlaces()
 {
-    disconnect(_pQuickUi->rootObject(), SIGNAL(sigWorkPlaceChanged()), this, SLOT(workPlaceChanged()));
+    QObject* root = _pQuickUi->rootObject();
+    if (root != nullptr)
+    {
+        disconnect(root, SIGNAL(sigWorkPlaceChanged()), this, SLOT(workPlaceChanged()));
+    }
     QObject* cbWorkPlaces = _pQuickUi->rootObject()->findChild<QObject*>("cbWorkspace");
     ImpSettings* settings = ImpSettings::Instance(this);
     int modelCount = settings->GetWorkPlacesModel()->WorkPlacesNames().length();
