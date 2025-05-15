@@ -15,6 +15,8 @@ public:
     void SetEnModbusTCP(int row, bool en);
     bool EnRS485(int row);
     void SetEnRS485(int row, bool en);
+    QStringList ModbusAddresses(int row);
+    void SetModbusAddresses(int row, QStringList sl);
     QString GetUuid(int row);
     void AddRecord
         (
@@ -22,6 +24,7 @@ public:
             , bool recInAll
             , bool enModbusTCP
             , bool enRS485
+            , QStringList modbusAddresses
             , QString uuid
         );
     void RemoveRecord(int row);
@@ -41,6 +44,7 @@ private:
     QList<bool> _enModbusTCP;
     QList<bool> _enRS485;
     QStringList _uuids;
+    QList<QStringList> _modbusAddresses;
     std::vector<QStringList> _indicatorsVec;
 };
 

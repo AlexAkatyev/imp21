@@ -7,6 +7,7 @@ enum WPMColumn
     , EnModbusTCP
     , EnRS485
     , Uuid
+    , ModbusAddresses
     , Count
 };
 
@@ -18,6 +19,7 @@ WorkPlacesModel::WorkPlacesModel(QObject* parent)
     , _enModbusTCP(QList<bool>())
     , _enRS485(QList<bool>())
     , _uuids(QStringList())
+    , _modbusAddresses(QList<QStringList>())
     , _indicatorsVec(std::vector<QStringList>())
 {
 }
@@ -54,6 +56,9 @@ QVariant WorkPlacesModel::data(const QModelIndex &index, int role) const
            break;
        case WPMColumn::EnRS485:
            return _enRS485.at(index.row());
+           break;
+       case WPMColumn::ModbusAddresses:
+           return _modbusAddresses.at(index.row());
            break;
        case WPMColumn::Uuid:
            return _uuids.at(index.row());
@@ -94,6 +99,9 @@ Qt::ItemFlags WorkPlacesModel::flags(const QModelIndex &index) const
     case WPMColumn::Name:
         mflags |= Qt::ItemIsEditable;
         break;
+    case WPMColumn::ModbusAddresses:
+        mflags = 0;
+        break;
     default:
         break;
     }
@@ -125,6 +133,10 @@ bool WorkPlacesModel::setData(const QModelIndex &index, const QVariant &value, i
          case WPMColumn::EnRS485:
              _enRS485.replace(index.row(), value.toBool());
              emit dataChanged(index, index);
+             return true;
+             break;
+         case WPMColumn::ModbusAddresses:
+             _modbusAddresses.replace(index.row(), value.toStringList());
              return true;
              break;
          default:
@@ -226,6 +238,30 @@ bool WorkPlacesModel::EnRS485(int row)
 }
 
 
+void WorkPlacesModel::SetEnRS485(int row, bool en)
+{
+    QModelIndex index = QAbstractItemModel::createIndex(row, WPMColumn::EnRS485);
+    setData(index, en);
+}
+
+
+QStringList WorkPlacesModel::ModbusAddresses(int row)
+{
+    if (row < 0 || row >= _modbusAddresses.size())
+    {
+        return QStringList();
+    }
+    return _modbusAddresses.at(row);
+}
+
+
+void WorkPlacesModel::SetModbusAddresses(int row, QStringList sl)
+{
+    QModelIndex index = QAbstractItemModel::createIndex(row, WPMColumn::ModbusAddresses);
+    setData(index, sl);
+}
+
+
 QString WorkPlacesModel::GetUuid(int row)
 {
     if (row < 0 || row >= _uuids.size())
@@ -236,11 +272,6 @@ QString WorkPlacesModel::GetUuid(int row)
 }
 
 
-void WorkPlacesModel::SetEnRS485(int row, bool en)
-{
-    QModelIndex index = QAbstractItemModel::createIndex(row, WPMColumn::EnRS485);
-    setData(index, en);
-}
 
 
 void WorkPlacesModel::AddRecord
@@ -249,6 +280,7 @@ void WorkPlacesModel::AddRecord
     , bool recInAll
     , bool enModbusTCP
     , bool enRS485
+    , QStringList modbusAddresses
     , QString uuid
 )
 {
@@ -257,6 +289,7 @@ void WorkPlacesModel::AddRecord
     _recordingInAllIndicators.push_back(recInAll);
     _enModbusTCP.push_back(enModbusTCP);
     _enRS485.push_back(enRS485);
+    _modbusAddresses.push_back(modbusAddresses);
     _uuids.push_back(uuid);
     endInsertRows();
 }
@@ -277,6 +310,7 @@ void WorkPlacesModel::RemoveRecord(int row)
     _recordingInAllIndicators.removeAt(row);
     _enModbusTCP.removeAt(row);
     _enRS485.removeAt(row);
+    _modbusAddresses.removeAt(row);
     _uuids.removeAt(row);
     endRemoveRows();
 }

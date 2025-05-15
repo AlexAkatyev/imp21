@@ -16,6 +16,7 @@ const int SIZE_WINDOW_WIDTH = 320;
 const int SIZE_WINDOW_HEIGTH = 480;
 const QString WP_NAME = "wpname";
 const QString WP_UUID = "uuid";
+const QString WP_MB_ADDRESSES = "list_mb_addr";
 const QString WP_RECI = "recording_in_all_indicators";
 const QString WP_ENMBTCP = "en_modbus_tcp";
 const QString WP_ENRS485 = "en_rs_485";
@@ -52,6 +53,7 @@ ImpSettings::ImpSettings(QString setFileName, QString setJsonFileName, QObject* 
                         , v[WP_RECI].toBool()
                         , v[WP_ENMBTCP].toBool()
                         , v[WP_ENRS485].toBool()
+                        , v[WP_MB_ADDRESSES].toVariant().toStringList()
                         , v[WP_UUID].toString()
                     );
         }
@@ -73,6 +75,9 @@ void ImpSettings::SetValue(ImpKeys key, QVariant data)
     case ImpKeys::RECORDING_IN_ALL_INDICATORS:
         _setModel->SetRecordingInAllIndicators(Value(ImpKeys::ACTIVE_WORKPLACE).toInt(), data.toBool());
         break;
+    case LIST_MB_ADDR:
+        _setModel->SetModbusAddresses(Value(ImpKeys::ACTIVE_WORKPLACE).toInt(), data.toStringList());
+        break;
     default:
         _settings->setValue(keyFromCode(key), data);
         break;
@@ -92,6 +97,9 @@ QVariant ImpSettings::Value(ImpKeys key)
         break;
     case ImpKeys::RECORDING_IN_ALL_INDICATORS:
         return _setModel->RecordingInAllIndicators(Value(ImpKeys::ACTIVE_WORKPLACE).toInt());
+        break;
+    case LIST_MB_ADDR:
+        return _setModel->ModbusAddresses(Value(ImpKeys::ACTIVE_WORKPLACE).toInt());
         break;
     default:
         return _settings->value(keyFromCode(key), defaultValues(key));
@@ -118,9 +126,6 @@ QString ImpSettings::keyFromCode(ImpKeys c)
     break;
   case INDICATORS:
     return "indicators";
-    break;
-  case LIST_MB_ADDR:
-    return "list_mb_addr";
     break;
   case DEBUG_GUI_MODE:
     return "debug_gui_mode";
@@ -162,13 +167,6 @@ QVariant ImpSettings::defaultValues(ImpKeys c)
   case INDICATORS:
     return QStringList();
     break;
-  case LIST_MB_ADDR:
-  {
-    QStringList sl;
-    sl << DEF_MB_SERVER;
-    return sl;
-    break;
-  }
   case DEBUG_GUI_MODE:
     return false;
     break;
@@ -202,6 +200,12 @@ void ImpSettings::SaveWorkPlacesModel()
             textObject[WP_ENRS485] = _setModel->EnRS485(i);
             textObject[WP_ENMBTCP] = _setModel->EnModbusTCP(i);
             textObject[WP_UUID] = _setModel->GetUuid(i);
+            QJsonArray mba = QJsonArray();
+            for (QString adr : _setModel->ModbusAddresses(i))
+            {
+                mba.append(adr);
+            }
+            textObject[WP_MB_ADDRESSES] = mba;
             wpArray.append(textObject);
         }
         QJsonObject wpObj = QJsonObject();

@@ -42,6 +42,7 @@ void SettingsEditorDialog::on_addButton_clicked()
                 , false
                 , false
                 , false
+                , QStringList()
                 , QUuid::createUuid().toString()
             );
 }
