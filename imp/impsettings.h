@@ -25,6 +25,7 @@ public:
   void SetValue(ImpKeys key, QVariant data);
   QVariant Value(ImpKeys key);
   WorkPlacesModel* GetWorkPlacesModel();
+  QString CurrentUuid();
   void SaveWorkPlacesModel();
 
 private:

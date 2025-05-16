@@ -521,6 +521,7 @@ void Imp::createScreenIndicators(QList<int> indexList, ImpAbstractDetect* baseDe
             for(int column = 0; column < numberOfWindowsColumns; column++)
             {
                 ind = new Indicator(this,
+                                    ImpSettings::Instance()->CurrentUuid(),
                                     indexList[numberInd], // Номер индикатора
                                     baseDetect); // ссылка на датчик
 
@@ -548,6 +549,7 @@ void Imp::createIndicator(int index, ImpAbstractDetect* baseDetect, bool defOpti
   qApp->processEvents();
     Indicator* ind;
     ind = new Indicator(this,
+                        ImpSettings::Instance()->CurrentUuid(),
                         index, // Номер индикатора
                         baseDetect, // ссылка на датчик
                         defOption);

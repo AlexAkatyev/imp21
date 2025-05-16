@@ -73,6 +73,7 @@ float getMeasForTransform(float mr, int ttu)
 Indicator::Indicator
 (
     QWidget* parent
+    , QString uuid
     , int identificator
     , ImpAbstractDetect* baseDetect
     , bool defOptions
@@ -91,7 +92,7 @@ Indicator::Indicator
 {
   PostMessageSender::Instance(parent);
   _zeroShifts = {0, 0};
-  _settings = new IndSettings("indicator" + QString::number(_idIndicator) + ".ini", this);
+  _settings = new IndSettings(uuid + "indicator" + QString::number(_idIndicator) + ".ini", this);
 
   // Размещение окна индикатора в центр экрана
   loadSettingsWindow();

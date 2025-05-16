@@ -18,6 +18,7 @@ class Indicator : public QWidget
     Q_OBJECT
 public:
     Indicator(QWidget* parent,         // родитель
+              QString uuid,            // uuid рабочего места
               int identificator,       // Номер индикатора
               ImpAbstractDetect* baseDetect = nullptr,
               bool defOptions = false);    // Ссылка на датчик

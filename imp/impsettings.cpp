@@ -222,3 +222,9 @@ void ImpSettings::SaveWorkPlacesModel()
         file.close();
     }
 }
+
+
+QString ImpSettings::CurrentUuid()
+{
+    return _setModel->GetUuid(Value(ImpKeys::ACTIVE_WORKPLACE).toInt());
+}
