@@ -52,6 +52,7 @@ const int SIZE_WINDOW_TITLE = 25;
 
 const char* HELP_INFO = "build\\html\\index.html";
 const QString KEY_DEF_OPTIONS = "DEFAULT_INDICATOR";
+const QString NO_UUID = "";
 
 // Конструктор главного окна
 Imp::Imp(QWidget* parent)
@@ -66,6 +67,7 @@ Imp::Imp(QWidget* parent)
     _useIndicators.clear(); // подготовка к загрузке множества индикаторов
     _indicators.clear();
     _flagRunIndicators = true;
+    _uuid = NO_UUID;
     LoadSettingsGeneral();
     setMinimumSize(SIZE_WINDOW_WIDTH, SIZE_WINDOW_HEIGTH);
 
@@ -170,12 +172,20 @@ bool Imp::LoadSettingsGeneral()
                                settings->Value(ImpKeys::WIN_WIDTH).toInt(),
                                settings->Value(ImpKeys::WIN_HEIGHT).toInt());
   this->setGeometry(windowGeometry);
-  QStringList lInd = settings->Value(ImpKeys::INDICATORS).toStringList();
-  for (QString num : lInd)
-  {
-    _useIndicators.insert(num.toInt());
-  }
+  _uuid = settings->CurrentUuid();
+  fillUseIndicators();
   return true;
+}
+
+
+void Imp::fillUseIndicators()
+{
+    QStringList lInd = ImpSettings::Instance(this)->Value(ImpKeys::INDICATORS).toStringList();
+    _useIndicators.clear();
+    for (QString num : lInd)
+    {
+      _useIndicators.insert(num.toInt());
+    }
 }
 
 
@@ -291,9 +301,20 @@ void Imp::findDetect()
         reWriteDetectsToTable();
         emit sigFindDetect();
       });
+    // !!!!!!!!!!!!!!!!!!!!!!
+    runIndicators(); // !!!!! при запуске программы открытие старых индикаторов
+    // !!!!!!!!!!!!!!!!!!!!!!
+    emit sigFindDetect();
+    _timerUpdaterActiveStatus->start();
 
-    if(_flagRunIndicators)
-    { // при запуске программы открытие старых индикаторов
+    findProgressBar->setProperty("visible", false);
+}
+
+
+void Imp::runIndicators()
+{
+    if (_flagRunIndicators)
+    {
         for (int j = 0; j < MAX_INDICATOR; j++)
             if (_useIndicators.contains(j) == true)
             {
@@ -301,10 +322,6 @@ void Imp::findDetect()
             }
         _flagRunIndicators = false; // старые индикаторы больше не запускать
     }
-    emit sigFindDetect();
-    _timerUpdaterActiveStatus->start();
-
-    findProgressBar->setProperty("visible", false);
 }
 
 
@@ -751,4 +768,14 @@ void Imp::workPlaceChanged()
     ImpSettings* settings = ImpSettings::Instance(this);
     settings->SetValue(ImpKeys::ACTIVE_WORKPLACE, cbWorkPlaces->property("currentIndex").toInt());
     linkIni();
+    if (_uuid == settings->CurrentUuid())
+    {
+        return;
+    }
+    _uuid = settings->CurrentUuid();
+    emit sigCloseIndicatorWindows();
+    _indicators.clear();
+    fillUseIndicators();
+    _flagRunIndicators = true;
+    runIndicators();
 }

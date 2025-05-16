@@ -81,6 +81,7 @@ private:
     QSet<int> _useIndicators; // Множество используемых индикаторов
     std::vector<Indicator*> _indicators;
     bool _flagRunIndicators; // Флаг необходимости запускать индикаторы после запуска программы
+    QString _uuid; // uuid текущего рабочего места
 
     void createIndicator(int index, ImpAbstractDetect* baseDetect, bool defOption);
     void createScreenIndicators(QList<int> indexList, ImpAbstractDetect* baseDetect = nullptr);
@@ -98,6 +99,9 @@ private:
 
     // Переопределение закрытия главного окна
     void closeEvent(QCloseEvent*);
+
+    void fillUseIndicators();
+    void runIndicators();
 };
 
 
