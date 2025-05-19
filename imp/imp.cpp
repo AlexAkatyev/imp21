@@ -53,6 +53,7 @@ const int SIZE_WINDOW_TITLE = 25;
 const char* HELP_INFO = "build\\html\\index.html";
 const QString KEY_DEF_OPTIONS = "DEFAULT_INDICATOR";
 const QString NO_UUID = "";
+const QString MESSAGE_TITLE = "ИМП";
 
 // Конструктор главного окна
 Imp::Imp(QWidget* parent)
@@ -136,6 +137,12 @@ Imp::Imp(QWidget* parent)
       // Поиск датчиков при запуске программы после паузы, чтобы оформилось главное окно
       TimerBeforeFound->start();
     }
+}
+
+
+QString Imp::MessageTitle()
+{
+    return MESSAGE_TITLE;
 }
 
 
@@ -683,7 +690,7 @@ void Imp::composeOpenWindowsInOrder()
         }
         else
         {
-            QMessageBox::information(this, "ИМП","Нет возможности распределить все открытые окна.");
+            QMessageBox::information(this, MESSAGE_TITLE,"Нет возможности распределить все открытые окна.");
         }
 }
 
@@ -726,6 +733,16 @@ ImpAbstractDetect* Imp::DetectAtName(QString idName)
       result = detect;
       break;
     }
+  if (result == nullptr
+      && idName != Indicator::EmptyDetect())
+  {
+      QMessageBox::information
+              (
+                  this
+                  , MESSAGE_TITLE
+                  , "Не обнаружен датчик " + idName
+              );
+  }
   return result;
 }
 

@@ -24,6 +24,7 @@ public:
               bool defOptions = false);    // Ссылка на датчик
     int Id();
     static std::vector<int> GetDefaultSize();
+    static QString EmptyDetect();
 
 signals:
     void sigCloseIndicator(int); // Закрытие окна индикатора, передается номер индикатора - для родительского окна
@@ -129,7 +130,7 @@ private:
     IndSettings* _settings;
     // сохранение настроек
     void loadSettingsWindow(); // Загрузка параметров окна
-    bool loadSettingsIndicator(bool defOptions); // Загрузка параметров из файла установок
+    QString loadSettingsIndicator(bool defOptions); // Загрузка параметров из файла установок
     void saveSettingsIndicator(); // Сохранение параметров установок в файл
 
     QStringList createListByDetect1();

@@ -173,7 +173,7 @@ Indicator::Indicator
   connect(this, SIGNAL(sigCloseIndicator(int)), _parent, SLOT(deleteIndicator(int)));
 
   // Загрузка настроек
-  loadSettingsIndicator(defOptions);
+  QString message = loadSettingsIndicator(defOptions);
 
   _measuredLogs.clear();
 
@@ -190,12 +190,28 @@ Indicator::Indicator
 
   setMinimumSize(QSize(MINIMAL_WIDTH, MINIMAL_HEIGHT));
   this->show(); // Окно выводим на экран
+
+  if (message.length() != 0)
+  {
+      QMessageBox::information
+              (
+                  this
+                  , Imp::MessageTitle()
+                  , message
+              );
+  }
 }
 
 
 int Indicator::Id()
 {
   return _idIndicator;
+}
+
+
+QString Indicator::EmptyDetect()
+{
+    return "Нет";
 }
 
 
@@ -471,7 +487,7 @@ QStringList Indicator::createListByDetect1()
   QStringList slCLD;
   slCLD << _parent->DetectNames();
   if (slCLD.size() == 0)
-    slCLD << "Нет";
+    slCLD << EmptyDetect();
   return slCLD;
 }
 
@@ -479,7 +495,7 @@ QStringList Indicator::createListByDetect1()
 QStringList Indicator::createListByDetect2()
 {
   QStringList slCLD;
-  slCLD << "Нет";
+  slCLD << EmptyDetect();
   slCLD += _parent->DetectNames();
   return slCLD;
 }
@@ -678,8 +694,9 @@ void Indicator::loadSettingsWindow()
 
 
 // Чтение установок
-bool Indicator::loadSettingsIndicator(bool defOptions)
+QString Indicator::loadSettingsIndicator(bool defOptions)
 {
+    QString message = "";
   if (defOptions)
   {
     _settings->LockDefaultValues();
@@ -814,7 +831,18 @@ bool Indicator::loadSettingsIndicator(bool defOptions)
   qmlWidget->setProperty("text",  _settings->Value(IndKeys::AUTO_SAVE_PERIOD));
 
   _settings->UnlockDefaultValues();
-  return true;
+
+  if (idDetect1 != 0
+      && _detect1 == nullptr)
+  {
+      message += "\nНе обнаружен датчик зав. № " + QString::number(idDetect1);
+  }
+  if (idDetect2 != 0
+      && _detect2 == nullptr)
+  {
+      message += "\nНе обнаружен датчик зав. № " + QString::number(idDetect2);
+  }
+  return message;
 }
 
 

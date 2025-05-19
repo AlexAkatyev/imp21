@@ -19,6 +19,8 @@ public:
     ImpAbstractDetect* DetectAtId(int id);
     ImpAbstractDetect* DetectAtName(QString idName);
 
+    static QString MessageTitle();
+
 signals:
     // Сигнал включения в список нового датчика
     void sigAddDetect();
