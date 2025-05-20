@@ -360,6 +360,13 @@ Item
             height: shortInfoHeight
             width: itWin.width
 
+            Behavior on height {
+                NumberAnimation {
+                    duration: 100
+                    easing.type: Easing.InOutQuad
+                }
+            }
+
             MouseArea
             { // Для запуска окна установок
                 anchors.fill: parent
