@@ -1,9 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>emvtsettings.qml</file>
-        <file>logo.bmp</file>
-        <file>logoNIR.bmp</file>
-        <file>../ImpStyle.qml</file>
-        <file>../logo.bmp</file>
-    </qresource>
-</RCC>

@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>bepvtsettings.qml</file>
-        <file>logo.bmp</file>
-        <file>ico-out.png</file>
-        <file>../ImpStyle.qml</file>
-    </qresource>
-</RCC>

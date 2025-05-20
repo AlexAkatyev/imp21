@@ -48,7 +48,6 @@ SOURCES += main.cpp\
   UtilLib/modbus.cpp \
     UtilLib/utillib.cpp \
     formulatree/formulafactory.cpp \
-    WidgetUtil/centerdialog.cpp \
     formulatree/formulanode.cpp \
         imp.cpp \
     impsettings.cpp \
@@ -79,7 +78,6 @@ HEADERS  += imp.h \
     UtilLib/modbus.h \
     UtilLib/utillib.h \
     WidgetUtil/DetectModelCommands.h \
-    WidgetUtil/centerdialog.h \
     formulatree/formulafactory.h \
     formulatree/formulanode.h \
     impdef.h \
