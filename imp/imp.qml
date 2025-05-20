@@ -511,12 +511,15 @@ Item
                             measRange: dataMeasRange
                             zeroRange: dataZeroRange
                             preSet: dataPreSet
-                            //saveUserName: sigSetNewUserName(idNumber, detectName)
                         }
 
                         EmVtSettings
                         {
                             visible: typeSettings == "em"
+                            measUnit: dataMeasUnit
+                            measRange: dataMeasRange
+                            zeroRange: dataZeroRange
+                            preSet: dataPreSet
                         }
 
                     }
