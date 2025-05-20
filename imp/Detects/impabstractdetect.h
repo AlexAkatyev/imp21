@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QDate>
 
+class AbstractSettingsController;
+
 class ImpAbstractDetect : public QObject
 {
   Q_OBJECT
@@ -25,7 +27,8 @@ public:
   int LMeasureInterval();
   int ZeroInterval();
   int PreSetInterval();
-  virtual void ShowSettings(QRect);
+  virtual void CreateSettingsController(QObject* rootUi);
+  virtual void LoadDataToQmlWidget();
   virtual void SetNewName(QString);
   virtual bool Ready();
   virtual QString Address();
@@ -55,6 +58,7 @@ protected:
   bool _flagReady;
   bool _activeStatus;
   bool _activeStatusChanged;
+  AbstractSettingsController* _settingsController;
 
 private:
   bool _prevStateButton;

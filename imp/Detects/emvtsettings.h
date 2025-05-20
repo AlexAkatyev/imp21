@@ -3,31 +3,21 @@
 
 #include <QObject>
 
-#include "WidgetUtil/centerdialog.h"
+#include "abstractsettingscontroller.h"
 
-class QQuickWidget;
 class ImpAbstractDetect;
 
-
-// ImpAbstractDetectSettings
-class EmVTSettings : public CenterDialog
+class EmVTSettings : public AbstractSettingsController
 {
     Q_OBJECT
 public:
-    explicit EmVTSettings(ImpAbstractDetect* parent, int imageCode = 0);
-
-private slots:
+    explicit EmVTSettings(ImpAbstractDetect* parent, QObject* _rootUi, int imageCode = 0);
+    void FillQmlWidget() override;
 
 private:
     // Включение переменных виджета QML
     // Указатель на виджет qml в окне класса
-    QQuickWidget* _quickUi;
-
     int _imageCode;
-
-    ImpAbstractDetect* _detect;
-    // переопределение события изменения окна
-    void resizeEvent(QResizeEvent*);
 
     // Кодировщик для датчика
     QTextCodec* _codec;

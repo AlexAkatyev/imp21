@@ -2,6 +2,7 @@
 
 #include "impabstractdetect.h"
 #include "../postmessagesender.h"
+#include "abstractsettingscontroller.h"
 
 ImpAbstractDetect::ImpAbstractDetect(QObject *parent)
   : QObject(parent)
@@ -129,9 +130,18 @@ int ImpAbstractDetect::PreSetInterval()
 }
 
 
-void ImpAbstractDetect::ShowSettings(QRect pos)
+void ImpAbstractDetect::CreateSettingsController(QObject* rootUi)
 {
-  Q_UNUSED(pos);
+  Q_UNUSED(rootUi);
+}
+
+
+void ImpAbstractDetect::LoadDataToQmlWidget()
+{
+    if (_settingsController)
+    {
+        _settingsController->FillQmlWidget();
+    }
 }
 
 

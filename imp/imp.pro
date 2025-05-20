@@ -30,6 +30,7 @@ INCLUDEPATH += ./checkInputNumberIF
 INCLUDEPATH += ./Detects
 
 SOURCES += main.cpp\
+    Detects/abstractsettingscontroller.cpp \
   Detects/bepvtdetect.cpp \
   Detects/bepvtsettings.cpp \
   Detects/detectfactory.cpp \
@@ -59,6 +60,7 @@ SOURCES += main.cpp\
     workplacesmodel.cpp
 
 HEADERS  += imp.h \
+    Detects/abstractsettingscontroller.h \
     Detects/bepvtdetect.h \
     Detects/bepvtsettings.h \
     Detects/detectfactory.h \
@@ -76,6 +78,7 @@ HEADERS  += imp.h \
     Logger/logger.h \
     UtilLib/modbus.h \
     UtilLib/utillib.h \
+    WidgetUtil/DetectModelCommands.h \
     WidgetUtil/centerdialog.h \
     formulatree/formulafactory.h \
     formulatree/formulanode.h \
@@ -90,8 +93,6 @@ HEADERS  += imp.h \
     workplacesmodel.h
 
 RESOURCES += \
-    Detects/bepvtsettings.qrc \
-    Detects/emvtsettings.qrc \
     indicator.qrc \
     imp.qrc
 

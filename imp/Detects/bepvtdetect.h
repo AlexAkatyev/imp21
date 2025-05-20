@@ -13,7 +13,7 @@ public:
   void Init() override;
   void Stop() override;
   int WaitInit() override;
-  void ShowSettings(QRect pos) override;
+  void CreateSettingsController(QObject* rootUi) override;
   void SetNewName(QString newName) override;
 
 protected:

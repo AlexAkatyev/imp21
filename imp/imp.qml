@@ -14,6 +14,9 @@ Item
     width: scaleX
     height: scaleY
 
+    property int shortInfoHeight: 90
+    property int detailedInfoHeight: 480
+
     property string strSerialNumber: ""
     property string strActive: ""
     property string strNameDetect: ""
@@ -21,16 +24,24 @@ Item
     property string strDataManuf: ""
     property string strPort: ""
     property string strModbusAddress: ""
+    property string strTypeSettings: ""
+    property string strMeasUnit: "___"
+    property string strMeasRange: "0 ... 0"
+    property string strZeroRange: "0"
+    property string strPreSet: "0"
+    property string strCurrentValue: "!!!"
     property int iCommand: 0 // 0 - нет команды
                              // 1 - стереть список
                              // 2 - добавить запись
                              // 3 - стереть запись
-                             // 4 - коррекция записи
+                             // 4 - коррекция записи (активность датчика)
+                             // 5 - коррекция записи (текущее значение)
     property int iSumDetect: 0
     property bool blCalibrate: false // false - measure, true - calibrate
 
     onICommandChanged: // Получена команда работы со списком датчиков
     {
+        var i = 0;
         if (iCommand === 1) // 1 - стереть список
         {
             lmDetect.clear(); // Очистка списка
@@ -43,7 +54,14 @@ Item
                             typeDetect:strTypeDetect,
                             dataManuf:strDataManuf,
                             port:strPort,
-                            modbusAddress:strModbusAddress});
+                            modbusAddress: strModbusAddress,
+                            typeSettings: strTypeSettings,
+                            measUnit: strMeasUnit,
+                            measRange: strMeasRange,
+                            zeroRange: strZeroRange,
+                            preSet: strPreSet,
+                            currentValue: strCurrentValue
+                            });
         }
         if (iCommand === 3) // 3 - стереть запись
         { // Номер датчика указан в strSerialNumber
@@ -55,13 +73,25 @@ Item
                 }
             }
         }
-        if (iCommand === 4) // 4 - коррекция записи
+        if (iCommand === 4) // 4 - коррекция записи (активность датчика)
         {
-            for (var i = 0; i < lmDetect.count; i++)
+            for (i = 0; i < lmDetect.count; i++)
             {
                 if (lmDetect.get(i).serialNumber === strSerialNumber)
                 {
                     lmDetect.get(i).activeState = strActive;
+                    lvDetect.update();
+                    break;
+                }
+            }
+        }
+        if (iCommand === 5) // 5 - коррекция записи (текущее значение)
+        {
+            for (i = 0; i < lmDetect.count; i++)
+            {
+                if (lmDetect.get(i).serialNumber === strSerialNumber)
+                {
+                    lmDetect.get(i).currentValue = strCurrentValue;
                     lvDetect.update();
                     break;
                 }
@@ -76,7 +106,6 @@ Item
     signal sigFillScreenWithIndicators();
     signal sigComposeOpenWindowsInOrder();
     signal sigFindDetect();
-    signal sigSelectDetectToInit(string SerialNum);
     signal sigOpenWorkPlaces();
     signal sigWorkPlaceChanged();
 
@@ -327,89 +356,8 @@ Item
         delegate: Item
         { // Описание представления обнаруженного датчика
             id: itDetect
-            height: 80
+            height: shortInfoHeight
             width: itWin.width
-
-            Frame {
-                anchors.fill: itDetect
-                anchors.margins: 1
-
-                Row
-                {
-                    id: mainRow
-                    anchors.verticalCenter: parent.verticalCenter
-                    topPadding: 5
-                    leftPadding: 10
-                    spacing: 10
-
-                    Rectangle {
-
-                        color: impStyle.actionbarColor
-                        height: textNumber.height+10
-                        width: 150
-                        Text
-                        {
-                            id: textNumber
-                            anchors.centerIn: parent
-                            font.pointSize: 30
-                            text: serialNumber
-                        }
-                    }
-
-                    Column
-                    {
-                        anchors.verticalCenter: mainRow.verticalCenter
-                        spacing: 5
-
-                        Row
-                        {
-
-                            Text
-                            {
-                                id: textName
-                                font.pointSize: 12
-                                text: nameDetect
-                            }
-                            Text
-                            {
-                                id: textActive
-                                font.pointSize: 12
-                                text: activeState
-                            }
-                        }
-                        Text
-                        {
-                            id: textType
-                            font.pointSize: 10
-                            text: typeDetect
-                        }
-                        Row
-                        {
-                            spacing: 10
-                            Text
-                            {
-                                id: textDataManuf
-                                font.pointSize: 10
-                                text: "Изг.: " + dataManuf
-                            }
-                            Text
-                            {
-                                id: textPort
-                                font.pointSize: 10
-                                text: "Порт: " + port
-                            }
-                            Text
-                            {
-                                id:textModbusAddress
-                                font.pointSize: 10
-                                text: "Адрес Modbus: " + modbusAddress
-                                visible: modbusAddress !== ""
-                            }
-                        }
-                    }
-                }
-            }
-
 
             MouseArea
             { // Для запуска окна установок
@@ -421,23 +369,152 @@ Item
                 hoverEnabled: true
                 onEntered: rectIndicate.color = impStyle.chekedColor
                 onExited: rectIndicate.color = impStyle.windowColor
-                Button
+
+                Frame
                 {
-                    id: btOptions
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.rightMargin: 10
-                    width: 40
-                    icon.name: "info"
-                    icon.source: "icons/info.png"
-                    background: Rectangle {
-                        color: btOptions.hovered ? impStyle.hoveredColor : impStyle.windowColor
-                        border.color: impStyle.borderColor
+                    id: itemGeneral
+                    anchors.fill: parent
+                    anchors.margins: 1
+
+                    Item
+                    {
+                        id: shortInfoIrem
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.topMargin: -10
+                        height: shortInfoHeight - 2 * itemGeneral.anchors.margins
+
+                        Row
+                        {
+                            id: mainRow
+                            anchors.verticalCenter: parent.verticalCenter
+                            leftPadding: 10
+                            spacing: 10
+
+                            Rectangle {
+
+                                color: impStyle.actionbarColor
+                                height: textNumber.height+10
+                                width: 150
+                                Text
+                                {
+                                    id: textNumber
+                                    anchors.centerIn: parent
+                                    font.pointSize: 30
+                                    text: serialNumber
+                                }
+                            }
+
+                            Column
+                            {
+                                anchors.verticalCenter: mainRow.verticalCenter
+                                spacing: 5
+
+                                Row
+                                {
+
+                                    Text
+                                    {
+                                        id: textName
+                                        font.pointSize: 12
+                                        text: nameDetect
+                                    }
+                                    Text
+                                    {
+                                        id: textActive
+                                        font.pointSize: 12
+                                        text: activeState
+                                    }
+                                }
+                                Text
+                                {
+                                    id: textType
+                                    font.pointSize: 10
+                                    text: typeDetect
+                                }
+                                Row
+                                {
+                                    spacing: 10
+                                    Text
+                                    {
+                                        id: textDataManuf
+                                        font.pointSize: 10
+                                        text: "Изг.: " + dataManuf
+                                    }
+                                    Text
+                                    {
+                                        id: textPort
+                                        font.pointSize: 10
+                                        text: "Порт: " + port
+                                    }
+                                    Text
+                                    {
+                                        id:textModbusAddress
+                                        font.pointSize: 10
+                                        text: "Адрес Modbus: " + modbusAddress
+                                        visible: modbusAddress !== ""
+                                    }
+                                }
+                            }
+                        }
+
+                        Button
+                        {
+                            id: btOptions
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.rightMargin: 10
+                            width: 40
+                            icon.name: "info"
+                            icon.source: "icons/info.png"
+                            background: Rectangle {
+                                color: btOptions.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                border.color: impStyle.borderColor
+                            }
+                            onClicked:
+                            {
+                                if (itDetect.height == shortInfoHeight)
+                                {
+                                    itDetect.height = detailedInfoHeight;
+                                    detailedItem.visible = true;
+                                }
+                                else
+                                {
+                                    itDetect.height = shortInfoHeight;
+                                    detailedItem.visible = false;
+                                }
+
+                            }
+                            ToolTip.text: "Информация о датчике"
+                            ToolTip.visible: hovered
+                        }
+
                     }
-                    onClicked: sigSelectDetectToInit(serialNumber);
-                    ToolTip.text: "Информация о датчике"
-                    ToolTip.visible: hovered
+
+                    Item
+                    {
+                        id: detailedItem
+                        height: itemGeneral.height - shortInfoIrem.height
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        visible: false
+
+                        BepVtSettings
+                        {
+                            visible: typeSettings == "bep"
+                        }
+
+                        EmVtSettings
+                        {
+                            visible: typeSettings == "em"
+                        }
+
+                    }
                 }
+
+
 
                 Rectangle
                 {
@@ -454,6 +531,7 @@ Item
                         }
                     }
                 }
+
             }
         }
 

@@ -36,8 +36,6 @@ private slots:
     void indicateFindCOMDetect(); // Индикация в главном окне хода поиска USB датчиков
     void reWriteDetectsToTable();
     void changeActiveStatusToTable();
-    // Создание класса для работы с установками датчика - в качестве параметра - серийный номер датчика
-    void createNewSettings(QString);
     // Создание нового индикатора, можно задать имя датчика
     void createNewIndicator(QString);
     //Создание множества окон индикаторов для заполнения всего экрана

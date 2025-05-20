@@ -176,11 +176,9 @@ void EmVTDetect::routeInput()
 }
 
 
-void EmVTDetect::ShowSettings(QRect pos)
+void EmVTDetect::CreateSettingsController(QObject* rootUi)
 {
-  EmVTSettings* settingsWindow = new EmVTSettings(this);
-  settingsWindow->UpdatePosition(pos);
-  settingsWindow->show();
+  EmVTSettings* settings = new EmVTSettings(this, rootUi);
 }
 
 

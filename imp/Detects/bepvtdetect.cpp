@@ -488,11 +488,9 @@ bool BepVTDetect::defCalibrateDataTable(const QByteArray& baStream)
 }
 
 
-void BepVTDetect::ShowSettings(QRect pos)
+void BepVTDetect::CreateSettingsController(QObject* rootUi)
 {
-  BepVTSettings* settingsWindow = new BepVTSettings(this);
-  settingsWindow->UpdatePosition(pos);
-  settingsWindow->show();
+    _settingsController = new BepVTSettings(this, rootUi);
 }
 
 
@@ -590,7 +588,6 @@ TestBepVTDetect::TestBepVTDetect(QSerialPortInfo portInfo, QObject *parent)
   _currency = 2;
 
   int lenPoint = _currency == 2 ? LEN_POIN2 : LEN_POINT;
-  int lenCalibr = _currency == 2 ? LEN_CALIB2 : LEN_CALIBR;
   QByteArray data;
   int d1 = 0;
   int dd1 = 1000;

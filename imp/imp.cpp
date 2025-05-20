@@ -27,6 +27,7 @@
 #include "formulatree/formulafactory.h"
 #include "workplacesmodel.h"
 #include "settingseditordialog.h"
+#include "WidgetUtil/DetectModelCommands.h"
 
 // Пауза после запуска программы перед поиском датчиков
 const int PAUSE_BEFORE_FIND_DETECT = 500;
@@ -96,9 +97,6 @@ Imp::Imp(QWidget* parent)
     // Отработка команды: Новый индикатор
     connect(_pQuickUi->rootObject(), SIGNAL(sigNewIndicator(QString)), this, SLOT(createNewIndicator(QString)));
 
-    // Отработка двойного щелчка по записи датчика, открытие окна установок датчика
-    connect(_pQuickUi->rootObject(), SIGNAL(sigSelectDetectToInit(QString)), this, SLOT(createNewSettings(QString)));
-
     // Отработка команды: Поиск датчиков
     connect(_pQuickUi->rootObject(), SIGNAL(sigFindDetect()), this, SLOT(findDetect()));
 
@@ -130,7 +128,7 @@ Imp::Imp(QWidget* parent)
       _flagRunIndicators = false;
       _detects = DetectFactory::Instance(this)->TestDetects();
       reWriteDetectsToTable();
-      _pitWin->setProperty("iCommand", 4);
+      _pitWin->setProperty("iCommand", DETECTS_MODEL_CMDS::UPDATE_ACTIVE_STATE);
     }
     else
     {
@@ -233,11 +231,11 @@ void Imp::linkIni()
   connect(impSettingsDialog, SIGNAL(sigSimRec(bool)), this, SLOT(setRecordingInAllIndicators(bool)));
 
   QStringList sl = settings->Value(ImpKeys::LIST_MB_ADDR).toStringList();
-  impSettingsDialog->setProperty("iCommand", 1); // clear list of adresses
+  impSettingsDialog->setProperty("iCommand", DETECTS_MODEL_CMDS::CLEAR_LIST); // clear list of adresses
   for (QString adress : sl)
   {
     impSettingsDialog->setProperty("tcpAdress", adress);
-    impSettingsDialog->setProperty("iCommand", 2); // Команда на добавление записи
+    impSettingsDialog->setProperty("iCommand", DETECTS_MODEL_CMDS::ADD_RECORD); // Команда на добавление записи
   }
   connect(impSettingsDialog, SIGNAL(sigAdresses(QString)), this, SLOT(setModbusAdresses(QString)));
   QObject* modelUpdater = root->findChild<QObject*>("modelUpdater");
@@ -290,7 +288,7 @@ void Imp::findDetect()
         _pbtIndicator->setProperty("enabled", false); // при первом поиске датчиков индикаторы не создавать
     }
 
-    _pitWin->setProperty("iCommand", 1); // Команда очистки таблицы
+    _pitWin->setProperty("iCommand", DETECTS_MODEL_CMDS::CLEAR_LIST); // Команда очистки таблицы
     _ptextComment->setProperty("text", "Найдено датчиков: " + QString::number(0));
 
     FindDetects();
@@ -343,19 +341,13 @@ void Imp::indicateFindCOMDetect()
 
 void Imp::reWriteDetectsToTable()
 {
-  _pitWin->setProperty("iCommand", 1); // clear list of detects
+  _pitWin->setProperty("iCommand", DETECTS_MODEL_CMDS::CLEAR_LIST); // clear list of detects
 
   for (ImpAbstractDetect* detect : _detects)
   {
     // Передача описания найденного датчика в графический интерфейс
-    _pitWin->setProperty("strSerialNumber", QString::number(detect->Id()));
-    _pitWin->setProperty("strNameDetect", detect->UserName());
-    _pitWin->setProperty("strActive", detect->ActiveStateInfo());
-    _pitWin->setProperty("strTypeDetect", detect->TypeDetect());
-    _pitWin->setProperty("strDataManuf", detect->DateManuf().toString("dd.MM.yyyy"));
-    _pitWin->setProperty("strPort", detect->PortName());
-    _pitWin->setProperty("strModbusAddress", detect->Address());
-    _pitWin->setProperty("iCommand", 2); // Команда на добавление записи
+      detect->LoadDataToQmlWidget();
+    _pitWin->setProperty("iCommand", DETECTS_MODEL_CMDS::ADD_RECORD); // Команда на добавление записи
   }
 }
 
@@ -368,7 +360,7 @@ void Imp::changeActiveStatusToTable()
     {
       _pitWin->setProperty("strSerialNumber", QString::number(d->Id()));
       _pitWin->setProperty("strActive", d->ActiveStateInfo());
-      _pitWin->setProperty("iCommand", 4); // Команда на коррекцию записи
+      _pitWin->setProperty("iCommand", DETECTS_MODEL_CMDS::UPDATE_ACTIVE_STATE); // Команда на коррекцию записи
     }
   }
 }
@@ -388,7 +380,10 @@ void Imp::FindDetects(void)
   _detects.clear();
   for (ImpAbstractDetect* d: det)
     if (d->Ready())
-      _detects.push_back(d);
+    {
+        d->CreateSettingsController(_pitWin);
+        _detects.push_back(d);
+    }
     else
       d->Remove();
   qApp->processEvents();
@@ -413,7 +408,10 @@ void Imp::FindDetects(void)
         if (haveId)
           newDetect->deleteLater();
         else
-          _detects.push_back(newDetect);
+        {
+            newDetect->CreateSettingsController(_pitWin);
+            _detects.push_back(newDetect);
+        }
       }
 
       _indicateTimer->stop();
@@ -436,16 +434,6 @@ void Imp::FindDetects(void)
 
     dfactory->StartFindOfDetects();
   }
-}
-
-
-// Создание класса для работы с установками датчика
-void Imp::createNewSettings(QString idDetect)//,
-{
-  qApp->processEvents();
-  ImpAbstractDetect* detect = DetectAtId(idDetect.toInt());
-  if (detect)
-    detect->ShowSettings(geometry());
 }
 
 

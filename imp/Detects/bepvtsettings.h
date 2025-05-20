@@ -3,26 +3,22 @@
 
 #include <QObject>
 
-#include "WidgetUtil/centerdialog.h"
+#include "abstractsettingscontroller.h"
 
-class QQuickWidget;
 class VT21Detect;
 
-
-class BepVTSettings
-    : public CenterDialog
+class BepVTSettings : public AbstractSettingsController
 {
     Q_OBJECT
 public:
-    explicit BepVTSettings(VT21Detect* parent);
+    explicit BepVTSettings(VT21Detect* parent, QObject* rootUi);
+    void FillQmlWidget() override;
 
 private slots:
   void setNewUserName();
 
 private:
     // Включение переменных виджета QML
-    // Указатель на виджет qml в окне класса
-    QQuickWidget* _quickUi;
     // Указатели на объекты QML виджета
     // Окно установок +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     QObject* _tModbusAddress;
@@ -30,14 +26,8 @@ private:
     // Окно калибровки ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     QObject* _txtCurrent;
 
-    VT21Detect* _detect;
-    // переопределение события изменения окна
-    void resizeEvent(QResizeEvent*);
-
     // Кодировщик для датчика
     QTextCodec* _codec;
-
-    void fillQmlWidget();   // Заполнение пользовательского окна "Установки" данными датчика
 
     void indicateDataMeas(long dataMeas);
 };

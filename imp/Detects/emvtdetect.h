@@ -12,7 +12,7 @@ public:
   void Stop() override;
   QSerialPort::BaudRate baudRate() override;
   int WaitInit() override;
-  void ShowSettings(QRect pos) override;
+  void CreateSettingsController(QObject* rooiUi) override;
 
 private:
   void getInfoFromData(QByteArray input);
