@@ -10,7 +10,12 @@ Item
     height: 450
     width: 400
 
-    signal saveUserName();
+    property string idNumber: ""
+    property string detectName: ""
+    property string measUnit: ""
+    property string measRange: ""
+    property string zeroRange: ""
+    property string preSet: ""
 
     property int limitedMeasPoint: 0;
     property int currentPoint: 0;
@@ -107,6 +112,7 @@ Item
                                 objectName: "tfName"
                                 font.pixelSize: tfUM.font.pixelSize
                                 width: 150
+                                text: detectName
                             }
                         }
 
@@ -119,7 +125,10 @@ Item
                                 color: btSetName.hovered ? impStyle.hoveredColor : impStyle.windowColor
                                 border.color: impStyle.borderColor
                             }
-                            onClicked: saveUserName()
+                            onClicked:
+                            {
+                                sigSetNewUserName(idNumber, tfName.text);
+                            }
                         }
                     }
 
@@ -128,7 +137,7 @@ Item
 
                 Grid {
                     columns: 2
-                    rows: 4
+                    rows: 5
                     spacing: 20
                     topPadding: 20
 
@@ -138,17 +147,8 @@ Item
                     }
                     Text { // Вводится единица измерения
                         id: tfUM
-                        objectName: "tfUM"
                         font.pixelSize: 15
-                    }
-                    Text {
-                        text: "Число измерительных\nпериодов"
-                        visible: false
-                    }
-                    Text { // Вводится количество измерительных периодов
-                        id: tfCP
-                        objectName: "tfCP"
-                        visible: false
+                        text: measUnit
                     }
                     Text {
                         text: "Диапазон измерения"
@@ -156,8 +156,8 @@ Item
                     }
                     Text { // Вводится диапазон показаний
                         id: tfRange
-                        objectName: "tfRange"
                         font.pixelSize: tfUM.font.pixelSize
+                        text: measRange
                     }
                     Text {
                         text: "Диапазон обнуления"
@@ -165,8 +165,8 @@ Item
                     }
                     Text { // Вводится диапазон показаний
                         id: tfSetZero
-                        objectName: "tfSetZero"
                         font.pixelSize: tfUM.font.pixelSize
+                        text: zeroRange
                     }
                     Text {
                         text: "Диапазон предустанова"
@@ -174,8 +174,8 @@ Item
                     }
                     Text { // Вводится диапазон показаний
                         id: tfPreSet
-                        objectName: "tfPreSet"
                         font.pixelSize: tfUM.font.pixelSize
+                        text: preSet
                     }
                     Text {
                         id: tTxtModbusAddress

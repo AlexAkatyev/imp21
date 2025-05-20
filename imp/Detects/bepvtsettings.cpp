@@ -22,40 +22,31 @@ BepVTSettings::BepVTSettings(VT21Detect* parent, QObject* rootUi)
 
   connect(parent, &VT21Detect::NewDataMeas, this, &BepVTSettings::indicateDataMeas);
   // отработка нажатия кнопки сохранение нового имени датчика
-  connect(_rootUi, SIGNAL(saveUserName()), this, SLOT(setNewUserName()));
+  connect(_rootUi, SIGNAL(sigSetNewUserName(QString, QString)), this, SLOT(setNewUserName(QString, QString)));
 }
 
 // Заполнение пользовательского окна "Установки" данными датчика
 void BepVTSettings::FillQmlWidget()
 {
     AbstractSettingsController::FillQmlWidget();
-//  _rootUi->findChild<QObject*>("tfName")->setProperty("text", _detect->UserName());
-//  _rootUi->findChild<QObject*>("txtSerialNum")->setProperty("text", _detect->Id());
-//  _rootUi->findChild<QObject*>("txtType")->setProperty("text", _detect->TypeDetect());
-//  _rootUi->findChild<QObject*>("txtConnect")->setProperty("text", _detect->PortName());
-//  _tModbusAddress->setProperty("text", _detect->Address());
 
-//  _rootUi->findChild<QObject*>("txtData")->setProperty("text", _detect->DateManuf().toString("dd.MM.yyyy"));
-//  _rootUi->findChild<QObject*>("tfCP")->setProperty("text", QString::number(_detect->CountPeriod()));// Определение числа периодов измерения
-//  // Определение диапазона измерения
-//  int lrange = _detect->LMeasureInterval();
-//  int hrange = _detect->HMeasureInterval();
-//  if (hrange < lrange)
-//  {
-//    int temp = hrange;
-//    hrange = lrange;
-//    lrange = temp;
-//  }
-//  _rootUi->findChild<QObject*>("tfRange")->setProperty(
-//        "text", QString::number(lrange) + " ... " + QString::number(hrange));
-//  // Определение диапазона обнуления
-//  _rootUi->findChild<QObject*>("tfSetZero")->setProperty(
-//        "text", "±" + QString::number(_detect->ZeroInterval()));
-//  // Определение диапазона предустанова
-//  _rootUi->findChild<QObject*>("tfPreSet")->setProperty(
-//        "text", "±" + QString::number(_detect->PreSetInterval()));
-//  // Определение единиц измерения
-//  _rootUi->findChild<QObject*>("tfUM")->setProperty("text", _detect->MeasUnit());
+    _rootUi->setProperty("strTypeSettings", "bep");
+    // Определение диапазона измерения
+    int lrange = _detect->LMeasureInterval();
+    int hrange = _detect->HMeasureInterval();
+    if (hrange < lrange)
+    {
+        int temp = hrange;
+        hrange = lrange;
+        lrange = temp;
+    }
+    _rootUi->setProperty("strMeasRange", QString::number(lrange) + " ... " + QString::number(hrange));
+    // Определение диапазона обнуления
+    _rootUi->setProperty("strZeroRange", "±" + QString::number(_detect->ZeroInterval()));
+    // Определение диапазона предустанова
+    _rootUi->setProperty("strPreSet", "±" + QString::number(_detect->PreSetInterval()));
+    // Определение единиц измерения
+    _rootUi->setProperty("strMeasUnit", _detect->MeasUnit());
 //  // Определение калибровочных точек
 //  auto pmt = _detect->PMTable();
 //  int calibrField = _detect->CalibrField();
@@ -245,9 +236,11 @@ void BepVTSettings::indicateDataMeas(long meas)
 //}
 
 
-void BepVTSettings::setNewUserName()
+void BepVTSettings::setNewUserName(QString number, QString userName)
 {
-//  QVariant vname = _rootUi->findChild<QObject*>("tfName")->property("text");
-//  _detect->SetNewName(vname.toString());
+    if (_detect->Id() == number.toInt())
+    {
+        _detect->SetNewName(userName);
+    }
 }
 

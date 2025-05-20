@@ -23,6 +23,8 @@ void EmVTSettings::FillQmlWidget()
 {
   // Вывод на экран имеющейся информации
     AbstractSettingsController::FillQmlWidget();
+    _rootUi->setProperty("strTypeSettings", "em");
+
 //  _rootUi->findChild<QObject*>("txtSerialNum")->setProperty("text", _detect->Id());
 //  _rootUi->findChild<QObject*>("txtType")->setProperty("text", _detect->TypeDetect());
 //  _rootUi->findChild<QObject*>("txtConnect")->setProperty("text", _detect->PortName());

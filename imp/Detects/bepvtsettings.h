@@ -15,7 +15,7 @@ public:
     void FillQmlWidget() override;
 
 private slots:
-  void setNewUserName();
+  void setNewUserName(QString number, QString userName);
 
 private:
     // Включение переменных виджета QML

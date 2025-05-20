@@ -56,10 +56,10 @@ Item
                             port:strPort,
                             modbusAddress: strModbusAddress,
                             typeSettings: strTypeSettings,
-                            measUnit: strMeasUnit,
-                            measRange: strMeasRange,
-                            zeroRange: strZeroRange,
-                            preSet: strPreSet,
+                            dataMeasUnit: strMeasUnit,
+                            dataMeasRange: strMeasRange,
+                            dataZeroRange: strZeroRange,
+                            dataPreSet: strPreSet,
                             currentValue: strCurrentValue
                             });
         }
@@ -108,6 +108,7 @@ Item
     signal sigFindDetect();
     signal sigOpenWorkPlaces();
     signal sigWorkPlaceChanged();
+    signal sigSetNewUserName(string Id, string UserName);
 
     ImpStyle
     {
@@ -504,6 +505,13 @@ Item
                         BepVtSettings
                         {
                             visible: typeSettings == "bep"
+                            idNumber: serialNumber
+                            detectName: nameDetect
+                            measUnit: dataMeasUnit
+                            measRange: dataMeasRange
+                            zeroRange: dataZeroRange
+                            preSet: dataPreSet
+                            //saveUserName: sigSetNewUserName(idNumber, detectName)
                         }
 
                         EmVtSettings
