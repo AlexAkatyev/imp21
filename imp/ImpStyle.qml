@@ -12,4 +12,6 @@ Item
     property color warningColor: "#e53153"
     property color unChekedColor: "black"
     property color hoveredColor: "#c3c3c3"
+    property color calcTextColor: "gray"
+
 }

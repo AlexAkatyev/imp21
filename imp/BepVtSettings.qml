@@ -17,6 +17,7 @@ Item
     property string zeroRange: ""
     property string preSet: ""
     property string currentDataMeas: ""
+    property int maskCalibrField: 0
 
     property int limitedMeasPoint: 0;
     property int currentPoint: 0;
@@ -37,6 +38,13 @@ Item
             result = -limitedMeasPoint;
         return result;
     }
+
+
+    function getColorForTable(mask)
+    {
+        return maskCalibrField & mask ? impStyle.baseTextColor : impStyle.calcTextColor;
+    }
+
 
     ImpStyle
     {
@@ -182,7 +190,6 @@ Item
             anchors.leftMargin: parent.width/20
             anchors.right: parent.right
             anchors.rightMargin: parent.width/20
-            //anchors.bottom: txtCurrent.top
             Text {
                 id: txN10
                 anchors.left: parent.left
@@ -199,6 +206,7 @@ Item
                 anchors.top: parent.top
                 anchors.topMargin: txN10.anchors.topMargin
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x0001)
             }
             Text { // Замер 10
                 id: tfP10
@@ -208,6 +216,7 @@ Item
                 anchors.top: parent.top
                 anchors.topMargin: txN10.anchors.topMargin
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMP10.color
             }
             Text {
                 id: txN9
@@ -223,14 +232,16 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txN9.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x0002)
             }
-            Text { // Замер 10
+            Text { // Замер 9
                 id: tfP9
                 objectName: "tfP9"
                 anchors.left: parent.left
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txN9.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMP9.color
             }
             Text {
                 id: txN8
@@ -246,6 +257,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txN8.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x0004)
             }
             Text { // Замер 8
                 id: tfP8
@@ -254,6 +266,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txN8.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMP8.color
             }
             Text {
                 id: txN7
@@ -269,6 +282,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txN7.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x0008)
             }
             Text { // Замер 7
                 id: tfP7
@@ -277,6 +291,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txN7.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMP7.color
             }
             Text {
                 id: txN6
@@ -292,6 +307,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txN6.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x0010)
             }
             Text { // Замер 6
                 id: tfP6
@@ -300,6 +316,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txN6.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMP6.color
             }
             Text {
                 id: txN5
@@ -315,6 +332,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txN5.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x0020)
             }
             Text { // Замер 5
                 id: tfP5
@@ -323,6 +341,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txN5.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMP5.color
             }
             Text {
                 id: txN4
@@ -338,6 +357,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txN4.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x0040)
             }
             Text { // Замер 4
                 id: tfP4
@@ -346,6 +366,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txN4.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMP4.color
             }
             Text {
                 id: txN3
@@ -361,6 +382,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txN3.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x0080)
             }
             Text { // Замер 3
                 id: tfP3
@@ -369,6 +391,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txN3.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMP3.color
             }
             Text {
                 id: txN2
@@ -384,6 +407,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txN2.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x0100)
             }
             Text { // Замер 2
                 id: tfP2
@@ -392,6 +416,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txN2.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMP2.color
             }
             Text {
                 id: txN1
@@ -407,6 +432,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txN1.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x0200)
             }
             Text { // Замер 1
                 id: tfP1
@@ -415,6 +441,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txN1.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMP1.color
             }
             Text {
                 id: txN0
@@ -430,6 +457,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txN0.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x0400)
             }
             Text { // Замер 0
                 id: tfZERO
@@ -438,6 +466,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txN0.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMZERO.color
             }
             Text {
                 id: txNM1
@@ -453,6 +482,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txNM1.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x0800)
             }
             Text { // Замер -1
                 id: tfM1
@@ -461,6 +491,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txNM1.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMM1.color
             }
             Text {
                 id: txNM2
@@ -476,6 +507,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txNM2.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x1000)
             }
             Text { // Замер -2
                 id: tfM2
@@ -484,6 +516,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txNM2.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMM2.color
             }
             Text {
                 id: txNM3
@@ -499,6 +532,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txNM3.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x2000)
             }
             Text { // Замер -3
                 id: tfM3
@@ -507,6 +541,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txNM3.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMM3.color
             }
             Text {
                 id: txNM4
@@ -522,6 +557,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txNM4.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x4000)
             }
             Text { // Замер -4
                 id: tfM4
@@ -530,6 +566,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txNM4.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMM4.color
             }
             Text {
                 id: txNM5
@@ -545,6 +582,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txNM5.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x8000)
             }
             Text { // Замер -5
                 id: tfM5
@@ -553,6 +591,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txNM5.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMM5.color
             }
             Text {
                 id: txNM6
@@ -568,6 +607,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txNM6.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x10000)
             }
             Text { // Замер -6
                 id: tfM6
@@ -576,6 +616,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txNM6.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMM6.color
             }
             Text {
                 id: txNM7
@@ -591,6 +632,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txNM7.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x20000)
             }
             Text { // Замер -7
                 id: tfM7
@@ -599,6 +641,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txNM7.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMM7.color
             }
             Text {
                 id: txNM8
@@ -614,6 +657,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txNM8.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x40000)
             }
             Text { // Замер -8
                 id: tfM8
@@ -622,6 +666,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txNM8.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMM8.color
             }
             Text {
                 id: txNM9
@@ -637,6 +682,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txNM9.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x80000)
             }
             Text { // Замер -9
                 id: tfM9
@@ -645,6 +691,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txNM9.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMM9.color
             }
             Text {
                 id: txNM10
@@ -660,6 +707,7 @@ Item
                 anchors.leftMargin: tfMP10.anchors.leftMargin
                 anchors.top: txNM10.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: getColorForTable(0x100000)
             }
             Text { // Замер -9
                 id: tfM10
@@ -668,6 +716,7 @@ Item
                 anchors.leftMargin: tfP10.anchors.leftMargin
                 anchors.top: txNM10.anchors.top
                 font.pixelSize: txN10.font.pixelSize
+                color: tfMM10.color
             }
         }
         Text {
