@@ -89,6 +89,7 @@ int ModbusVTDetect::WaitInit()
 void ModbusVTDetect::CreateSettingsController(QObject* rootUi)
 {
     BepVTSettings* settings = new BepVTSettings(this, rootUi);
+    Q_UNUSED(settings);
 }
 
 
@@ -241,7 +242,7 @@ void ModbusVTDetect::fillParameters(int startReg, int len, QByteArray& data)
       d = data.at(i++);
       d &= 0x00FF;
       d |= (data.at(i) << 8) & 0xFF00;
-      _countPeriod = d;
+      _address = d;
       break;
     case 0x0008:
       d = data.at(i++);

@@ -17,7 +17,6 @@ class VT21Detect : public VTDetect
   Q_OBJECT
 public:
   explicit VT21Detect(QSerialPortInfo portInfo, QObject *parent = nullptr);
-  int CountPeriod();
   std::vector<std::vector<int>> PMTable();
   int CalibrField();
   virtual void SetAddress(int address);
@@ -33,7 +32,6 @@ signals:
   void defLMeasureInterval(int divider = 1);
   bool fillCalibrateDataTable(QByteArray baData, int lenPoint, int lenMeasPoint);
 
-  int _countPeriod;
   int _calibrField;
   std::vector<std::vector<int>> _pmt; // промежуточная калибровочная таблица для окна настроек
   std::vector<CalibrateData> _cdt; // CalibrateDataTable Аппроксимационные функции между калибровочными точками

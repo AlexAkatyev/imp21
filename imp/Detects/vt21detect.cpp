@@ -7,18 +7,11 @@ const int SUM_POINT = 21;
 
 VT21Detect::VT21Detect(QSerialPortInfo portInfo, QObject *parent)
   : VTDetect(portInfo, parent)
-  , _countPeriod(0)
   , _calibrField(0)
   , _currency(0)
   , _address(0)
 {
 
-}
-
-
-int VT21Detect::CountPeriod()
-{
-  return _countPeriod;
 }
 
 

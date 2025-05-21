@@ -56,10 +56,10 @@ const int LEN_INTERNAL_VER =        3;
 const int AT_DATA_MANUF =           AT_INTERNAL_VER+LEN_INTERNAL_VER;
 const int LEN_DATA_MANUF =          4;
 // MeasureInterval Количество измерительных интервалов в периоде
-const int AT_COUNT_OF_PERIOD_MESSURE = AT_DATA_MANUF+LEN_DATA_MANUF;
-const int LEN_COUNT_OF_PERIOD_MESSURE = 2;
+const int AT_MODBUS_ADDRESS = AT_DATA_MANUF+LEN_DATA_MANUF;
+const int LEN_MODBUS_ADDRESS = 2;
 // RangeBorder Диапазон измерения
-const int AT_LIMIT_MESS =           AT_COUNT_OF_PERIOD_MESSURE+LEN_COUNT_OF_PERIOD_MESSURE;
+const int AT_LIMIT_MESS =           AT_MODBUS_ADDRESS+LEN_MODBUS_ADDRESS;
 const int LEN_LIMIT_MESS =          2;
 // Диапазон обнуления
 const int AT_ZERO_SET =             AT_LIMIT_MESS+LEN_LIMIT_MESS;
@@ -208,7 +208,7 @@ void BepVTDetect::Init()
       bool error = defSerialNumber(receiveData)
           | defTypeDetect(receiveData)
           | defDataManufDetect(receiveData)
-          | defCountPeriod(receiveData)
+          | defAddress(receiveData)
           | defMeasureInterval(receiveData)
           | defZeroInterval(receiveData)
           | defPreSetInterval(receiveData)
@@ -384,12 +384,12 @@ bool BepVTDetect::defDataManufDetect(const QByteArray& mas)
 }
 
 
-bool BepVTDetect::defCountPeriod(const QByteArray& mas)
+bool BepVTDetect::defAddress(const QByteArray& mas)
 {
   bool error = true;
-  if (mas.size() > AT_COUNT_OF_PERIOD_MESSURE + LEN_COUNT_OF_PERIOD_MESSURE)
+  if (mas.size() > AT_MODBUS_ADDRESS + LEN_MODBUS_ADDRESS)
   {
-    _countPeriod = QByteArrayAtLenToInt(mas, AT_COUNT_OF_PERIOD_MESSURE, LEN_COUNT_OF_PERIOD_MESSURE);
+    _address = QByteArrayAtLenToInt(mas, AT_MODBUS_ADDRESS, LEN_MODBUS_ADDRESS);
     error = false;
   }
   return error;
@@ -522,7 +522,7 @@ void BepVTDetect::SetNewName(QString newName)
       qApp->processEvents();// Ждем ответа, но обрабатываем возможные события
   }
 
-  pushInt2(CountPeriod());
+  pushInt2(Address().toInt());
   pushInt2(HMeasureInterval());
   pushInt2(ZeroInterval());
   pushInt2(PreSetInterval());
@@ -582,7 +582,7 @@ TestBepVTDetect::TestBepVTDetect(QSerialPortInfo portInfo, QObject *parent)
   _serialNumber = 25000;
   _typeDetect = "тестовый датчик. нет аппаратуры";
   _dateManuf.setDate(2021, 9, 1);
-  _countPeriod = 1000;
+  _address = 0;
   _zeroInterval = 50;
   _preSetInterval = 150;
   _currency = 2;

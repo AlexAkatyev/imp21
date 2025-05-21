@@ -23,7 +23,7 @@ private:
   bool defSerialNumber(const QByteArray& mas);
   bool defTypeDetect(const QByteArray& mas);
   bool defDataManufDetect(const QByteArray& mas);
-  bool defCountPeriod(const QByteArray& mas);
+  bool defAddress(const QByteArray& mas);
   bool defMeasureInterval(const QByteArray& mas);
   bool defZeroInterval(const QByteArray& mas);
   bool defPreSetInterval(const QByteArray& mas);

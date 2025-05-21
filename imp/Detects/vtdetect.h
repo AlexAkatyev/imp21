@@ -25,7 +25,6 @@ public:
   int WaitInit() override;
   QString PortName() override;
   bool Ready() override;
-  QString Address() override;
 
 protected:
   QSerialPort* _port;
