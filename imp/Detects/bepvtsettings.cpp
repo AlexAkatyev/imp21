@@ -4,6 +4,7 @@
 
 #include "bepvtsettings.h"
 #include "vt21detect.h"
+#include "WidgetUtil/DetectModelCommands.h"
 
 //Кодировщик шрифта - код для записи строк в датчик
 #define CODE_LOCALLY "Windows-1251"
@@ -18,7 +19,6 @@ BepVTSettings::BepVTSettings(VT21Detect* parent, QObject* rootUi)
   // Установка указателей на объекты виджета QML
   _tModbusAddress = _rootUi->findChild<QObject*>("tModbusAddress");
   _tTxtModbusAddress = _rootUi->findChild<QObject*>("tTxtModbusAddress");
-  _txtCurrent = _rootUi->findChild<QObject*>("txtCurrent");
 
   connect(parent, &VT21Detect::NewDataMeas, this, &BepVTSettings::indicateDataMeas);
   // отработка нажатия кнопки сохранение нового имени датчика
@@ -204,7 +204,9 @@ void BepVTSettings::FillQmlWidget()
 
 void BepVTSettings::indicateDataMeas(long meas)
 {
-//  _txtCurrent->setProperty("text", QString::number(meas));
+    _rootUi->setProperty("strCurrentDataValue", QString::number(meas));
+    _rootUi->setProperty("strSerialNumber", QString::number(_detect->Id()));
+    _rootUi->setProperty("iCommand", DETECTS_MODEL_CMDS::UPDATE_CURRENT_VALUE);
 }
 
 // Отправка по протоколу MODBUS команды чтения регистров с результатом измерения датчика с выходом RS485

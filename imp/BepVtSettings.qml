@@ -16,6 +16,7 @@ Item
     property string measRange: ""
     property string zeroRange: ""
     property string preSet: ""
+    property string currentDataMeas: ""
 
     property int limitedMeasPoint: 0;
     property int currentPoint: 0;
@@ -683,7 +684,7 @@ Item
             anchors.left: txHC.right
             anchors.leftMargin: 30
             anchors.top: txHC.top
-            text: "!!!!"
+            text: currentDataMeas
             font.pixelSize: 14
         }
     }

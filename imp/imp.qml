@@ -29,7 +29,7 @@ Item
     property string strMeasRange: "0 ... 0"
     property string strZeroRange: "0"
     property string strPreSet: "0"
-    property string strCurrentValue: "!!!"
+    property string strCurrentDataValue: "!!!"
     property int iCommand: 0 // 0 - нет команды
                              // 1 - стереть список
                              // 2 - добавить запись
@@ -60,7 +60,8 @@ Item
                             dataMeasRange: strMeasRange,
                             dataZeroRange: strZeroRange,
                             dataPreSet: strPreSet,
-                            currentValue: strCurrentValue
+                            currentDataValue: strCurrentDataValue
+
                             });
         }
         if (iCommand === 3) // 3 - стереть запись
@@ -91,7 +92,7 @@ Item
             {
                 if (lmDetect.get(i).serialNumber === strSerialNumber)
                 {
-                    lmDetect.get(i).currentValue = strCurrentValue;
+                    lmDetect.get(i).currentDataValue = strCurrentDataValue;
                     lvDetect.update();
                     break;
                 }
@@ -518,6 +519,7 @@ Item
                             measRange: dataMeasRange
                             zeroRange: dataZeroRange
                             preSet: dataPreSet
+                            currentDataMeas: currentDataValue
                         }
 
                         EmVtSettings
