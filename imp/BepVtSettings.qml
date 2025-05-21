@@ -18,6 +18,7 @@ Item
     property string preSet: ""
     property string currentDataMeas: ""
     property int maskCalibrField: 0
+    property string mdataCalibTable: ""
 
     property int limitedMeasPoint: 0;
     property int currentPoint: 0;
@@ -43,6 +44,13 @@ Item
     function getColorForTable(mask)
     {
         return maskCalibrField & mask ? impStyle.baseTextColor : impStyle.calcTextColor;
+    }
+
+
+    function getTextForCalibTableItem(v)
+    {
+        var s = mdataCalibTable.split(";");
+        return s[v];
     }
 
 
@@ -207,6 +215,7 @@ Item
                 anchors.topMargin: txN10.anchors.topMargin
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x0001)
+                text: getTextForCalibTableItem(0)
             }
             Text { // Замер 10
                 id: tfP10
@@ -217,6 +226,7 @@ Item
                 anchors.topMargin: txN10.anchors.topMargin
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMP10.color
+                text: getTextForCalibTableItem(1)
             }
             Text {
                 id: txN9
@@ -233,6 +243,7 @@ Item
                 anchors.top: txN9.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x0002)
+                text: getTextForCalibTableItem(2)
             }
             Text { // Замер 9
                 id: tfP9
@@ -242,6 +253,7 @@ Item
                 anchors.top: txN9.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMP9.color
+                text: getTextForCalibTableItem(3)
             }
             Text {
                 id: txN8
@@ -258,6 +270,7 @@ Item
                 anchors.top: txN8.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x0004)
+                text: getTextForCalibTableItem(4)
             }
             Text { // Замер 8
                 id: tfP8
@@ -267,6 +280,7 @@ Item
                 anchors.top: txN8.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMP8.color
+                text: getTextForCalibTableItem(5)
             }
             Text {
                 id: txN7
@@ -283,6 +297,7 @@ Item
                 anchors.top: txN7.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x0008)
+                text: getTextForCalibTableItem(6)
             }
             Text { // Замер 7
                 id: tfP7
@@ -292,6 +307,7 @@ Item
                 anchors.top: txN7.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMP7.color
+                text: getTextForCalibTableItem(7)
             }
             Text {
                 id: txN6
@@ -308,6 +324,7 @@ Item
                 anchors.top: txN6.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x0010)
+                text: getTextForCalibTableItem(8)
             }
             Text { // Замер 6
                 id: tfP6
@@ -317,6 +334,7 @@ Item
                 anchors.top: txN6.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMP6.color
+                text: getTextForCalibTableItem(9)
             }
             Text {
                 id: txN5
@@ -333,6 +351,7 @@ Item
                 anchors.top: txN5.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x0020)
+                text: getTextForCalibTableItem(10)
             }
             Text { // Замер 5
                 id: tfP5
@@ -342,6 +361,7 @@ Item
                 anchors.top: txN5.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMP5.color
+                text: getTextForCalibTableItem(11)
             }
             Text {
                 id: txN4
@@ -358,6 +378,7 @@ Item
                 anchors.top: txN4.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x0040)
+                text: getTextForCalibTableItem(12)
             }
             Text { // Замер 4
                 id: tfP4
@@ -367,6 +388,7 @@ Item
                 anchors.top: txN4.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMP4.color
+                text: getTextForCalibTableItem(13)
             }
             Text {
                 id: txN3
@@ -383,6 +405,7 @@ Item
                 anchors.top: txN3.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x0080)
+                text: getTextForCalibTableItem(14)
             }
             Text { // Замер 3
                 id: tfP3
@@ -392,6 +415,7 @@ Item
                 anchors.top: txN3.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMP3.color
+                text: getTextForCalibTableItem(15)
             }
             Text {
                 id: txN2
@@ -408,6 +432,7 @@ Item
                 anchors.top: txN2.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x0100)
+                text: getTextForCalibTableItem(16)
             }
             Text { // Замер 2
                 id: tfP2
@@ -417,6 +442,7 @@ Item
                 anchors.top: txN2.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMP2.color
+                text: getTextForCalibTableItem(17)
             }
             Text {
                 id: txN1
@@ -433,6 +459,7 @@ Item
                 anchors.top: txN1.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x0200)
+                text: getTextForCalibTableItem(18)
             }
             Text { // Замер 1
                 id: tfP1
@@ -442,6 +469,7 @@ Item
                 anchors.top: txN1.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMP1.color
+                text: getTextForCalibTableItem(19)
             }
             Text {
                 id: txN0
@@ -458,6 +486,7 @@ Item
                 anchors.top: txN0.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x0400)
+                text: getTextForCalibTableItem(20)
             }
             Text { // Замер 0
                 id: tfZERO
@@ -467,6 +496,7 @@ Item
                 anchors.top: txN0.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMZERO.color
+                text: getTextForCalibTableItem(21)
             }
             Text {
                 id: txNM1
@@ -483,6 +513,7 @@ Item
                 anchors.top: txNM1.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x0800)
+                text: getTextForCalibTableItem(22)
             }
             Text { // Замер -1
                 id: tfM1
@@ -492,6 +523,7 @@ Item
                 anchors.top: txNM1.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMM1.color
+                text: getTextForCalibTableItem(23)
             }
             Text {
                 id: txNM2
@@ -508,6 +540,7 @@ Item
                 anchors.top: txNM2.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x1000)
+                text: getTextForCalibTableItem(24)
             }
             Text { // Замер -2
                 id: tfM2
@@ -517,6 +550,7 @@ Item
                 anchors.top: txNM2.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMM2.color
+                text: getTextForCalibTableItem(25)
             }
             Text {
                 id: txNM3
@@ -533,6 +567,7 @@ Item
                 anchors.top: txNM3.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x2000)
+                text: getTextForCalibTableItem(26)
             }
             Text { // Замер -3
                 id: tfM3
@@ -542,6 +577,7 @@ Item
                 anchors.top: txNM3.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMM3.color
+                text: getTextForCalibTableItem(27)
             }
             Text {
                 id: txNM4
@@ -558,6 +594,7 @@ Item
                 anchors.top: txNM4.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x4000)
+                text: getTextForCalibTableItem(28)
             }
             Text { // Замер -4
                 id: tfM4
@@ -567,6 +604,7 @@ Item
                 anchors.top: txNM4.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMM4.color
+                text: getTextForCalibTableItem(29)
             }
             Text {
                 id: txNM5
@@ -583,6 +621,7 @@ Item
                 anchors.top: txNM5.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x8000)
+                text: getTextForCalibTableItem(30)
             }
             Text { // Замер -5
                 id: tfM5
@@ -592,6 +631,7 @@ Item
                 anchors.top: txNM5.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMM5.color
+                text: getTextForCalibTableItem(31)
             }
             Text {
                 id: txNM6
@@ -608,6 +648,7 @@ Item
                 anchors.top: txNM6.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x10000)
+                text: getTextForCalibTableItem(32)
             }
             Text { // Замер -6
                 id: tfM6
@@ -617,6 +658,7 @@ Item
                 anchors.top: txNM6.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMM6.color
+                text: getTextForCalibTableItem(33)
             }
             Text {
                 id: txNM7
@@ -633,6 +675,7 @@ Item
                 anchors.top: txNM7.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x20000)
+                text: getTextForCalibTableItem(34)
             }
             Text { // Замер -7
                 id: tfM7
@@ -642,6 +685,7 @@ Item
                 anchors.top: txNM7.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMM7.color
+                text: getTextForCalibTableItem(35)
             }
             Text {
                 id: txNM8
@@ -658,6 +702,7 @@ Item
                 anchors.top: txNM8.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x40000)
+                text: getTextForCalibTableItem(36)
             }
             Text { // Замер -8
                 id: tfM8
@@ -667,6 +712,7 @@ Item
                 anchors.top: txNM8.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMM8.color
+                text: getTextForCalibTableItem(37)
             }
             Text {
                 id: txNM9
@@ -683,6 +729,7 @@ Item
                 anchors.top: txNM9.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x80000)
+                text: getTextForCalibTableItem(38)
             }
             Text { // Замер -9
                 id: tfM9
@@ -692,6 +739,7 @@ Item
                 anchors.top: txNM9.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMM9.color
+                text: getTextForCalibTableItem(39)
             }
             Text {
                 id: txNM10
@@ -708,6 +756,7 @@ Item
                 anchors.top: txNM10.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: getColorForTable(0x100000)
+                text: getTextForCalibTableItem(40)
             }
             Text { // Замер -9
                 id: tfM10
@@ -717,6 +766,7 @@ Item
                 anchors.top: txNM10.anchors.top
                 font.pixelSize: txN10.font.pixelSize
                 color: tfMM10.color
+                text: getTextForCalibTableItem(41)
             }
         }
         Text {

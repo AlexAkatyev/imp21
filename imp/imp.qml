@@ -31,6 +31,7 @@ Item
     property string strPreSet: "0"
     property string strCurrentDataValue: "!!!"
     property int dataCalibrField: 0
+    property string dataCalibTable: ""
 
     property int iCommand: 0 // 0 - нет команды
                              // 1 - стереть список
@@ -63,7 +64,8 @@ Item
                             dataZeroRange: strZeroRange,
                             dataPreSet: strPreSet,
                             currentDataValue: strCurrentDataValue,
-                            maskDataCalibrField: dataCalibrField
+                            maskDataCalibrField: dataCalibrField,
+                            calibTable: dataCalibTable
                             });
         }
         if (iCommand === 3) // 3 - стереть запись
@@ -523,6 +525,7 @@ Item
                             preSet: dataPreSet
                             currentDataMeas: currentDataValue
                             maskCalibrField: maskDataCalibrField
+                            mdataCalibTable: calibTable
                         }
 
                         EmVtSettings

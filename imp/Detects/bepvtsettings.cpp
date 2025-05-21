@@ -52,48 +52,14 @@ void BepVTSettings::FillQmlWidget()
     int calibrField = static_cast<VT21Detect*>(_detect)->CalibrField();
     _rootUi->setProperty("dataCalibrField", calibrField);
 
-//  _rootUi->findChild<QObject*>("tfMP10")->setProperty("text", pmt.at(0).at(0));
-//  _rootUi->findChild<QObject*>("tfMP9")->setProperty("text", pmt.at(1).at(0));
-//  _rootUi->findChild<QObject*>("tfMP8")->setProperty("text", pmt.at(2).at(0));
-//  _rootUi->findChild<QObject*>("tfMP7")->setProperty("text", pmt.at(3).at(0));
-//  _rootUi->findChild<QObject*>("tfMP6")->setProperty("text", pmt.at(4).at(0));
-//  _rootUi->findChild<QObject*>("tfMP5")->setProperty("text", pmt.at(5).at(0));
-//  _rootUi->findChild<QObject*>("tfMP4")->setProperty("text", pmt.at(6).at(0));
-//  _rootUi->findChild<QObject*>("tfMP3")->setProperty("text", pmt.at(7).at(0));
-//  _rootUi->findChild<QObject*>("tfMP2")->setProperty("text", pmt.at(8).at(0));
-//  _rootUi->findChild<QObject*>("tfMP1")->setProperty("text", pmt.at(9).at(0));
-//  _rootUi->findChild<QObject*>("tfMZERO")->setProperty("text", pmt.at(10).at(0));
-//  _rootUi->findChild<QObject*>("tfMM1")->setProperty("text", pmt.at(11).at(0));
-//  _rootUi->findChild<QObject*>("tfMM2")->setProperty("text", pmt.at(12).at(0));
-//  _rootUi->findChild<QObject*>("tfMM3")->setProperty("text", pmt.at(13).at(0));
-//  _rootUi->findChild<QObject*>("tfMM4")->setProperty("text", pmt.at(14).at(0));
-//  _rootUi->findChild<QObject*>("tfMM5")->setProperty("text", pmt.at(15).at(0));
-//  _rootUi->findChild<QObject*>("tfMM6")->setProperty("text", pmt.at(16).at(0));
-//  _rootUi->findChild<QObject*>("tfMM7")->setProperty("text", pmt.at(17).at(0));
-//  _rootUi->findChild<QObject*>("tfMM8")->setProperty("text", pmt.at(18).at(0));
-//  _rootUi->findChild<QObject*>("tfMM9")->setProperty("text", pmt.at(19).at(0));
-//  _rootUi->findChild<QObject*>("tfMM10")->setProperty("text", pmt.at(20).at(0));
-//  _rootUi->findChild<QObject*>("tfP10")->setProperty("text", pmt.at(0).at(1));
-//  _rootUi->findChild<QObject*>("tfP9")->setProperty("text", pmt.at(1).at(1));
-//  _rootUi->findChild<QObject*>("tfP8")->setProperty("text", pmt.at(2).at(1));
-//  _rootUi->findChild<QObject*>("tfP7")->setProperty("text", pmt.at(3).at(1));
-//  _rootUi->findChild<QObject*>("tfP6")->setProperty("text", pmt.at(4).at(1));
-//  _rootUi->findChild<QObject*>("tfP5")->setProperty("text", pmt.at(5).at(1));
-//  _rootUi->findChild<QObject*>("tfP4")->setProperty("text", pmt.at(6).at(1));
-//  _rootUi->findChild<QObject*>("tfP3")->setProperty("text", pmt.at(7).at(1));
-//  _rootUi->findChild<QObject*>("tfP2")->setProperty("text", pmt.at(8).at(1));
-//  _rootUi->findChild<QObject*>("tfP1")->setProperty("text", pmt.at(9).at(1));
-//  _rootUi->findChild<QObject*>("tfZERO")->setProperty("text", pmt.at(10).at(1));
-//  _rootUi->findChild<QObject*>("tfM1")->setProperty("text", pmt.at(11).at(1));
-//  _rootUi->findChild<QObject*>("tfM2")->setProperty("text", pmt.at(12).at(1));
-//  _rootUi->findChild<QObject*>("tfM3")->setProperty("text", pmt.at(13).at(1));
-//  _rootUi->findChild<QObject*>("tfM4")->setProperty("text", pmt.at(14).at(1));
-//  _rootUi->findChild<QObject*>("tfM5")->setProperty("text", pmt.at(15).at(1));
-//  _rootUi->findChild<QObject*>("tfM6")->setProperty("text", pmt.at(16).at(1));
-//  _rootUi->findChild<QObject*>("tfM7")->setProperty("text", pmt.at(17).at(1));
-//  _rootUi->findChild<QObject*>("tfM8")->setProperty("text", pmt.at(18).at(1));
-//  _rootUi->findChild<QObject*>("tfM9")->setProperty("text", pmt.at(19).at(1));
-//  _rootUi->findChild<QObject*>("tfM10")->setProperty("text", pmt.at(20).at(1));
+    QString calibTable = "";
+    for (int i = 0; i < VT21Detect::SumPoint(); ++i)
+    {
+        int k = 0;
+        calibTable.push_back(QString::number(pmt.at(i).at(k++)) + ";");
+        calibTable.push_back(QString::number(pmt.at(i).at(k)) + ";");
+    }
+    _rootUi->setProperty("dataCalibTable", calibTable);
 }
 
 
