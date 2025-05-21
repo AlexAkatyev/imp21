@@ -526,6 +526,7 @@ Item
                             currentDataMeas: currentDataValue
                             maskCalibrField: maskDataCalibrField
                             mdataCalibTable: calibTable
+                            mmodbusAddress: modbusAddress
                         }
 
                         EmVtSettings

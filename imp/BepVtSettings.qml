@@ -8,7 +8,7 @@ Item
 {
     id: itInfo
     height: 400
-    width: 800
+    width: 1200
 
     property string idNumber: ""
     property string detectName: ""
@@ -19,6 +19,7 @@ Item
     property string currentDataMeas: ""
     property int maskCalibrField: 0
     property string mdataCalibTable: ""
+    property string mmodbusAddress: "0"
 
     property int limitedMeasPoint: 0;
     property int currentPoint: 0;
@@ -172,8 +173,8 @@ Item
     }
     Item { // Окно калибровки +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         id: itCalib
-        height: parent.height
-        width: parent.width - itSetTab.width
+        height: itSetTab.height
+        width: itSetTab.width
         anchors.left: itSetTab.right
         anchors.top: parent.top
         Text {
@@ -787,7 +788,47 @@ Item
             font.pixelSize: 14
         }
     }
-
+    Item
+    {
+        id: itModbus
+        height: itSetTab.height
+        width: itSetTab.width
+        anchors.top: itSetTab.top
+        anchors.left: itCalib.right
+        Text
+        {
+            id: labelMB
+            anchors.top: parent.top
+            anchors.topMargin: 5
+            anchors.left: parent.left
+            anchors.leftMargin: 5
+            text: "Modbus адрес устройства :"
+            font.pixelSize: 13
+        }
+        TextField
+        {
+            id: tfMBAddress
+            anchors.left: labelMB.right
+            anchors.leftMargin: 10
+            anchors.verticalCenter: labelMB.verticalCenter
+            width: 30
+            text: mmodbusAddress
+        }
+        Button
+        {
+            id: btSaveMBAddress
+            anchors.left: tfMBAddress.right
+            anchors.leftMargin: 10
+            anchors.verticalCenter: labelMB.verticalCenter
+            text: "Записать"
+            font.capitalization: Font.MixedCase
+            background: Rectangle
+            {
+                color: btSaveMBAddress.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                border.color: impStyle.borderColor
+            }
+        }
+    }
 
     //                Image {
     //                    id: imLogo
