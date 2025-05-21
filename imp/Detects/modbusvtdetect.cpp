@@ -30,7 +30,7 @@ ModbusVTDetect::ModbusVTDetect(QSerialPortInfo portInfo, QObject *parent)
 }
 
 
-void ModbusVTDetect::SetAddres(int addres)
+void ModbusVTDetect::SetAddress(int addres)
 {
   if (addres >= MIN_ADR && addres <= MAX_ADR)
     _address = (char)addres;

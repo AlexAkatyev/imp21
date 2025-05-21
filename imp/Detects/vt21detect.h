@@ -20,6 +20,8 @@ public:
   int CountPeriod();
   std::vector<std::vector<int>> PMTable();
   int CalibrField();
+  virtual void SetAddress(int address);
+  QString Address() override;
   static int SumPoint();
 
 signals:
@@ -36,6 +38,7 @@ signals:
   std::vector<std::vector<int>> _pmt; // промежуточная калибровочная таблица для окна настроек
   std::vector<CalibrateData> _cdt; // CalibrateDataTable Аппроксимационные функции между калибровочными точками
   int _currency;
+  char _address;
 
 };
 

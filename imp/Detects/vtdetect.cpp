@@ -8,7 +8,6 @@ const int WDT_INTERVAL = 1000;
 VTDetect::VTDetect(QSerialPortInfo portInfo, QObject *parent)
   : ImpAbstractDetect(parent)
   , _port(new QSerialPort(portInfo, this))
-  , _address(0)
 {
   _wdt = new QTimer(this);
   _wdt->setInterval(WDT_INTERVAL);
@@ -109,11 +108,3 @@ bool VTDetect::Ready()
       && _port->isOpen()
       && portNoError(error);
 }
-
-
-QString VTDetect::Address()
-{
-  return _address == 0 ? "" : QString::number(_address);
-}
-
-

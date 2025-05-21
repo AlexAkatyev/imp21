@@ -16,7 +16,7 @@ public:
   int WaitInit() override;
   void CreateSettingsController(QObject* rootUi) override;
   void SetNewName(QString newName) override;
-  void SetAddres(int addres);
+  void SetAddress(int addres) override;
   void SetLocator(SerialPortLocator* locator);
   QString Address() override;
 

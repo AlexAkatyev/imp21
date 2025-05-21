@@ -29,7 +29,6 @@ public:
 
 protected:
   QSerialPort* _port;
-  char _address;
   QTimer* _wdt;
 
   virtual QSerialPort::BaudRate baudRate();

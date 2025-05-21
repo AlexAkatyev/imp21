@@ -157,7 +157,7 @@ void DetectFactory::comVTDetects()
           {
             ModbusVTDetect* modbusVTD = new ModbusVTDetect(info, parent());
             detects.push_back(modbusVTD);
-            modbusVTD->SetAddres(i);
+            modbusVTD->SetAddress(i);
             modbusVTD->SetLocator(locator);
             modbusVTD->Init();
           }

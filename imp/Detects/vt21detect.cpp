@@ -10,6 +10,7 @@ VT21Detect::VT21Detect(QSerialPortInfo portInfo, QObject *parent)
   , _countPeriod(0)
   , _calibrField(0)
   , _currency(0)
+  , _address(0)
 {
 
 }
@@ -193,3 +194,14 @@ bool VT21Detect::fillCalibrateDataTable(QByteArray baData, int lenPoint, int len
   return error;
 }
 
+
+QString VT21Detect::Address()
+{
+    return _address == 0 ? "" : QString::number(_address);
+}
+
+
+void VT21Detect::SetAddress(int address)
+{
+    Q_UNUSED(address);
+}
