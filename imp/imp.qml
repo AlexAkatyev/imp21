@@ -376,10 +376,6 @@ Item
             MouseArea
             { // Для запуска окна установок
                 anchors.fill: parent
-                onDoubleClicked:
-                {
-                    sigNewIndicator(serialNumber)
-                }
                 hoverEnabled: true
                 onEntered: rectIndicate.color = impStyle.chekedColor
                 onExited: rectIndicate.color = impStyle.windowColor
@@ -501,6 +497,27 @@ Item
 
                             }
                             ToolTip.text: "Информация о датчике"
+                            ToolTip.visible: hovered
+                        }
+
+                        Button
+                        {
+                            id: btNewIndicator
+                            anchors.right: btOptions.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.rightMargin: btOptions.anchors.rightMargin
+                            width: 40
+                            icon.name: "info"
+                            icon.source: "icons/info.png"
+                            background: Rectangle {
+                                color: btOptions.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                border.color: impStyle.borderColor
+                            }
+                            onClicked:
+                            {
+                                sigNewIndicator(serialNumber)
+                            }
+                            ToolTip.text: "Открыть в индикаторе"
                             ToolTip.visible: hovered
                         }
 
