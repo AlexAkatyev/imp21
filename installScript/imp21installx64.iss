@@ -1,7 +1,7 @@
 
 [Setup]
 AppName=IMP
-AppVersion=21.9.3
+AppVersion=21.10.0
 WizardStyle=modern
 DefaultDirName={autopf}\..\ImcMikro\IMP
 DefaultGroupName=IMP
@@ -15,10 +15,13 @@ ArchitecturesInstallIn64BitMode=x64
 AppPublisherURL=ies-ltd.ru
 
 [Files]
+Source: "..\..\build\1\BepVtSettings.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\D3Dcompiler_47.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\build\1\EmVtSettings.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\imp.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\imp.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\imp_logo.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\build\1\LinearScale.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\ImpGauge.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\ImpSettingsDialog.qml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\1\ImpStyle.qml"; DestDir: "{app}"; Flags: ignoreversion
