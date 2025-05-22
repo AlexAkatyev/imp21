@@ -38,7 +38,7 @@ public:
 signals:
   void NewMeasure(float);
   void Stopped();
-  void UserNameChanged();
+  void DetectPropertyChanged();
   void ReleasedButton();
   void PressedButton();
   void HoldedButton();

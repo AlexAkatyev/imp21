@@ -494,11 +494,30 @@ void BepVTDetect::CreateSettingsController(QObject* rootUi)
 }
 
 
+void BepVTDetect::SetAddress(int address)
+{
+    if (address == 0)
+    {
+        return;
+    }
+    _address = address;
+    sendSaveCMD();
+}
+
+
 void BepVTDetect::SetNewName(QString newName)
 {
-  if (newName.isEmpty())
-    return;
+    if (newName.isEmpty())
+    {
+        return;
+    }
+    _userName = newName;
+    sendSaveCMD();
+}
 
+
+void BepVTDetect::sendSaveCMD()
+{
   QByteArray mail = COMMAND_SAVE_DETECT;
   auto pushInt2 = [&](int data)
   {
@@ -540,7 +559,7 @@ void BepVTDetect::SetNewName(QString newName)
     pushInt4(_pmt.at(i).at(1));
   }
 
-  QByteArray nname = setLocallyString(newName.left(LEN_NAME_DETECT));
+  QByteArray nname = setLocallyString(_userName.left(LEN_NAME_DETECT));
   mail.push_back(nname);
   for (int i = nname.length(); i < LEN_NAME_DETECT; ++i)
     mail.push_back(0x20);
@@ -555,11 +574,18 @@ void BepVTDetect::SetNewName(QString newName)
     for(;timew.elapsed() < WAIT_OF_ANSWER_SAVE;) // Время ожидания, мсек
       qApp->processEvents();// Ждем ответа, но обрабатываем возможные события
   }
-  _userName = newName;
+    _port->write(COMMAND_WAIT_DETECT);
+    _port->flush();
+    {
+      QElapsedTimer timew;
+      timew.start();
+      for(;timew.elapsed() < WAIT_OF_ANSWER_WAIT;) // Время ожидания, мсек
+        qApp->processEvents();// Ждем ответа, но обрабатываем возможные события
+    }
   _port->write(COMMAND_INIT_DETECT);
   _port->flush();
 
-  emit UserNameChanged();
+    emit DetectPropertyChanged();
 }
 
 

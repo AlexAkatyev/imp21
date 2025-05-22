@@ -114,6 +114,7 @@ Item
     signal sigOpenWorkPlaces();
     signal sigWorkPlaceChanged();
     signal sigSetNewUserName(string Id, string UserName);
+    signal sigSetNewModbusAddress(string Id, string Address);
 
     ImpStyle
     {

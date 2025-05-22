@@ -15,6 +15,7 @@ public:
   int WaitInit() override;
   void CreateSettingsController(QObject* rootUi) override;
   void SetNewName(QString newName) override;
+  void SetAddress(int address) override;
 
 protected:
   void getMeas();
@@ -32,6 +33,7 @@ private:
   bool defCalibrField(const QByteArray& mas);
   bool defCalibrateDataTable(const QByteArray& baStream);
   int bufferSize(SizeBufMode mode = SizeBufMode::FREE_MODE) override;
+  void sendSaveCMD();
 
   QTimer* _measTimer;
 };

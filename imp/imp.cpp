@@ -301,7 +301,7 @@ void Imp::findDetect()
 
     reWriteDetectsToTable();
     for (auto detect : _detects)
-      connect(detect, &ImpAbstractDetect::UserNameChanged, this, [&]()
+      connect(detect, &ImpAbstractDetect::DetectPropertyChanged, this, [&]()
       {
         reWriteDetectsToTable();
         emit sigFindDetect();

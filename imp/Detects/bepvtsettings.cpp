@@ -23,6 +23,8 @@ BepVTSettings::BepVTSettings(VT21Detect* parent, QObject* rootUi)
   connect(parent, &VT21Detect::NewDataMeas, this, &BepVTSettings::indicateDataMeas);
   // отработка нажатия кнопки сохранение нового имени датчика
   connect(_rootUi, SIGNAL(sigSetNewUserName(QString, QString)), this, SLOT(setNewUserName(QString, QString)));
+  // отработка нажатия кнопки сохранение нового адреса modbus
+  connect(_rootUi, SIGNAL(sigSetNewModbusAddress(QString, QString)), this, SLOT(setNewModbusAddress(QString, QString)));
 }
 
 // Заполнение пользовательского окна "Установки" данными датчика
@@ -107,3 +109,11 @@ void BepVTSettings::setNewUserName(QString number, QString userName)
     }
 }
 
+
+void BepVTSettings::setNewModbusAddress(QString number, QString address)
+{
+    if (_detect->Id() == number.toInt())
+    {
+        static_cast<VT21Detect*>(_detect)->SetAddress(address.toInt());
+    }
+}

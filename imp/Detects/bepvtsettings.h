@@ -16,6 +16,7 @@ public:
 
 private slots:
   void setNewUserName(QString number, QString userName);
+  void setNewModbusAddress(QString number, QString address);
 
 private:
     // Включение переменных виджета QML

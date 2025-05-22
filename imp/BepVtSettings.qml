@@ -827,6 +827,10 @@ Item
                 color: btSaveMBAddress.hovered ? impStyle.hoveredColor : impStyle.windowColor
                 border.color: impStyle.borderColor
             }
+            onClicked:
+            {
+                sigSetNewModbusAddress(idNumber, tfMBAddress.text);
+            }
         }
     }
 
