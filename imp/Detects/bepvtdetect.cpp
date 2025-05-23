@@ -605,10 +605,10 @@ TestBepVTDetect::TestBepVTDetect(QSerialPortInfo portInfo, QObject *parent)
 {
   _userName = "test bep detect";
   _unitMeasure = "_no_";
-  _serialNumber = 25000;
+  _serialNumber = 21000;
   _typeDetect = "тестовый датчик. нет аппаратуры";
   _dateManuf.setDate(2021, 9, 1);
-  _address = 0;
+  _address = 17;
   _zeroInterval = 50;
   _preSetInterval = 150;
   _currency = 2;
