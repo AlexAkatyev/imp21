@@ -127,6 +127,10 @@ Imp::Imp(QWidget* parent)
     {
       _flagRunIndicators = false;
       _detects = DetectFactory::Instance(this)->TestDetects();
+      for (ImpAbstractDetect* d : _detects)
+      {
+          d->CreateSettingsController(_pitWin);
+      }
       reWriteDetectsToTable();
       _pitWin->setProperty("iCommand", DETECTS_MODEL_CMDS::UPDATE_ACTIVE_STATE);
     }
