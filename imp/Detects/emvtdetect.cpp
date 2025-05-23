@@ -178,7 +178,7 @@ void EmVTDetect::routeInput()
 
 void EmVTDetect::CreateSettingsController(QObject* rootUi)
 {
-  EmVTSettings* settings = new EmVTSettings(this, rootUi);
+    _settingsController = new EmVTSettings(this, rootUi);
 }
 
 
