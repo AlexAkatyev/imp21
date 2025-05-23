@@ -19,6 +19,7 @@ Item
     property string currentDataMeas: ""
     property int maskCalibrField: 0
     property string mdataCalibTable: ""
+    property variant calibTableList: mdataCalibTable.split(";")
     property string mmodbusAddress: "0"
 
     property int limitedMeasPoint: 0;
@@ -50,8 +51,15 @@ Item
 
     function getTextForCalibTableItem(v)
     {
-        var s = mdataCalibTable.split(";");
-        return s[v];
+        if (!itInfo.visible)
+        {
+            return "";
+        }
+        if (calibTableList.length < v)
+        {
+            return "";
+        }
+        return calibTableList[v];
     }
 
 
