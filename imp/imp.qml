@@ -342,9 +342,16 @@ Item
         anchors.right: itWin.right
         anchors.bottom: itWin.bottom
         focus: true
+        boundsBehavior: Flickable.StopAtBounds
+                ScrollBar.vertical: ScrollBar
+                {
+                    id: detectsScroll
+                    policy: ScrollBar.AlwaysOn
+                    active: ScrollBar.AlwaysOn
+                }
         header: Rectangle
         {
-            width: parent.width
+            width: parent.width - detectsScroll.width
             height: itWin.height/15
             color: impStyle.chekedColor
             Text{
@@ -364,7 +371,7 @@ Item
         { // Описание представления обнаруженного датчика
             id: itDetect
             height: shortInfoHeight
-            width: itWin.width
+            width: itWin.width - detectsScroll.width
 
             Behavior on height {
                 NumberAnimation {
