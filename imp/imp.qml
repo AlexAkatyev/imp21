@@ -515,8 +515,8 @@ Item
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.rightMargin: btOptions.anchors.rightMargin
                             width: 40
-                            icon.name: "info"
-                            icon.source: "icons/info.png"
+                            icon.name: "indicator"
+                            icon.source: "icons/indicator.png"
                             background: Rectangle {
                                 color: btOptions.hovered ? impStyle.hoveredColor : impStyle.windowColor
                                 border.color: impStyle.borderColor
