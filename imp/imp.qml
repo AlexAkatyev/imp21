@@ -341,6 +341,7 @@ Item
         anchors.left: itWin.left
         anchors.right: itWin.right
         anchors.bottom: itWin.bottom
+        clip: true
         focus: true
         boundsBehavior: Flickable.StopAtBounds
                 ScrollBar.vertical: ScrollBar

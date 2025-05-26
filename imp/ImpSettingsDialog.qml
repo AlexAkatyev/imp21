@@ -177,6 +177,7 @@ Item {
                             width: 310
                             Material.accent: impStyle.chekedColor
                             focus: true
+                            clip: true
                             boundsBehavior: Flickable.StopAtBounds
                                     ScrollBar.vertical: ScrollBar
                                     {
