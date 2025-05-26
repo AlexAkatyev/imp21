@@ -30,10 +30,12 @@ signals:
     void sigCloseIndicator(int); // Закрытие окна индикатора, передается номер индикатора - для родительского окна
     void sigCloseMyIndicator(void); // Сигнал о закрытии окна дочерним окнам
     void sigDataPressed(); // нажатие на кнопку DATA
+    void sigActivatedWindow(); // Индикатор был активирован
 
 public slots:
     void CloseMyIndicator(void); // Закрытие окна по команде от внешних объектов
     void RunButtonRelease(); // Отработать нажатие в другом индикаторе или своего датчика
+    void ReiseWindow();
 
 private:
     // преобразование измерений из единиц измерния датчиков в единицы измерения пользователя
@@ -52,6 +54,9 @@ private:
     Imp* _parent;
     int _idIndicator; // Номер индикатора
     std::vector<QString> _measuredLogs;
+    QTimer* _wdtActivateControl;
+    bool _stateActivateWindow;
+    bool _iSender;
 
     // Включение переменных виджета QML
     // Указатель на виджет qml в окне класса

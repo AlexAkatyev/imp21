@@ -35,10 +35,11 @@
 // Исходные размеры окна индикатора
 const int SIZE_INDICATOR_WINDOW_X = 450;
 const int SIZE_INDICATOR_WINDOW_Y = 400;
-//const int SIZE_INDICATOR_WINDOW_Y2 = (SIZE_INDICATOR_WINDOW_Y/2);
 
 const int MINIMAL_HEIGHT = 450;
 const int MINIMAL_WIDTH = 400;
+
+const int WATCH_DOG_ACTIVE = 100;
 
 // Периодичность считывания показаний датчиков
 const int WATCH_DOG_INTERVAL = 100;
@@ -81,6 +82,9 @@ Indicator::Indicator
   : QWidget(nullptr, Qt::Window)
   , _parent(static_cast<Imp*>(parent))
   , _idIndicator(identificator)
+  , _wdtActivateControl(new QTimer(this))
+  , _stateActivateWindow(false)
+  , _iSender(false)
   , _quickUi(new QQuickWidget)
   , _formulaComplete(true)
   , _detect1(nullptr)
@@ -190,6 +194,20 @@ Indicator::Indicator
 
   setMinimumSize(QSize(MINIMAL_WIDTH, MINIMAL_HEIGHT));
   this->show(); // Окно выводим на экран
+
+    connect(this, &Indicator::sigActivatedWindow, _parent, &Imp::RaiseIndicators);
+    connect(_wdtActivateControl, &QTimer::timeout, this, [=]()
+    {
+        bool activeWindow = isActiveWindow();
+        if (activeWindow && !_stateActivateWindow)
+        {
+            _iSender = true;
+            emit sigActivatedWindow();
+            _iSender = false;
+        }
+        _stateActivateWindow = activeWindow;
+    });
+    _wdtActivateControl->start(WATCH_DOG_ACTIVE);
 
   if (message.length() != 0)
   {
@@ -1006,4 +1024,17 @@ std::vector<int> Indicator::GetDefaultSize()
 {
     std::vector<int> defaultSize = {MINIMAL_WIDTH, MINIMAL_HEIGHT};
     return defaultSize;
+}
+
+
+void Indicator::ReiseWindow()
+{
+    if (_iSender)
+    {
+        return;
+    }
+    setWindowState((windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+    raise();
+    activateWindow();
+    _stateActivateWindow = true;
 }

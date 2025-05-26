@@ -800,3 +800,12 @@ void Imp::workPlaceChanged()
     _flagRunIndicators = true;
     runIndicators();
 }
+
+
+void Imp::RaiseIndicators()
+{
+    for (Indicator* ind : _indicators)
+    {
+        ind->ReiseWindow();
+    }
+}

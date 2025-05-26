@@ -30,6 +30,8 @@ signals:
     void sigCloseGeneralWindow();
     void sigFindDetect();
 
+public slots:
+    void RaiseIndicators();
 
 private slots:
     void findDetect(); // Поиск датчиков
