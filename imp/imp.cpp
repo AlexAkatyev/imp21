@@ -480,10 +480,14 @@ void Imp::fillScreenWithIndicators()
 
   for (index = 0; index < MAX_INDICATOR; index++)
   {
-       if (_useIndicators.contains(index) == false)
-       {
-           indexList.push_back(index);
-       }
+      auto result = std::find_if(_indicators.begin(), _indicators.end(), [=](Indicator* ind)
+      {
+          return (ind != nullptr) ? (ind->Id() == index) : true;
+      });
+      if (result == _indicators.end())
+      {
+          indexList.push_back(index);
+      }
   }
   createScreenIndicators(indexList, nullptr);
 }
@@ -505,9 +509,12 @@ void Imp::deleteIndicator(int idInd)
     }
 }
 
+
 //создание индикаторов для заполнения экрана(-ов)
 void Imp::createScreenIndicators(QList<int> indexList, ImpAbstractDetect* baseDetect)
 {
+    composeOpenWindowsInOrder();
+
     Indicator* ind;
 
     int countScreen = QApplication::screens().count();
@@ -532,10 +539,15 @@ void Imp::createScreenIndicators(QList<int> indexList, ImpAbstractDetect* baseDe
         int startSreenX = screen[i]->geometry().x();
         int startSreenY = screen[i]->geometry().y();
 
+        int indicatorsCount = _indicators.size();
         for(int row = 0; row < numberOfWindowsRows; row++)
         {
             for(int column = 0; column < numberOfWindowsColumns; column++)
             {
+                if ((column + row * numberOfWindowsColumns) < indicatorsCount)
+                {
+                    continue;
+                }
                 ind = new Indicator(this,
                                     ImpSettings::Instance()->CurrentUuid(),
                                     indexList[numberInd], // Номер индикатора
