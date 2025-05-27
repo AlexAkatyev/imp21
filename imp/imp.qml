@@ -519,8 +519,8 @@ Item
                             anchors.rightMargin: btOptions.anchors.rightMargin
                             width: btOptions.width
                             height: width
-                            icon.name: "info"
-                            icon.source: "icons/info.png"
+                            icon.name: "indicator"
+                            icon.source: "icons/indicator.png"
                             background: Rectangle {
                                 color: btNewIndicator.hovered ? impStyle.hoveredColor : impStyle.windowColor
                                 border.color: impStyle.borderColor
