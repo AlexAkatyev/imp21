@@ -785,6 +785,7 @@ void Imp::updateCbWorkPlaces()
 
 void Imp::workPlaceChanged()
 {
+    SaveSettingsGeneral();
     QObject* cbWorkPlaces = _pQuickUi->rootObject()->findChild<QObject*>("cbWorkspace");
     ImpSettings* settings = ImpSettings::Instance(this);
     settings->SetValue(ImpKeys::ACTIVE_WORKPLACE, cbWorkPlaces->property("currentIndex").toInt());
