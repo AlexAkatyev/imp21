@@ -518,7 +518,7 @@ Item
                             icon.name: "info"
                             icon.source: "icons/info.png"
                             background: Rectangle {
-                                color: btOptions.hovered ? impStyle.hoveredColor : impStyle.windowColor
+                                color: btNewIndicator.hovered ? impStyle.hoveredColor : impStyle.windowColor
                                 border.color: impStyle.borderColor
                             }
                             onClicked:
