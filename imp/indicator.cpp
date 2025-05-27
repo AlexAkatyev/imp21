@@ -203,6 +203,7 @@ Indicator::Indicator
         {
             _iSender = true;
             emit sigActivatedWindow();
+            raise();
             _iSender = false;
         }
         _stateActivateWindow = activeWindow;
@@ -1033,8 +1034,7 @@ void Indicator::ReiseWindow()
     {
         return;
     }
-    setWindowState((windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+    setWindowState(windowState() & ~Qt::WindowMinimized);
     raise();
-    activateWindow();
     _stateActivateWindow = true;
 }
