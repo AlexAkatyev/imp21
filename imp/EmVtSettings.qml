@@ -22,7 +22,6 @@ Item
     Rectangle
     {
         anchors.fill: parent
-        color: impStyle.windowColor
 
         Item {
             id: itSetTab
