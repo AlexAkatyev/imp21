@@ -112,6 +112,7 @@ Item
                         background: Rectangle {
                             color: btSetName.hovered ? impStyle.hoveredColor : impStyle.windowColor
                             border.color: impStyle.borderColor
+                            radius: impStyle.buttonRadius
                         }
                         onClicked:
                         {
@@ -834,6 +835,7 @@ Item
             {
                 color: btSaveMBAddress.hovered ? impStyle.hoveredColor : impStyle.windowColor
                 border.color: impStyle.borderColor
+                radius: impStyle.buttonRadius
             }
             onClicked:
             {

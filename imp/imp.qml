@@ -415,6 +415,7 @@ Item
                                 color: impStyle.actionbarColor
                                 height: textNumber.height+10
                                 width: 150
+                                radius: impStyle.buttonRadius
                                 Text
                                 {
                                     id: textNumber
@@ -483,12 +484,14 @@ Item
                             anchors.right: parent.right
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.rightMargin: 10
-                            width: 40
+                            width: 50
+                            height: width
                             icon.name: "info"
                             icon.source: "icons/info.png"
                             background: Rectangle {
                                 color: btOptions.hovered ? impStyle.hoveredColor : impStyle.windowColor
                                 border.color: impStyle.borderColor
+                                radius: impStyle.buttonRadius
                             }
                             onClicked:
                             {
@@ -514,12 +517,14 @@ Item
                             anchors.right: btOptions.left
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.rightMargin: btOptions.anchors.rightMargin
-                            width: 40
+                            width: btOptions.width
+                            height: width
                             icon.name: "info"
                             icon.source: "icons/info.png"
                             background: Rectangle {
                                 color: btNewIndicator.hovered ? impStyle.hoveredColor : impStyle.windowColor
                                 border.color: impStyle.borderColor
+                                radius: impStyle.buttonRadius
                             }
                             onClicked:
                             {

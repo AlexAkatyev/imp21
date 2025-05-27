@@ -13,5 +13,5 @@ Item
     property color unChekedColor: "black"
     property color hoveredColor: "#c3c3c3"
     property color calcTextColor: "gray"
-
+    property int buttonRadius: 5
 }
