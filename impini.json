@@ -1,0 +1,15 @@
+{
+    "workplaces": [
+        {
+            "en_modbus_tcp": false,
+            "en_rs_485": false,
+            "indicators": [
+            ],
+            "list_mb_addr": [
+            ],
+            "recording_in_all_indicators": false,
+            "uuid": "{175d2445-421b-4fbf-8882-b23d6a59b1be}",
+            "wpname": "РМ 1"
+        }
+    ]
+}

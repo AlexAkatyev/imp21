@@ -839,8 +839,9 @@ Source: "..\..\build\1\translations\qt_ru.qm"; DestDir: "{app}\translations"; Fl
 Source: "..\..\build\1\translations\qt_sk.qm"; DestDir: "{app}\translations"; Flags: ignoreversion
 Source: "..\..\build\1\translations\qt_uk.qm"; DestDir: "{app}\translations"; Flags: ignoreversion
 Source: "..\..\build\1\translations\qt_zh_TW.qm"; DestDir: "{app}\translations"; Flags: ignoreversion
-Source: "..\rec3.xlsm"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\1251.reg"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\impini.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\rec3.xlsm"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\driver\CP210x_Universal_Windows_Driver.zip"; DestDir: "{app}\driver"; Flags: ignoreversion
 Source: "..\Documentation\pythonProject\build\html\.buildinfo"; DestDir: "{app}\build\html"; Flags: ignoreversion
 Source: "..\Documentation\pythonProject\build\html\About.html"; DestDir: "{app}\build\html"; Flags: ignoreversion
