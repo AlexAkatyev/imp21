@@ -7,7 +7,7 @@ import QtQuick.Layouts 1.3
 Item
 {
     id: itInfo
-    height: 400
+    height: 430
     width: 1200
 
     property string idNumber: ""
@@ -74,6 +74,7 @@ Item
         width: 400
         anchors.left: parent.left
         anchors.top: parent.top
+        anchors.topMargin: 10
 
         Column {
             spacing: 10

@@ -15,7 +15,6 @@ Item
     height: scaleY
 
     property int shortInfoHeight: 90
-    property int detailedInfoHeight: 480
 
     property string strSerialNumber: ""
     property string strActive: ""
@@ -374,11 +373,26 @@ Item
             height: shortInfoHeight
             width: itWin.width - detectsScroll.width
 
+            property int detailedHeight: getHeightSettingsArea()
+
             Behavior on height {
                 NumberAnimation {
                     duration: 100
                     easing.type: Easing.InOutQuad
                 }
+            }
+
+            function getHeightSettingsArea()
+            {
+                if (typeSettings == "bep")
+                {
+                    return 430 + shortInfoHeight;
+                }
+                if (typeSettings == "em")
+                {
+                    return 170 + shortInfoHeight;
+                }
+                return shortInfoHeight;
             }
 
             MouseArea
@@ -396,7 +410,7 @@ Item
 
                     Item
                     {
-                        id: shortInfoIrem
+                        id: shortInfoItem
                         anchors.top: parent.top
                         anchors.left: parent.left
                         anchors.right: parent.right
@@ -495,17 +509,16 @@ Item
                             }
                             onClicked:
                             {
-                                if (itDetect.height == shortInfoHeight)
-                                {
-                                    itDetect.height = detailedInfoHeight;
-                                    detailedItem.visible = true;
-                                }
-                                else
+                                if (detailedItem.visible)
                                 {
                                     itDetect.height = shortInfoHeight;
                                     detailedItem.visible = false;
                                 }
-
+                                else
+                                {
+                                    itDetect.height = detailedHeight;
+                                    detailedItem.visible = true;
+                                }
                             }
                             ToolTip.text: "Информация о датчике"
                             ToolTip.visible: hovered
@@ -539,7 +552,7 @@ Item
                     Item
                     {
                         id: detailedItem
-                        height: itemGeneral.height - shortInfoIrem.height
+                        height: itemGeneral.height - shortInfoItem.height
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.bottom: parent.bottom

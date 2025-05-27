@@ -6,7 +6,7 @@ import QtQuick.Layouts 1.3
 
 Item
 {
-    height: 400
+    height: 170
     width: 400
 
     property string measUnit: ""
@@ -28,7 +28,7 @@ Item
 
             Column {
                 spacing: 10
-                topPadding: 50
+                //topPadding: 50
                 padding: 10
 
                 Grid {
