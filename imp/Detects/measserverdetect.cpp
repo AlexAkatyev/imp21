@@ -94,8 +94,7 @@ QString MeasServerDetect::PortName()
 
 void MeasServerDetect::CreateSettingsController(QObject* rootUi)
 {
-    EmVTSettings* settings = new EmVTSettings(this, rootUi, 1);
-    Q_UNUSED(settings);
+    _settingsController = new EmVTSettings(this, rootUi, 1);
 }
 
 
