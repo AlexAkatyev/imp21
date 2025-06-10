@@ -217,10 +217,7 @@ QDate MBTcpLocator::DetectDateManuf(int numberD)
   uint dm = _regs[regData(REG_DATE_MANUF, numberD)];
   int month = static_cast<unsigned char>(dm);
   int day = static_cast<unsigned char>(dm >> 8);
-  uint dy = _regs[regData(REG_YEAR_MANUF, numberD)];
-  int year = static_cast<unsigned char>(dy >> 8);
-  year *= 100;
-  year += static_cast<unsigned char>(dy);
+  int year = _regs[regData(REG_YEAR_MANUF, numberD)];
   bool error = !result.setDate(year, month, day);
   if (error)
     result.setDate(2021, 9, 1); // Дата начала изготовления этого типа датчиков
