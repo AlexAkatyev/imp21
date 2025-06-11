@@ -416,11 +416,12 @@ void Indicator::setFormula(void)
   }
 
 
+    disconnect(_detect1, &VTDetect::PressedButton, this, &Indicator::RunButtonRelease);
+    disconnect(_detect2, &VTDetect::PressedButton, this, &Indicator::RunButtonRelease);
+
   // Датчик 1
   qApp->processEvents();
   QString strCurrent1 = _cbListDetect1->property("currentText").toString();
-  if (_detect1)
-    disconnect(_detect1, &VTDetect::PressedButton, this, &Indicator::RunButtonRelease);
   _detect1 = _parent->DetectAtName(strCurrent1);
   if (_detect1)
     connect(_detect1, &VTDetect::PressedButton, this, &Indicator::RunButtonRelease);
@@ -428,11 +429,13 @@ void Indicator::setFormula(void)
   // Датчик 2
   qApp->processEvents();
   QString strCurrent2 = _cbListDetect2->property("currentText").toString();
-  if (_detect2)
-    disconnect(_detect2, &VTDetect::PressedButton, this, &Indicator::RunButtonRelease);
   _detect2 = _parent->DetectAtName(strCurrent2);
-  if (_detect2)
-    connect(_detect2, &VTDetect::PressedButton, this, &Indicator::RunButtonRelease);
+    if (_detect2 != nullptr
+        && _detect2 != _detect1)
+    {
+        connect(_detect2, &VTDetect::PressedButton, this, &Indicator::RunButtonRelease);
+    }
+    qApp->processEvents();
   // Проверки
   QString unit1 = _detect1 ? _detect1->MeasUnit() : "";
   QString unit2 = _detect2 ? _detect2->MeasUnit() : "";
