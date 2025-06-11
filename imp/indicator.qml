@@ -1461,10 +1461,12 @@ Item
                                     case 1:
                                         longPlay = false;
                                         audioEnable = true;
+                                        timerBuzzer.start();
                                         break;
                                     case 2:
                                         longPlay = true;
                                         audioEnable = true;
+                                        timerBuzzer.start();
                                     }
                                 }
 
