@@ -14,8 +14,6 @@
    Start
    MainWindow
    Indicators
-   Settings
-   Charts
    OtherApps
    Help
    Contacts
