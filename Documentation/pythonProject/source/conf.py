@@ -7,9 +7,9 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 html_title = 'ИМП. Руководство пользователя'
-copyright = '2024, ООО НИР, ies-ltd.ru'
+copyright = '2025, ООО НИР, ies-ltd.ru'
 author = 'ООО НИР'
-release = '21.8.1'
+release = '21.10.2'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -24,7 +24,7 @@ language = 'ru'
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_favicon = '_static/impclient.ico'
+html_favicon = '_static/imp_logo.ico'
 
 html_theme = 'sphinx_book_theme'
 html_static_path = ['_static']
