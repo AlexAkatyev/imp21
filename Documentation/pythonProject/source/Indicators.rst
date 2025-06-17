@@ -105,6 +105,38 @@
     | **Д** — делитель показаний
     | (для учета конструктивных особенностей измерительной системы).
 
+Например:
+
+.. figure:: ./_static/IndicatorMeasurement.png
+   :alt: IndicatorMeasurement
+   :align: center
+
+Имеется возможность использования сложной формулы:
+
+.. figure:: ./_static/C-formula-empty.png
+   :alt: CFormulaEmpty
+   :align: center
+
+Примеры правильного ввода сложной формулы:
+
+.. figure:: ./_static/C-formula-int.png
+   :alt: CFormulaInt
+   :align: center
+.. figure:: ./_static/C-formula-float.png
+   :alt: CFormulaFloat
+   :align: center
+
+В случае некорректного ввода формулы, программа сообщает об этом в поле статуса.
+
+.. figure:: ./_static/C-formula-error.png
+   :alt: CFormulaError
+   :align: center
+.. figure:: ./_static/C-formula-error1.png
+   :alt: CFormulaError1
+   :align: center
+
+
+
 2. :underlined:`ДОПУСК`, где можно задать приемочные границы и звуковое оповещение.
 
 .. figure:: ./_static/IndicatorTolerance.png
